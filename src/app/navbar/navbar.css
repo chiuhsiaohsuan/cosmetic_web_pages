@@ -1,0 +1,21 @@
+.header{
+    width: 100%;
+    height: 90px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0 80px;
+    background: rgb(178, 194, 177);
+}
+.menu{
+    display: flex;
+    gap: 40px;
+}
+
+.menu a{
+    text-decoration: none;
+    color: black;
+
+}

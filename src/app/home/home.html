@@ -1,0 +1,28 @@
+<section class="carousel" aria-label="Image carousel">
+    <div class="carousel-track" [style.transform]="'translateX(-' + currentSlide() * 100 + '%)'">
+        @for (slide of slides; track slide.src) {
+            <div class="carousel-slide">
+                <img [src]="slide.src" [alt]="slide.alt">
+            </div>
+        }
+    </div>
+
+    <button class="carousel-button previous" type="button" aria-label="Previous image" (click)="previousSlide()">
+        &#8249;
+    </button>
+    <button class="carousel-button next" type="button" aria-label="Next image" (click)="nextSlide()">
+        &#8250;
+    </button>
+
+    <div class="carousel-dots" aria-label="Carousel pages">
+        @for (slide of slides; track slide.src; let index = $index) {
+            <button
+                type="button"
+                class="carousel-dot"
+                [class.active]="currentSlide() === index"
+                [attr.aria-label]="'Go to image ' + (index + 1)"
+                (click)="goToSlide(index)">
+            </button>
+        }
+    </div>
+</section>
