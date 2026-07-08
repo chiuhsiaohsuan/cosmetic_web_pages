@@ -1,0 +1,45 @@
+<section class="news">
+    <div class="news-header">
+        <h2>最新消息</h2>
+    </div>
+
+    <div class="news-list">
+        @for (item of pagedNews; track $index) {
+            <article class="news-item">
+                <time [attr.datetime]="item.date">
+                    {{ item.date }}
+                </time>
+                <h3>{{ item.title }}</h3>
+            </article>
+        }
+    </div>
+
+    <div class="pagination">
+
+        <button
+            type="button"
+            (click)="changePage(currentPage - 1)"
+            [disabled]="currentPage === 1">
+            上一頁
+        </button>
+
+
+        @for (page of pages; track page) {
+            <button
+                type="button"
+                (click)="changePage(page)"
+                [class.active]="currentPage === page">
+                {{ page }}
+            </button>
+        }
+
+
+        <button
+            type="button"
+            (click)="changePage(currentPage + 1)"
+            [disabled]="currentPage === pages.length">
+            下一頁
+        </button>
+
+    </div>
+</section>

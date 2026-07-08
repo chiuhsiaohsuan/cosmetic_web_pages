@@ -1,0 +1,12 @@
+footer{
+    background-color: rgb(178, 194, 177);
+    min-height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.footer-icons{
+   display: flex;
+   width: 30%;
+   justify-content: space-between;
+}

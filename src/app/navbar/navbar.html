@@ -1,14 +1,34 @@
 <header class="header">
     <div class="logo">
-        <a routerLink="/">
+        <a routerLink="/" (click)="closeMenu()">
             <div>承檍生技</div>
         </a>
     </div>
-    <!--Menu-->
-    <nav class="menu">
-        <a routerLink="/about">關於我們</a>
-        <a routerLink="/news">最新消息</a>
-        <a routerLink="/product">產品</a>
+
+    <button
+        class="menu-toggle"
+        type="button"
+        aria-label="menu"
+        [class.open]="isMenuOpen()"
+        [attr.aria-expanded]="isMenuOpen()"
+        (click)="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <nav class="menu" [class.open]="isMenuOpen()">
+        <a routerLink="/about" (click)="closeMenu()">關於我們</a>
+        <a routerLink="/news" (click)="closeMenu()">最新消息</a>
+        <a routerLink="/product" (click)="closeMenu()">商品</a>
     </nav>
-    <div>登入</div>
+
+    <div class="top-right">
+        <div>登入</div>
+        <a class="cart-link" routerLink="/cart" aria-label="cart" (click)="closeMenu()">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2Zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2ZM7.16 14.26c-.75 0-1.41-.41-1.75-1.03L2 4H0V2h3.31l.94 2H22l-3.4 8.34c-.31.76-1.04 1.26-1.86 1.26H7.42l-.9 1.64H20V17H7c-1.52 0-2.48-1.63-1.75-2.97l.91-1.77ZM5.2 6l2.22 5.6h9.32L19.02 6H5.2Z" />
+            </svg>
+        </a>
+    </div>
 </header>

@@ -7,13 +7,6 @@
         }
     </div>
 
-    <button class="carousel-button previous" type="button" aria-label="Previous image" (click)="previousSlide()">
-        &#8249;
-    </button>
-    <button class="carousel-button next" type="button" aria-label="Next image" (click)="nextSlide()">
-        &#8250;
-    </button>
-
     <div class="carousel-dots" aria-label="Carousel pages">
         @for (slide of slides; track slide.src; let index = $index) {
             <button
@@ -24,5 +17,67 @@
                 (click)="goToSlide(index)">
             </button>
         }
+    </div>
+</section>
+
+<section class="hot-products">
+    <div class="section-header">
+        <h2>熱銷商品</h2>
+
+        <div class="product-tabs">
+            <button
+                type="button"
+                class="product-tab"
+                [class.active]="activeCategory() === 'all'"
+                (click)="selectCategory('all')">全系列商品</button>
+            <button
+                type="button"
+                class="product-tab"
+                [class.active]="activeCategory() === 'a'"
+                (click)="selectCategory('a')">A系列</button>
+            <button
+                type="button"
+                class="product-tab"
+                [class.active]="activeCategory() === 'b'"
+                (click)="selectCategory('b')">B系列</button>
+        </div>
+    </div>
+
+    <div class="product-grid">
+        @for (product of filteredProducts(); track product.name) {
+            <article class="product-card">
+                <div class="product-image">
+                    <img [src]="product.image" [alt]="product.name">
+                </div>
+                <div class="product-info">
+                    <h3>{{ product.name }}</h3>
+                    <p>{{ product.description }}</p>
+                    <strong class="product-price">NT$ {{ product.price }}</strong>
+                </div>
+            </article>
+        }
+    </div>
+</section>
+<section class="news">
+    <div class="news-header">
+        <h2>最新消息</h2>
+    </div>
+
+    <div class="news-list">
+        <article class="news-item">
+            <time datetime="2026-07-08">2026.07.08</time>
+            <h3>新商品上市，限時優惠中</h3>
+        </article>
+        <article class="news-item">
+            <time datetime="2026-07-01">2026.07.01</time>
+            <h3>夏季保養系列正式發售</h3>
+        </article>
+        <article class="news-item">
+            <time datetime="2026-06-20">2026.06.20</time>
+            <h3>新商品上市，限時優惠中</h3>
+        </article>
+    </div>
+    <div class="more">
+        <button type="button" routerLink="/news">了解更多</button>
     </div>
 </section>
