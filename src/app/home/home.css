@@ -71,6 +71,7 @@
     color: #333333;
     font-size: 15px;
     cursor: pointer;
+    border-radius: 10px;
 }
 
 .product-tab.active,

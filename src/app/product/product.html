@@ -6,9 +6,27 @@
         找到最適合你的選擇
     </p>
 
+
+    <!-- 商品分類 -->
+    <div class="category">
+
+        @for(category of categories; track category){
+
+            <button 
+                [class.active]="selectedCategory() === category"
+                (click)="changeCategory(category)">
+                
+                {{ category }}
+
+            </button>
+
+        }
+
+    </div>
+
     <div class="product-grid">
 
-        @for (item of products; track item.name) {
+        @for (item of pagedProducts(); track item.name) {
 
             <div class="card">
 
@@ -16,14 +34,37 @@
 
                 <h3>{{ item.name }}</h3>
 
-                <span>NT$ {{ item.price }}</span>
+                <p class="type">
+                    {{ item.category }}
+                </p>
 
-                <button>查看商品</button>
+                <span>
+                    NT$ {{ item.price }}
+                </span>
+
+                <button>
+                    查看商品
+                </button>
 
             </div>
 
         }
 
     </div>
+    <!-- 分頁 -->
+    <div class="pagination">
 
+        @for(page of pages(); track page){
+
+            <button
+                [class.active]="currentPage() === page"
+                (click)="changePage(page)">
+                
+                {{ page }}
+
+            </button>
+
+        }
+
+    </div>
 </section>

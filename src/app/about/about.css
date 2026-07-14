@@ -66,7 +66,72 @@ p {
     opacity: 1;
     transform: translateX(0);
 }
+/* Team */
+.team-section {
+    background-color: #F3F8F4;
+    padding: 80px 0;
+}
+.team {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
 
+.team-title h2 {
+    font-size: 36px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.team-title p {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 50px;
+    line-height: 1.8;
+}
+
+/* 卡片排列 */
+.team-list {
+    display: flex;
+    justify-content: center;
+    gap: 55px;
+    flex-wrap: wrap;
+}
+
+/* 卡片 */
+.team-card {
+    width: 320px;
+    background: #fff;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+}
+
+.team-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.team-card img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+}
+
+.team-card h3 {
+    font-size: 24px;
+    color: #333;
+    margin: 20px 0 10px;
+}
+
+.team-card p {
+    color: #666;
+    font-size: 16px;
+    line-height: 1.8;
+    padding: 0 20px 25px;
+}
 /* 手機版 */
 @media (max-width: 768px) {
 
@@ -101,5 +166,39 @@ p {
 
     p {
         font-size: 16px;
+    }
+}
+@media (max-width: 768px) {
+    .team-section {
+        width: 100%;
+        background: #F3F8F4;
+        padding: 80px 0;
+    }
+    .team {
+        width: 95%;
+        margin: 0 auto;
+    }
+
+    .team-title h2 {
+        font-size: 30px;
+    }
+
+    .team-title p {
+        font-size: 16px;
+        margin-bottom: 35px;
+    }
+
+    .team-list {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .team-card {
+        width: 100%;
+        max-width: 360px;
+    }
+
+    .team-card img {
+        height: 240px;
     }
 }
