@@ -2,7 +2,7 @@
     position: relative;
     width: min(100%, 1120px);
     aspect-ratio: 16 / 7;
-    margin: 32px auto;
+    margin: 100px auto;
     overflow: hidden;
     background: #f4f4f4;
 }

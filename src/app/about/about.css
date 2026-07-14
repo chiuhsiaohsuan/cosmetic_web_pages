@@ -45,7 +45,27 @@ p {
     line-height: 2;
     color: #666;
 }
+/* 初始狀態 */
+.fade-section {
+    opacity: 0;
+    transition: all 0.8s ease;
+}
 
+/* 從左滑入 */
+.left {
+    transform: translateX(-100px);
+}
+
+/* 從右滑入 */
+.right {
+    transform: translateX(100px);
+}
+
+/* 顯示 */
+.fade-section.show {
+    opacity: 1;
+    transform: translateX(0);
+}
 
 /* 手機版 */
 @media (max-width: 768px) {

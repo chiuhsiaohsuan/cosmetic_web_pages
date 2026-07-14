@@ -1,0 +1,29 @@
+<section class="products">
+
+    <h1>商品專區</h1>
+
+    <p class="subtitle">
+        找到最適合你的選擇
+    </p>
+
+    <div class="product-grid">
+
+        @for (item of products; track item.name) {
+
+            <div class="card">
+
+                <img [src]="item.image" [alt]="item.name">
+
+                <h3>{{ item.name }}</h3>
+
+                <span>NT$ {{ item.price }}</span>
+
+                <button>查看商品</button>
+
+            </div>
+
+        }
+
+    </div>
+
+</section>
