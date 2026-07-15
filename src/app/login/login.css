@@ -29,7 +29,7 @@
 /* 標題 */
 .login-form h2 {
     margin-bottom: 30px;
-    color: #333;
+    color: #404040;
     font-size: 30px;
 }
 
@@ -49,7 +49,7 @@
 .input-group input {
     width: 100%;
     padding: 12px 15px;
-    border: 1px solid #ddd;
+    border: 1px solid #D9DED8;
     border-radius: 10px;
     font-size: 16px;
     box-sizing: border-box;
@@ -57,7 +57,7 @@
 }
 
 .input-group input:focus {
-    border-color: #3f9b4b;
+    border-color: #D9DED8;
     outline: none;
     box-shadow: 0 0 8px #daf3df;
 }
@@ -66,7 +66,7 @@
 .login-form button {
     width: 100%;
     padding: 14px;
-    background: #3f9b4b;
+    background: #78907A;
     color: #fff;
     border: none;
     border-radius: 10px;
@@ -76,7 +76,7 @@
 }
 
 .login-form button:hover {
-    background: #54bb61;
+    background: #6B8F71;
     transform: translateY(-2px);
 }
 
@@ -87,7 +87,7 @@
 }
 
 .register a {
-    color: #3f9b4b;
+    color: #9FB8A3;
     text-decoration: none;
     font-weight: bold;
 }

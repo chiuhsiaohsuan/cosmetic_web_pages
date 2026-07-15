@@ -10,14 +10,12 @@
     <!-- 商品分類 -->
     <div class="category">
 
-        @for(category of categories; track category){
+        @for(category of categories; track category.value){
 
-            <button 
-                [class.active]="selectedCategory() === category"
-                (click)="changeCategory(category)">
-                
-                {{ category }}
-
+            <button
+                [class.active]="selectedCategory() === category.value"
+                (click)="changeCategory(category.value)">
+                {{ category.name }}
             </button>
 
         }
@@ -26,7 +24,7 @@
 
     <div class="product-grid">
 
-        @for (item of pagedProducts(); track item.name) {
+        @for (item of pagedProducts(); track item.id) {
 
             <div class="card">
 
@@ -34,9 +32,6 @@
 
                 <h3>{{ item.name }}</h3>
 
-                <p class="type">
-                    {{ item.category }}
-                </p>
 
                 <span>
                     NT$ {{ item.price }}

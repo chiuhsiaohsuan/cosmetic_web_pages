@@ -23,41 +23,31 @@
 <section class="hot-products">
     <div class="section-header">
         <h2>熱銷商品</h2>
-
-        <div class="product-tabs">
-            <button
-                type="button"
-                class="product-tab"
-                [class.active]="activeCategory() === 'all'"
-                (click)="selectCategory('all')">全系列商品</button>
-            <button
-                type="button"
-                class="product-tab"
-                [class.active]="activeCategory() === 'a'"
-                (click)="selectCategory('a')">A系列</button>
-            <button
-                type="button"
-                class="product-tab"
-                [class.active]="activeCategory() === 'b'"
-                (click)="selectCategory('b')">B系列</button>
-        </div>
     </div>
-
     <div class="product-grid">
-        @for (product of filteredProducts(); track product.name) {
+        @for (product of getHotProducts(); track product.name) {
             <article class="product-card">
-                <div class="product-image">
-                    <img [src]="product.image" [alt]="product.name">
-                </div>
-                <div class="product-info">
-                    <h3>{{ product.name }}</h3>
-                    <p>{{ product.description }}</p>
-                    <strong class="product-price">NT$ {{ product.price }}</strong>
-                </div>
+            <div class="product-image">
+                <img [src]="product.image" [alt]="product.name">
+            </div>
+
+            <div class="product-info">
+                <h3>{{ product.name }}</h3>
+                <p>{{ product.description }}</p>
+                <strong class="product-price">
+                NT$ {{ product.price }}
+                </strong>
+            </div>
             </article>
         }
     </div>
+    <div class="more">
+      <button type="button" routerLink="/product" [queryParams]="{category: 'hot'}">
+        查看全部熱銷商品
+    </button>
+    </div>
 </section>
+
 <section class="news">
     <div class="news-header">
         <h2>最新消息</h2>

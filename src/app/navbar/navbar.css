@@ -10,37 +10,90 @@
     justify-content: space-between;
     align-items: center;
 
-    background: rgb(178, 194, 177);
+    background:  #9FB8A3;
     z-index: 1000;
 
     padding: 0 64px;
 }
 
-.menu{
+/* 主選單 */
+.menu {
     display: flex;
     gap: 40px;
-    font-weight: bold;
     font-size: 18px;
-}
-.menu a {
-    position: relative;
-    text-decoration: none;
-    color: black;
+    font-weight: bold;
 }
 
-.menu a::after {
+.menu-item {
+    position: relative;
+}
+
+/* 主選單連結 */
+.menu > a,
+.menu-item > a {
+    position: relative;
+    display: block;
+    padding: 10px 0;
+    text-decoration: none;
+    color: #404040;
+}
+
+/* 底線動畫 (只有主選單有) */
+.menu > a::after,
+.menu-item > a::after {
     content: "";
     position: absolute;
     left: 0;
-    bottom: -5px;
+    bottom: 4px;
     width: 0;
     height: 2px;
-    background-color: #F3F8F4;
-    transition: width 0.3s ease;
+    background: #6B8F71;
+    transition: width .3s ease;
 }
 
-.menu a:hover::after {
+.menu > a:hover::after,
+.menu-item:hover > a::after {
     width: 100%;
+}
+
+/* 子選單 */
+.submenu {
+    position: absolute;
+    top: calc(100% - 2px); /* 避免 hover 中斷 */
+    left: 0;
+    min-width: 180px;
+    display: none;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,.12);
+    z-index: 999;
+}
+
+/* 子選單項目 */
+.submenu a {
+    display: block;
+    padding: 12px 18px;
+    font-size: 16px;
+    font-weight: normal;
+    color: #404040;
+    text-decoration: none;
+    transition: background .25s;
+}
+
+/* 子選單不要底線 */
+.submenu a::after {
+    display: none;
+}
+
+.submenu a:hover {
+    background: #f3f6f3;
+}
+
+/* Hover 顯示 */
+.menu-item:hover .submenu {
+    display: flex;
 }
 .logo{
     display: grid;
@@ -52,7 +105,7 @@
 }
 .logo a{
     text-decoration: none;
-    color: black;
+    color: #404040;
 }
 
 .menu-toggle {

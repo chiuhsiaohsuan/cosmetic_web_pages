@@ -1,0 +1,60 @@
+<section class="blog">
+
+    <div class="blog-header">
+        <h1>美妝部落格</h1>
+        <p>分享保養知識、美容趨勢與肌膚管理資訊</p>
+    </div>
+
+
+    <!-- 分類欄 -->
+    <div class="blog-category">
+
+        @for(category of categories; track category.value){
+
+            <button
+                [class.active]="selectedCategory() === category.value"
+                (click)="changeCategory(category.value)">
+                
+                {{ category.name }}
+
+            </button>
+
+        }
+
+    </div>
+
+
+    <!-- 文章列表 -->
+    <div class="blog-list">
+
+        @for(article of filteredArticles(); track article.id){
+
+            <article class="blog-card">
+
+                <img 
+                [src]="article.image"
+                [alt]="article.title">
+
+            <div class="blog-content">
+
+                <h2>
+                    {{ article.title }}
+                </h2>
+
+                <p>
+                    {{ article.description }}
+                </p>
+
+                <time>
+                    {{ article.date }}
+                </time>
+
+            </div>  
+
+            </article>
+
+        }
+
+    </div>
+
+</section>

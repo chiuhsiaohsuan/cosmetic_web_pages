@@ -72,6 +72,8 @@
 
     margin:0;
 
+    color: #404040;
+
 }
 
 .card span{
@@ -80,7 +82,7 @@
 
     padding:0 15px;
 
-    color:#3f9b4b;
+    color:#589c63;
 
     font-size:22px;
 
@@ -98,7 +100,7 @@
 
     border:none;
 
-    background:#3f9b4b;
+    background:#78907A;
 
     color:white;
 
@@ -110,7 +112,7 @@
 
 .card button:hover{
 
-    background:#3f9b4b;
+    background:#6B8F71;
 
 }
 .category{
@@ -147,7 +149,7 @@
 
 .category button:hover{
 
-    background:#3f9b4b;
+    background:#6B8F71;
 
     color:white;
 
@@ -155,19 +157,9 @@
 
 .category button.active{
 
-    background:#3f9b4b;
+    background:#78907A;
 
     color:white;
-
-}
-
-.type{
-
-    padding:0 15px;
-
-    color:#999;
-
-    font-size:14px;
 
 }
 .pagination{
@@ -206,7 +198,7 @@
 
 .pagination button:hover{
 
-    background:#3f9b4b;
+    background:#6B8F71;
 
     color:white;
 
@@ -216,7 +208,7 @@
 
 .pagination button.active{
 
-    background:#3f9b4b;
+    background:#78907A;
 
     color:white;
 

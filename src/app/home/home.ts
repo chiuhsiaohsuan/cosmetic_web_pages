@@ -25,14 +25,12 @@ export class Home implements OnInit, OnDestroy {
       name: '保濕精華',
       description: '清爽保濕，適合每日保養使用。',
       price: 980,
-      category: 'a',
     },
     {
       image: 'pic.jpg',
       name: '亮白乳霜',
       description: '滋潤肌膚，打造明亮柔嫩膚感。',
       price: 1280,
-       category: 'b',
     },
     {
       image: 'example.jpg',
@@ -40,8 +38,16 @@ export class Home implements OnInit, OnDestroy {
       description: '密集修護，讓肌膚維持穩定光澤。',
       price: 680,
     },
+    {
+      image: 'example.jpg',
+      name: '保濕精華',
+      description: '清爽保濕，適合每日保養使用。',
+      price: 980,
+    },
   ];
-
+  getHotProducts() {
+    return this.hotProducts.slice(0, 3);
+  }
   currentSlide = signal(0);
   activeCategory = signal('all');
   private autoplayId?: ReturnType<typeof setInterval>;
@@ -57,20 +63,6 @@ export class Home implements OnInit, OnDestroy {
   goToSlide(index: number) {
     this.currentSlide.set(index);
     this.restartAutoplay();
-  }
-
-  selectCategory(category: string) {
-    this.activeCategory.set(category);
-  }
-
-  filteredProducts() {
-    if (this.activeCategory() === 'all') {
-      return this.hotProducts;
-    }
-
-    return this.hotProducts.filter(
-      (product) => product.category === this.activeCategory()
-    );
   }
 
   private nextSlide() {

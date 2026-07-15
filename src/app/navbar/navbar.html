@@ -23,9 +23,48 @@
     </button>
 
     <nav class="menu" [class.open]="isMenuOpen()">
-        <a routerLink="/about" (click)="closeMenu()">關於我們</a>
-        <a routerLink="/news" (click)="closeMenu()">最新消息</a>
-        <a routerLink="/product" (click)="closeMenu()">商品</a>
+
+        <div class="menu-item">
+            <a routerLink="/about" (click)="closeMenu()">
+            關於我們
+            </a>
+
+            <div class="submenu">
+            <a routerLink="/about/team" (click)="closeMenu()">
+                經營團隊
+            </a>
+
+            <a routerLink="/about/vision" (click)="closeMenu()">
+                願景
+            </a>
+            </div>
+        </div>
+
+        <a routerLink="/news" (click)="closeMenu()">
+            最新消息
+        </a>
+
+        <a routerLink="/product" (click)="closeMenu()">
+            商品
+        </a>
+        <div class="menu-item">
+            <a routerLink="/blog" (click)="closeMenu()">
+                部落格
+            </a>
+
+            <div class="submenu">
+                <a routerLink="" (click)="closeMenu()">
+                    使用者分享
+                </a>
+
+                <a routerLink="" (click)="closeMenu()">
+                    保養知識
+                </a>
+                <a routerLink="" (click)="closeMenu()">
+                    保養趨勢
+                </a>
+            </div>
+        </div>
     </nav>
 
     <div class="top-right">
