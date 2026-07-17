@@ -1,20 +1,111 @@
-import { Component, signal } from '@angular/core';
-import { RouterLink } from "@angular/router";
+import { Component, HostListener, signal, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { AuthService } from '../services/auth';
 
 @Component({
   selector: 'app-navbar',
+  standalone: true,
   imports: [RouterLink],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
-export class Navbar {
+export class Navbar implements OnInit {
+
+  /** 漢堡選單 */
   isMenuOpen = signal(false);
 
-  toggleMenu() {
-    this.isMenuOpen.update((isOpen) => !isOpen);
+  /** 手機版 Accordion */
+  aboutOpen = signal(false);
+  blogOpen = signal(false);
+
+  /** 開關 Drawer */
+  toggleMenu(): void {
+    const open = !this.isMenuOpen();
+
+    this.isMenuOpen.set(open);
+
+    // 關閉時收起所有子選單
+    if (!open) {
+      this.closeSubMenus();
+    }
+
+    // 防止背景滾動
+    document.body.style.overflow = open ? 'hidden' : '';
   }
 
-  closeMenu() {
+  /** 關閉 Drawer */
+  closeMenu(): void {
     this.isMenuOpen.set(false);
+    this.closeSubMenus();
+    document.body.style.overflow = '';
   }
+
+  /** 關於我們 */
+  toggleAbout(event: Event): void {
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.aboutOpen.update(v => !v);
+
+      if(this.aboutOpen()){
+          this.blogOpen.set(false);
+      }
+
+  }
+
+  /** 部落格 */
+  toggleBlog(event: Event): void {
+
+    if (window.innerWidth > 768) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.blogOpen.update(v => !v);
+
+    if (this.blogOpen()) {
+      this.aboutOpen.set(false);
+    }
+  }
+
+  /** 收合全部子選單 */
+  private closeSubMenus(): void {
+    this.aboutOpen.set(false);
+    this.blogOpen.set(false);
+  }
+
+  /** 視窗放大回桌機 */
+  @HostListener('window:resize')
+  onResize(): void {
+
+    if (window.innerWidth > 768) {
+
+      this.aboutOpen.set(false);
+      this.blogOpen.set(false);
+
+      this.isMenuOpen.set(false);
+
+      document.body.style.overflow = '';
+    }
+
+  }
+  isLogin = signal(false);
+
+  constructor(public auth: AuthService) {}
+
+  ngOnInit() {
+    this.auth.loginStatus$
+      .subscribe(status => {
+        this.isLogin.set(status);
+      });
+
+  }
+
+  logout() {
+    this.auth.logout();
+  }
+
 }

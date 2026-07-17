@@ -1,130 +1,213 @@
+/* ===========================
+   Header
+=========================== */
+
 .header {
     position: fixed;
     top: 0;
     left: 0;
-
     width: 100%;
     height: 70px;
 
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
 
-    background:  #9FB8A3;
+    padding: 0 32px;
+
+    background: #9FB8A3;
+    box-sizing: border-box;
+
     z-index: 1000;
-
-    padding: 0 64px;
 }
 
-/* 主選單 */
-.menu {
+/* ===========================
+   Logo
+=========================== */
+
+.logo {
     display: flex;
-    gap: 40px;
-    font-size: 18px;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+}
+
+.logo a {
+    text-decoration: none;
+    color: #404040;
+    font-size: 24px;
     font-weight: bold;
 }
+
+.home-link,
+.cart-link,
+.login-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 40px;
+    height: 40px;
+
+    color: #404040;
+    text-decoration: none;
+}
+.logout-btn{
+    border: none;
+    background: none;
+    font-size: 18px;
+    color: #404040;
+    cursor: pointer;
+}
+.cart-link svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+.home-link:hover,
+.cart-link:hover,
+.login-link:hover,
+.logout-btn:hover {
+    opacity: .7;
+}
+
+/* ===========================
+   Menu
+=========================== */
+
+.menu {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+}
+
+.menu>a,
+.menu-item>a {
+    position: relative;
+
+    display: block;
+
+    padding: 10px 0;
+
+    color: #404040;
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.menu>a::after,
+.menu-item>a::after {
+    content: "";
+
+    position: absolute;
+    left: 0;
+    bottom: 2px;
+
+    width: 0;
+    height: 2px;
+
+    background: #6B8F71;
+
+    transition: .25s;
+}
+
+.menu>a:hover::after,
+.menu-item:hover>a::after {
+    width: 100%;
+}
+
+/* ===========================
+   Dropdown
+=========================== */
 
 .menu-item {
     position: relative;
 }
 
-/* 主選單連結 */
-.menu > a,
-.menu-item > a {
-    position: relative;
-    display: block;
-    padding: 10px 0;
-    text-decoration: none;
-    color: #404040;
-}
-
-/* 底線動畫 (只有主選單有) */
-.menu > a::after,
-.menu-item > a::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 4px;
-    width: 0;
-    height: 2px;
-    background: #6B8F71;
-    transition: width .3s ease;
-}
-
-.menu > a:hover::after,
-.menu-item:hover > a::after {
-    width: 100%;
-}
-
-/* 子選單 */
 .submenu {
     position: absolute;
-    top: calc(100% - 2px); /* 避免 hover 中斷 */
     left: 0;
-    min-width: 180px;
+    top: 100%;
+
     display: none;
     flex-direction: column;
-    background: #fff;
-    border-radius: 8px;
+
+    min-width: 180px;
+
+    background: white;
+
+    border-radius: 10px;
+
     overflow: hidden;
-    box-shadow: 0 8px 20px rgba(0,0,0,.12);
-    z-index: 999;
+
+    box-shadow: 0 10px 20px rgba(0, 0, 0, .12);
 }
 
-/* 子選單項目 */
 .submenu a {
-    display: block;
-    padding: 12px 18px;
-    font-size: 16px;
-    font-weight: normal;
+    padding: 14px 18px;
+
     color: #404040;
     text-decoration: none;
-    transition: background .25s;
-}
 
-/* 子選單不要底線 */
-.submenu a::after {
-    display: none;
+    transition: .2s;
 }
 
 .submenu a:hover {
-    background: #f3f6f3;
+    background: #F3F6F3;
 }
 
-/* Hover 顯示 */
 .menu-item:hover .submenu {
     display: flex;
 }
-.logo{
-    display: grid;
+
+/* ===========================
+   Right
+=========================== */
+
+.top-right {
+    display: flex;
     align-items: center;
-    font-size: 25px;
-    font-weight: bold;
-    gap: 30px;
-    grid-auto-flow: column;
+    justify-content: flex-end;
+
+    gap: 14px;
+
+    flex: 1;
 }
-.logo a{
-    text-decoration: none;
-    color: #404040;
+
+.login-link {
+    width: auto;
+    font-size: 18px;
 }
+
+/* ===========================
+   Hamburger
+=========================== */
 
 .menu-toggle {
     display: none;
-    width: 42px;
-    height: 42px;
-    padding: 0;
-    border: 0;
+
+    width: 44px;
+    height: 44px;
+
+    border: none;
     background: transparent;
+
     cursor: pointer;
 }
 
 .menu-toggle span {
+
     display: block;
+
     width: 26px;
     height: 3px;
+
     margin: 5px auto;
-    background: black;
-    transition: transform 0.25s ease, opacity 0.25s ease;
+
+    background: #404040;
+
+    transition: .3s;
 }
 
 .menu-toggle.open span:nth-child(1) {
@@ -138,115 +221,213 @@
 .menu-toggle.open span:nth-child(3) {
     transform: translateY(-8px) rotate(-45deg);
 }
+.menu-backdrop{
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 70px);
+    background: rgba(0,0,0,.35);
+    z-index: 998;
+}
+.arrow-btn {
+    display:none;
+}
+/* ===========================
+   Tablet
+=========================== */
 
-.cart-link, .home-link, .login-link{
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 42px;
-    height: 42px;
-    color: black;
-    text-decoration: none;
-}
-.cart-link svg {
-    width: 26px;
-    height: 26px;
-    fill: currentColor;
-}
+@media (max-width:900px) {
 
-.cart-link:hover, .home-link:hover {
-    opacity: 0.5;
-}
-.top-right{
-    display: flex;
-    align-items: center;
-    width: 100px;
-    justify-content: space-between;
-    font-size: 20px;
-}
-
-@media (max-width: 900px) {
     .header {
-        padding: 0 32px;
-        gap: 24px;
+        padding: 0 20px;
     }
 
     .menu {
-        gap: 24px;
+        gap: 22px;
+    }
+
+    .menu>a,
+    .menu-item>a {
         font-size: 16px;
     }
 
-    .logo {
+    .logo a {
         font-size: 22px;
     }
+
 }
 
-@media (max-width: 640px) {
+/* ===========================
+   Mobile
+=========================== */
+
+@media (max-width:768px) {
+
     .header {
-        height: auto;
-        min-height: 90px;
-        flex-wrap: wrap;
-        padding: 18px 20px;
-        gap: 16px;
+
+        height: 70px;
+
+        padding: 0 18px;
     }
 
     .logo {
-        order: 1;
-        font-size: 22px;
-    }
 
-    .top-right {
-        order: 3;
-        width: auto;
-        gap: 14px;
-        margin-left: auto;
-        font-size: 18px;
+        flex: unset;
     }
 
     .menu-toggle {
+
         display: block;
-        order: 2;
+
         margin-left: auto;
     }
 
+    .top-right {
+
+        flex: unset;
+
+        margin-left: 10px;
+
+        gap: 8px;
+    }
+
+    /* Drawer */
+
     .menu {
-        order: 4;
-        display: none;
+
+        position: fixed;
+
+        top: 70px;
+
+        left: 0;
+
         width: 100%;
+
+        height: calc(100vh - 70px);
+
+        background: white;
+
+        display: flex;
+
         flex-direction: column;
-        align-items: center;
+
+        align-items: stretch;
+
         gap: 0;
-        font-size: 16px;
+
+        overflow-y: auto;
+
+        transform: translateX(-100%);
+
+        transition: .35s;
+
+        z-index: 999;
     }
 
     .menu.open {
+
+        transform: translateX(0);
+    }
+
+    .menu>a,
+    .menu-item>a {
+
+        width: 100%;
+
+        padding: 18px 24px;
+
+        border-bottom: 1px solid #eee;
+
+        font-size: 18px;
+
+        box-sizing: border-box;
+    }
+
+    .menu>a::after,
+    .menu-item>a::after {
+
+        display: none;
+    }
+
+    /* 手機不用 hover */
+
+     .submenu{
+        display:none;
+        position:static;
+        background:#f7f7f7;
+        box-shadow:none;
+        border-radius:0;
+        min-width:100%;
+    }
+
+    .submenu.mobile-open{
+        display:flex;
+        flex-direction:column;
+    }
+    .menu-item:hover .submenu {
+        display: none;
+    }
+
+    .menu-item:hover .submenu.mobile-open {
         display: flex;
     }
+    .submenu a {
 
-    .menu a {
-        width: 100%;
-        padding: 14px 0;
-        text-align: center;
-        border-top: 1px solid rgba(0, 0, 0, 0.12);
+        padding: 16px 40px;
+
+        border-bottom: 1px solid #ececec;
+
+        font-size: 15px;
+    }
+    .menu-item > a {
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
     }
 
-    .cart-link {
-        width: 36px;
-        height: 36px;
+
+    /* 子選單箭頭 */
+    .menu-item {
+        position: relative;
     }
 
-    .cart-link svg {
-        width: 24px;
-        height: 24px;
+
+    .arrow-btn {
+        display: block;
+        position: absolute;
+
+        right: 20px;
+        top: 15px;
+
+        background:none;
+        border:none;
+
+        font-size:20px;
+
+        cursor:pointer;
+
+        transition:.3s;
+    }
+    .menu-item:has(.submenu.mobile-open) .arrow-btn {
+        transform:rotate(180deg);
     }
 }
 
-@media (max-width: 420px) {
+/* ===========================
+   Small Phone
+=========================== */
+
+@media (max-width:480px) {
+
     .header {
-        padding: 16px;
+
+        padding: 0 14px;
     }
 
-    .menu {
-        font-size: 15px;
+    .logo a {
+
+        font-size: 20px;
     }
+
 }

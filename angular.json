@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "cosnetic": {
+    "cosmetic": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -56,10 +56,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "cosnetic:build:production"
+              "buildTarget": "cosmetic:build:production"
             },
             "development": {
-              "buildTarget": "cosnetic:build:development"
+              "buildTarget": "cosmetic:build:development"
             }
           },
           "defaultConfiguration": "development"
