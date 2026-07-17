@@ -19,4 +19,21 @@ export class ApiService {
             password
         });
     }
+    register(
+        name:string,
+        password:string,
+        phone:string,
+        email:string
+        ){
+
+        return this.http.post(
+            `${this.apiUrl}/register`,
+            {
+            name,
+            password,
+            phone,
+            email
+            }
+        );
+        }
 }

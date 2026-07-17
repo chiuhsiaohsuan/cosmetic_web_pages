@@ -1,10 +1,74 @@
 import { Component } from '@angular/core';
-import { RouterLink } from "@angular/router";
+import { FormsModule } from '@angular/forms';
+import { ApiService } from '../services/api';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-register',
-  imports: [RouterLink],
+  standalone: true,
+  imports: [
+    FormsModule
+  ],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
-export class Register {}
+export class Register {
+
+
+  name = '';
+  email = '';
+  password = '';
+  phone = '';
+  confirmPassword = '';
+
+  constructor(
+    private api: ApiService,
+    private router: Router
+  ){}
+
+
+
+  register(){
+      if(this.password !== this.confirmPassword){
+
+        alert("兩次密碼輸入不一致");
+
+        return;
+
+      }
+
+    this.api.register(
+      this.name,
+      this.password,
+      this.phone,
+      this.email
+    )
+    .subscribe({
+
+      next:(res:any)=>{
+
+        console.log("註冊成功",res);
+
+        alert("註冊成功");
+
+        this.router.navigate(['/login']);
+
+      },
+
+
+      error:(err)=>{
+
+        console.log(err);
+
+        alert("註冊失敗");
+
+      }
+
+    });
+
+
+  }
+
+
+}

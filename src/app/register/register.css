@@ -53,16 +53,18 @@
 
 /* 輸入框 focus */
 .input-group input:focus {
-    border-color: #3f9b4b;
+    border-color: #D9DED8;
     outline: none;
     box-shadow: 0 0 8px rgba(63, 155, 75, 0.25);
 }
-
+.error{
+    color: rgb(219, 36, 36);
+}
 /* 註冊按鈕 */
 .register-form button {
     width: 100%;
     padding: 14px;
-    background: #3f9b4b;
+    background: #78907A;
     color: white;
     border: none;
     border-radius: 10px;
@@ -72,7 +74,7 @@
 }
 
 .register-form button:hover {
-    background: #54bb61;
+    background: #6B8F71;
     transform: translateY(-2px);
 }
 
@@ -83,9 +85,10 @@
 }
 
 .login-link a {
-    color: #3f9b4b;
+    color: #9FB8A3;
     text-decoration: none;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .login-link a:hover {

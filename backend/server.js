@@ -30,9 +30,50 @@ app.get("/api/user", (req, res) => {
     res.json(results);
   });
 });
+app.post("/api/register",(req,res)=>{
 
-app.listen(3000, () => {
-  console.log("Server running on port 3000");
+    const {
+        name,
+        password,
+        phone,
+        email
+    } = req.body;
+
+
+    const sql = `INSERT INTO user(name,password,phone,email)VALUES(?,?,?,?)`;
+
+    db.query(
+        sql,
+        [
+          name,
+          password,
+          phone,
+          email
+        ],
+        (err,result)=>{
+
+
+            if(err){
+
+                console.log(err);
+
+                return res.status(500)
+                .json(err);
+
+            }
+
+            res.json({
+
+                success:true,
+                message:"註冊成功"
+
+            });
+
+
+        }
+    );
+
+
 });
 app.post("/api/login", (req, res) => {
 
@@ -61,4 +102,7 @@ app.post("/api/login", (req, res) => {
 
     });
 
+});
+app.listen(3000, () => {
+  console.log("Server running on port 3000");
 });
