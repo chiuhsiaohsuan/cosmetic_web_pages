@@ -63,8 +63,33 @@
     width: 24px;
     height: 24px;
     fill: currentColor;
+    position:relative;
 }
+.badge{
 
+  position:absolute;
+
+  top:8px;
+  right:20px;
+
+  background:#c22121;
+
+  color:white;
+
+  border-radius:50%;
+
+  width:20px;
+  height:20px;
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  font-size:12px;
+
+}
 .home-link:hover,
 .cart-link:hover,
 .login-link:hover,

@@ -1,6 +1,7 @@
-import { Component, HostListener, signal, OnInit } from '@angular/core';
+import { Component, HostListener, signal, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth';
+import { CartService } from '../services/cart';
 
 @Component({
   selector: 'app-navbar',
@@ -11,6 +12,8 @@ import { AuthService } from '../services/auth';
 })
 export class Navbar implements OnInit {
 
+  private cartService = inject(CartService);
+  cartCount = this.cartService.totalQuantity;
   /** 漢堡選單 */
   isMenuOpen = signal(false);
 
@@ -93,19 +96,38 @@ export class Navbar implements OnInit {
 
   }
   isLogin = signal(false);
-
+  userName = '';
   constructor(public auth: AuthService) {}
 
   ngOnInit() {
     this.auth.loginStatus$
       .subscribe(status => {
-        this.isLogin.set(status);
-      });
 
+        this.isLogin.set(status);
+
+        if (status) {
+          this.userName = this.auth.getUserName();
+
+          const user = this.auth.getUser();
+
+          if (user) {
+            this.cartService.loadCart(user.id);
+          }
+
+        } else {
+
+          this.userName = '';
+
+          this.cartService.clearCart();
+
+        }
+
+      });
   }
 
   logout() {
     this.auth.logout();
+    this.cartService.clearCart();
   }
 
 }

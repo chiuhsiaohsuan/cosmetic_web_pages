@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -9,18 +9,15 @@ export class AuthService {
   private loginStatus = new BehaviorSubject<boolean>(
     localStorage.getItem('user') !== null
   );
-
   loginStatus$ = this.loginStatus.asObservable();
 
   
   // 登入
   login(user: any) {
-    localStorage.setItem(
-      'user',
-      JSON.stringify(user)
-    );
+    localStorage.setItem('user', JSON.stringify(user));
 
     this.loginStatus.next(true);
+
     
   }
 
@@ -31,6 +28,7 @@ export class AuthService {
     localStorage.removeItem('user');
 
     this.loginStatus.next(false);
+
 
   }
 
@@ -45,11 +43,20 @@ export class AuthService {
 
   // 取得會員資料
   getUser() {
-
     const user = localStorage.getItem('user');
+    if(user){
 
-    return user ? JSON.parse(user) : null;
+        return JSON.parse(user);
+
+      }
+
+      return null;
+  }
+  getUserName(){
+
+    const user = this.getUser();
+
+    return user ? user.name : '';
 
   }
-
 }

@@ -1,5 +1,6 @@
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal, computed  } from '@angular/core';
 import { RouterLink } from "@angular/router";
+import { ProductService } from '../services/product';
 
 @Component({
   selector: 'app-home',
@@ -19,41 +20,31 @@ export class Home implements OnInit, OnDestroy {
     },
   ];
 
-  hotProducts = [
-    {
-      image: 'example.jpg',
-      name: '保濕精華',
-      description: '清爽保濕，適合每日保養使用。',
-      price: 980,
-    },
-    {
-      image: 'pic.jpg',
-      name: '亮白乳霜',
-      description: '滋潤肌膚，打造明亮柔嫩膚感。',
-      price: 1280,
-    },
-    {
-      image: 'example.jpg',
-      name: '修護面膜',
-      description: '密集修護，讓肌膚維持穩定光澤。',
-      price: 680,
-    },
-    {
-      image: 'example.jpg',
-      name: '保濕精華',
-      description: '清爽保濕，適合每日保養使用。',
-      price: 980,
-    },
-  ];
-  getHotProducts() {
-    return this.hotProducts.slice(0, 3);
-  }
+  products = signal<any[]>([]);
+  hotProducts = computed(()=>{
+
+  return this.products()
+    .filter(product => product.isHot == 1)
+    .slice(0,3);
+
+  });
+  constructor(
+    private productService:ProductService
+  ){}
+
   currentSlide = signal(0);
   activeCategory = signal('all');
   private autoplayId?: ReturnType<typeof setInterval>;
 
   ngOnInit() {
     this.startAutoplay();
+    this.productService.getProducts()
+    .subscribe(products=>{
+      this.products.set(products);
+
+        
+    });
+
   }
 
   ngOnDestroy() {

@@ -1,0 +1,48 @@
+@if(product()){
+
+<div class="product-detail">
+
+    <img 
+    [src]="product().image"
+    [alt]="product().name"
+    >
+
+    <div class="info">
+
+        <h1>{{product().name}}</h1>
+
+        <h2>價格：{{product().price}}</h2>
+
+        <p>分類：{{product().category}}</p>
+
+        <p>{{product().description}}</p>
+
+        <div class="quantity">
+
+            <button (click)="decrease()">
+            -
+            </button>
+
+
+            <span>
+            {{quantity()}}
+            </span>
+
+
+            <button (click)="increase()">
+            +
+            </button>
+
+        </div>
+
+
+        <button (click)="addCart()">
+        加入購物車
+        </button>
+
+
+    </div>
+
+</div>
+
+}

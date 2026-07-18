@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../services/api';
-import { Router } from '@angular/router';
-
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [
-    FormsModule
+    FormsModule, RouterLink
   ],
   templateUrl: './register.html',
   styleUrl: './register.css',

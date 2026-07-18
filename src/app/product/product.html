@@ -26,7 +26,7 @@
 
         @for (item of pagedProducts(); track item.id) {
 
-            <div class="card">
+            <div class="card" (click)="goDetail(item.id)">
 
                 <img [src]="item.image" [alt]="item.name">
 

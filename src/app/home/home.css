@@ -2,7 +2,7 @@
     position: relative;
     width: min(100%, 1120px);
     aspect-ratio: 16 / 7;
-    margin: 100px auto;
+    margin: 50px auto;
     overflow: hidden;
     background: #f4f4f4;
 }
@@ -84,6 +84,7 @@
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 24px;
+    cursor: pointer;
 }
 
 .product-card {

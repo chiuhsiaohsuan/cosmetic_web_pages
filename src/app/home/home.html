@@ -25,8 +25,8 @@
         <h2>熱銷商品</h2>
     </div>
     <div class="product-grid">
-        @for (product of getHotProducts(); track product.name) {
-            <article class="product-card">
+        @for(product of hotProducts(); track product.id) {
+            <article class="product-card" [routerLink]="['/product', product.id]">
             <div class="product-image">
                 <img [src]="product.image" [alt]="product.name">
             </div>
