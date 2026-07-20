@@ -23,9 +23,9 @@ export class Login {
 
     this.api.login(this.email, this.password)
       .subscribe({
-      next:(res:any)=>{
+      next: (res:any) => {
 
-        this.auth.login(res.user);
+        this.auth.login(res.token, res.user);
 
         this.router.navigate(['/']);
 

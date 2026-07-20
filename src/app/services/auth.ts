@@ -13,23 +13,22 @@ export class AuthService {
 
   
   // 登入
-  login(user: any) {
-    localStorage.setItem('user', JSON.stringify(user));
+login(token: string, user: any) {
 
-    this.loginStatus.next(true);
+  localStorage.setItem('token', token);
 
-    
-  }
+  localStorage.setItem('user', JSON.stringify(user));
+
+  this.loginStatus.next(true);
+
+}
 
 
   // 登出
   logout() {
-
     localStorage.removeItem('user');
-
+    localStorage.removeItem('token');
     this.loginStatus.next(false);
-
-
   }
 
 

@@ -1,12 +1,14 @@
 require("dotenv").config();
+process.env.JWT_SECRET;
 const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
-
+const verifyToken = require('./middleware/auth');
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static('public'));
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -21,6 +23,40 @@ db.connect((err) => {
     return;
   }
   console.log("MySQL Connected");
+});
+app.get('/api/user',
+verifyToken,
+(req,res)=>{
+
+
+    const id = req.user.id;
+
+
+    const sql = `
+    SELECT id,name,email,phone
+    FROM users
+    WHERE id=?
+    `;
+
+
+    db.query(
+        sql,
+        [id],
+        (err,result)=>{
+
+
+            if(err){
+                return res.status(500)
+                .json(err);
+            }
+
+
+            res.json(result[0]);
+
+        }
+    );
+
+
 });
 //取得全部商品
 app.get("/api/products",(req,res)=>{
@@ -71,14 +107,8 @@ app.get('/api/products/:id',(req,res)=>{
 
 
 });
-app.get("/api/user", (req, res) => {
-  db.query("SELECT * FROM users", (err, results) => {
-    if (err) return res.status(500).json(err);
 
-    res.json(results);
-  });
-});
-app.post("/api/register",(req,res)=>{
+app.post("/api/register",async(req,res)=>{
 
     const {
         name,
@@ -88,13 +118,15 @@ app.post("/api/register",(req,res)=>{
     } = req.body;
 
 
+    const bcrypt = require('bcrypt');
+    const hashPassword = await bcrypt.hash(password, 10);
     const sql = `INSERT INTO users(name,password,phone,email)VALUES(?,?,?,?)`;
 
     db.query(
         sql,
         [
           name,
-          password,
+          hashPassword,
           phone,
           email
         ],
@@ -123,30 +155,66 @@ app.post("/api/register",(req,res)=>{
 
 
 });
-app.post("/api/login", (req, res) => {
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+app.post('/api/login',(req,res)=>{
 
-    const { email, password } = req.body;
+    const {email,password}=req.body;
+
 
     const sql =
-        "SELECT id, name, email FROM users WHERE email=? AND password=?";
+    "SELECT * FROM users WHERE email=?";
 
-    db.query(sql, [email, password], (err, result) => {
 
-        if (err) {
+    db.query(sql,[email],async(err,result)=>{
+
+        if(err)
             return res.status(500).json(err);
+
+
+        if(result.length===0){
+            return res.status(401)
+            .json({message:"帳號不存在"});
         }
 
-        if (result.length === 0) {
-            return res.status(401).json({
-                success: false,
-                message: "帳號或密碼錯誤"
-            });
+
+        const user=result[0];
+
+
+        const checkPassword =
+        await bcrypt.compare(
+            password,
+            user.password
+        );
+
+        if(!checkPassword){
+            return res.status(401)
+            .json({message:"密碼錯誤"});
         }
+
+
+        const token = jwt.sign(
+            {
+                id:user.id,
+                email:user.email
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn:'2h'
+            }
+        );
+
 
         res.json({
-            success: true,
-            user: result[0]
+            message:"登入成功",
+            token:token,
+            user:{
+                id:user.id,
+                name:user.name,
+                email:user.email
+            }
         });
+
 
     });
 

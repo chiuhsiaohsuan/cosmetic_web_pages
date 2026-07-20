@@ -1,6 +1,7 @@
 import { Injectable, signal, computed  } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from './auth';
+import { environment } from '../../enviroments/enviroment';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +32,7 @@ export class CartService {
         private authService: AuthService
     ) { }
 
-    private apiUrl = 'http://localhost:3000/api/cart';
+    private apiUrl = `${environment.apiUrl}/cart`;
 
     loadCart(user_id:number){
 
@@ -89,7 +90,7 @@ export class CartService {
 
 
     return this.http.post(
-        'http://localhost:3000/api/cart/add',
+        `${environment.apiUrl}/cart/add`,
         cartData
     ).subscribe({
         next: () => {
@@ -183,7 +184,7 @@ export class CartService {
     removeItem(id:number){
 
         return this.http.delete(
-            `http://localhost:3000/api/cart/${id}`
+            `${environment.apiUrl}/cart/${id}`
         );
 
     }
@@ -195,7 +196,7 @@ export class CartService {
     updateQuantity(id:number, quantity:number){
 
         return this.http.put(
-            `http://localhost:3000/api/cart/update/${id}`,
+            `${environment.apiUrl}/cart/update/${id}`,
             {
             quantity: quantity
             }
