@@ -16,6 +16,7 @@ export class Register {
 
 
   name = '';
+  birthday = '';
   email = '';
   password = '';
   phone = '';
@@ -39,6 +40,7 @@ export class Register {
 
     this.api.register(
       this.name,
+      this.birthday,
       this.password,
       this.phone,
       this.email

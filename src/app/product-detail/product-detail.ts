@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { ProductService } from '../services/product';
 import { CartService } from '../services/cart';
 import { AuthService } from '../services/auth';
+import { Location } from '@angular/common';
+
 
 @Component({
   selector: 'app-product-detail',
@@ -19,9 +21,12 @@ export class ProductDetail implements OnInit {
     private route: ActivatedRoute,
     private productService: ProductService,
     private cartService: CartService,
-    private authService: AuthService
+    private authService: AuthService,
+    private location: Location
   ){}
-
+    goBack() {
+      this.location.back();
+    }
   addCart(){
       if(!this.authService.isLogin()){
 

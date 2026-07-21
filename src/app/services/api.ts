@@ -22,6 +22,7 @@ export class ApiService {
     }
   register(
       name:string,
+      birthday:string,
       password:string,
       phone:string,
       email:string
@@ -31,6 +32,7 @@ export class ApiService {
           `${this.apiUrl}/register`,
           {
           name,
+          birthday,
           password,
           phone,
           email

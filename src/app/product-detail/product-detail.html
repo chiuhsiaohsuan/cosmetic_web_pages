@@ -1,7 +1,8 @@
 @if(product()){
-
+    <button class="back-btn" (click)="goBack()">
+        ←
+    </button>
 <div class="product-detail">
-
     <img 
     [src]="product().image"
     [alt]="product().name"

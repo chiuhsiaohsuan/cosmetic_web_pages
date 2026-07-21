@@ -112,6 +112,7 @@ app.post("/api/register",async(req,res)=>{
 
     const {
         name,
+        birthday,
         password,
         phone,
         email
@@ -120,12 +121,13 @@ app.post("/api/register",async(req,res)=>{
 
     const bcrypt = require('bcrypt');
     const hashPassword = await bcrypt.hash(password, 10);
-    const sql = `INSERT INTO users(name,password,phone,email)VALUES(?,?,?,?)`;
+    const sql = `INSERT INTO users(name,birthday,password,phone,email)VALUES(?,?,?,?,?)`;
 
     db.query(
         sql,
         [
           name,
+          birthday,
           hashPassword,
           phone,
           email
