@@ -1,34 +1,19 @@
 require("dotenv").config();
-process.env.JWT_SECRET;
 const express = require("express");
-const mysql = require("mysql2");
 const cors = require("cors");
-const verifyToken = require('./middleware/auth');
+const verifyToken = require('./middleware/verifyToken');
+const adminProductsRouter = require("./routes/adminProducts");
 const app = express();
+const db = require("./db");
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-});
 
-db.connect((err) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
-  console.log("MySQL Connected");
-});
 app.get('/api/user',
 verifyToken,
 (req,res)=>{
-
-
     const id = req.user.id;
 
 
@@ -58,6 +43,10 @@ verifyToken,
 
 
 });
+app.use(
+    "/api/admin/products",
+    adminProductsRouter
+);
 //取得全部商品
 app.get("/api/products",(req,res)=>{
 
@@ -198,7 +187,8 @@ app.post('/api/login',(req,res)=>{
         const token = jwt.sign(
             {
                 id:user.id,
-                email:user.email
+                email:user.email,
+                role: user.role
             },
             process.env.JWT_SECRET,
             {

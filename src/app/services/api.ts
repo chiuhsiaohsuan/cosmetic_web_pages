@@ -11,9 +11,6 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  // getUsers() {
-  //   return this.http.get(`${this.apiUrl}/user`);
-  // }
   login(email: string, password: string) {
       return this.http.post(`${this.apiUrl}/login`, {
           email,

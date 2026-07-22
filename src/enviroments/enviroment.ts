@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://clone-rhode-dog-broader.tyrcloudflare.com/api'
+  apiUrl: 'https://collecting-porcelain-story-proxy.trycloudflare.com/api'
 };
