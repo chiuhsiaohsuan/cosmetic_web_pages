@@ -32,6 +32,38 @@ router.get(
 
     }
 );
+router.get(
+"/:id",
+verifyToken,
+verifyAdmin,
+(req,res)=>{
+
+    const id=req.params.id;
+
+    const sql=`SELECT * FROM products WHERE id=?`;
+
+
+    db.query(sql,[id],(err,result)=>{
+
+        if(err){
+            return res.status(500).json({
+                message:"資料庫錯誤"
+            });
+        }
+
+
+        if(result.length===0){
+            return res.status(404).json({
+                message:"找不到商品"
+            });
+        }
+
+
+        res.json(result[0]);
+
+    });
+
+});
 // 新增商品
 router.post(
     "/",

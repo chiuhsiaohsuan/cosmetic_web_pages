@@ -23,16 +23,32 @@ export class Login {
 
     this.api.login(this.email, this.password)
       .subscribe({
-      next: (res:any) => {
 
-        this.auth.login(res.token, res.user);
+        next: (res:any) => {
 
-        this.router.navigate(['/']);
+          this.auth.login(res.token, res.user);
 
-      },
+
+          if(res.user.role === "admin") {
+
+            this.router.navigate([
+              "/admin/products"
+            ]);
+
+          } else {
+
+            this.router.navigate([
+              "/"
+            ]);
+
+          }
+
+        },
 
         error: () => {
+
           alert("帳號或密碼錯誤");
+
         }
 
       });

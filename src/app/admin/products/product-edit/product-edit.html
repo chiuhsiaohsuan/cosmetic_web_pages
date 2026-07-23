@@ -1,0 +1,48 @@
+<h2>修改商品</h2>
+
+
+@if(loading()){
+
+<p>載入中...</p>
+
+}
+
+@else{
+
+
+<form [formGroup]="productForm">
+
+
+<input formControlName="name">
+
+
+<input formControlName="category">
+
+
+<input type="number" formControlName="price">
+
+
+<input formControlName="image">
+
+
+<textarea formControlName="description"></textarea>
+
+
+<input type="number" formControlName="stock">
+
+
+<label>
+
+    <input type="checkbox" formControlName="isHot">
+
+    熱門
+
+</label>
+
+
+
+<button (click)="updateProduct()">儲存修改</button>
+
+</form>
+
+}

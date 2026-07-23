@@ -1,0 +1,40 @@
+<h2>新增商品</h2>
+
+
+<form [formGroup]="productForm">
+
+
+<input formControlName="name" placeholder="商品名稱"/>
+
+
+<input formControlName="category" placeholder="分類"/>
+
+
+<input type="number" formControlName="price" placeholder="價格"/>
+
+
+<input formControlName="image" placeholder="圖片路徑"/>
+
+
+<textarea formControlName="description" placeholder="商品描述"></textarea>
+
+<input type="number" formControlName="stock" placeholder="庫存"/>
+
+
+<label>
+
+    <input type="checkbox" formControlName="isHot"/>
+
+    熱門商品
+
+</label>
+
+
+<button (click)="addProduct()" [disabled]="submitting()">
+
+    {{submitting() ? '新增中...' : '新增商品'}}
+
+</button>
+
+
+</form>

@@ -1,0 +1,18 @@
+.layout {
+
+  min-height: 100vh;
+
+  display: flex;
+
+  flex-direction: column;
+
+}
+
+
+.frontend-content {
+
+  flex: 1;
+
+  padding-top: 70px;
+
+}

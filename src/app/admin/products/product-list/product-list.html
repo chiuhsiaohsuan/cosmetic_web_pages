@@ -1,0 +1,31 @@
+<table border="1">
+
+  <tr>
+    <th>名稱</th>
+    <th>分類</th>
+    <th>價格</th>
+    <th>庫存</th>
+    <th>熱門</th>
+    <th>操作</th>
+  </tr>
+  @for (p of products(); track p.id) {
+    <tr>
+
+        <td>{{ p.name }}</td>
+
+        <td>{{ p.category }}</td>
+
+        <td>{{ p.price }}</td>
+
+        <td>{{ p.stock }}</td>
+
+        <td>{{ p.isHot ? '是' : '否' }}</td>
+
+        <td>
+        <button  [routerLink]="['/admin/products/edit', p.id]">修改</button>
+        <button (click)="deleteProduct(p.id)">刪除</button>
+        </td>
+
+    </tr>
+  }
+</table>

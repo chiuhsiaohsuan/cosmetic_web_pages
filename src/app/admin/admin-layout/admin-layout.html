@@ -1,0 +1,66 @@
+<div class="admin-container">
+
+
+  <!-- 側邊欄 -->
+  <aside class="sidebar">
+
+
+    <h2>
+      後台管理
+    </h2>
+
+
+    <nav>
+
+
+      <a routerLink="/admin/products">
+        商品管理
+      </a>
+
+      <a routerLink="/admin/products/add">新增商品</a>
+
+
+      <a routerLink="/admin/orders">
+        訂單管理
+      </a>
+
+
+      <a routerLink="/admin/users">
+        會員管理
+      </a>
+
+
+    </nav>
+
+
+  </aside>
+
+
+
+  <!-- 內容區 -->
+
+  <main class="content">
+
+
+    <header>
+
+      <h3>
+        管理員後台
+      </h3>
+
+
+    </header>
+
+
+
+    <section>
+
+      <router-outlet></router-outlet>
+
+    </section>
+
+
+  </main>
+
+
+</div>
