@@ -4,20 +4,21 @@
 <form [formGroup]="productForm">
 
 
-<input formControlName="name" placeholder="商品名稱"/>
+<input type="text" formControlName="name" placeholder="商品名稱"/>
 
 
-<input formControlName="category" placeholder="分類"/>
+<input type="text" formControlName="category" placeholder="分類"/>
 
-
+<label>價格</label>
 <input type="number" formControlName="price" placeholder="價格"/>
 
 
-<input formControlName="image" placeholder="圖片路徑"/>
+<input type="file" (change)="onFileSelected($event)"/>
 
 
 <textarea formControlName="description" placeholder="商品描述"></textarea>
 
+<label>庫存</label>
 <input type="number" formControlName="stock" placeholder="庫存"/>
 
 

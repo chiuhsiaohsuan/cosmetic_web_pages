@@ -3,10 +3,7 @@
         ←
     </button>
 <div class="product-detail">
-    <img 
-    [src]="product().image"
-    [alt]="product().name"
-    >
+    <img [src]="environment.imageUrl + product().image" [alt]="product().name">
 
     <div class="info">
 

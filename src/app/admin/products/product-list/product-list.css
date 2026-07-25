@@ -1,0 +1,184 @@
+/* 表格外觀 */
+
+table {
+
+  width: 100%;
+
+  border-collapse: collapse;
+
+  background: white;
+
+  border-radius: 10px;
+
+  overflow: hidden;
+
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+
+}
+
+
+
+/* 表頭 */
+
+th {
+
+  background: #222;
+
+  color: white;
+
+  padding: 15px;
+
+  text-align: center;
+
+  font-size: 16px;
+
+}
+
+
+
+/* 表格內容 */
+
+td {
+
+  padding: 14px;
+
+  text-align: center;
+
+  border-bottom: 1px solid #eee;
+
+  color: #333;
+
+}
+
+
+
+/* 滑鼠移入 */
+
+tr:hover {
+
+  background: #f8f8f8;
+
+}
+
+
+
+/* 操作按鈕 */
+
+button {
+
+  border: none;
+
+  padding: 8px 16px;
+
+  margin: 0 5px;
+
+  border-radius: 5px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+
+  transition: 0.3s;
+
+}
+
+
+
+/* 修改按鈕 */
+
+button:first-child {
+
+  background: #333;
+
+  color: white;
+
+}
+
+
+button:first-child:hover {
+
+  background: #555;
+
+}
+
+
+
+/* 刪除按鈕 */
+
+button:last-child {
+
+  background: #c0392b;
+
+  color: white;
+
+}
+
+
+button:last-child:hover {
+
+  background: #e74c3c;
+
+}
+
+
+
+/* 分頁 */
+
+.pagination {
+
+  margin-top: 25px;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  gap: 20px;
+
+}
+
+
+
+/* 分頁按鈕 */
+
+.pagination button {
+
+  background: #222;
+
+  color: white;
+
+  padding: 10px 20px;
+
+}
+
+
+.pagination button:hover:not(:disabled) {
+
+  background: #444;
+
+}
+
+
+
+/* disabled */
+
+.pagination button:disabled {
+
+  background: #ccc;
+
+  cursor: not-allowed;
+
+}
+
+
+
+/* 頁數文字 */
+
+.pagination span {
+
+  font-size: 16px;
+
+  color: #555;
+
+}

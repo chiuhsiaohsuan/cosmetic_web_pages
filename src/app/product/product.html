@@ -28,7 +28,7 @@
 
             <div class="card" (click)="goDetail(item.id)">
 
-                <img [src]="item.image" [alt]="item.name">
+                <img [src]="environment.imageUrl + item.image" [alt]="item.name">
 
                 <h3>{{ item.name }}</h3>
 

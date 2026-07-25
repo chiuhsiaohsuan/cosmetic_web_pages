@@ -1,6 +1,7 @@
 import { Component, computed, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../services/product';
+import { environment } from '../../enviroments/enviroment';
 
 @Component({
   selector: 'app-product',
@@ -9,6 +10,7 @@ import { ProductService } from '../services/product';
 })
 
 export class Product {
+  environment = environment;
  constructor(
   private route: ActivatedRoute,
   private router: Router,

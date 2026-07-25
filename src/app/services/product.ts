@@ -69,10 +69,10 @@ export class ProductService {
 
 
   // 後台取得全部商品
-  getAdminProducts(){
+  getAdminProducts(page: number = 1, limit: number = 10) {
 
-    return this.http.get<any[]>(
-      this.adminApiUrl,
+    return this.http.get<any>(
+      `${this.adminApiUrl}?page=${page}&limit=${limit}`,
       this.getHeaders()
     );
 
@@ -92,13 +92,12 @@ export class ProductService {
 
   // 新增商品
 
-  addProduct(product:any){
+  addProduct(formData:FormData){
 
-    return this.http.post(
-      this.adminApiUrl,
-      product,
-      this.getHeaders()
-    );
+  return this.http.post(
+    `${environment.apiUrl}/admin/products`,
+    formData
+  );
 
   }
 

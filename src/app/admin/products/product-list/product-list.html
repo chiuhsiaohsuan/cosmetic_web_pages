@@ -1,4 +1,4 @@
-<table border="1">
+<table>
 
   <tr>
     <th>名稱</th>
@@ -29,3 +29,28 @@
     </tr>
   }
 </table>
+<div class="pagination">
+
+    <button
+        (click)="prevPage()"
+        [disabled]="currentPage() === 1">
+
+        上一頁
+
+    </button>
+
+    <span>
+
+        第 {{ currentPage() }} / {{ totalPages() }} 頁
+
+    </span>
+
+    <button
+        (click)="nextPage()"
+        [disabled]="currentPage() === totalPages()">
+
+        下一頁
+
+    </button>
+
+</div>

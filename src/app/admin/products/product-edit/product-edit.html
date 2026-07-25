@@ -18,16 +18,16 @@
 
 <input formControlName="category">
 
-
+<label>價格</label>
 <input type="number" formControlName="price">
 
 
-<input formControlName="image">
+<input type="file" (change)="onFileSelected($event)">
 
 
 <textarea formControlName="description"></textarea>
 
-
+<label>庫存</label>
 <input type="number" formControlName="stock">
 
 
@@ -40,9 +40,10 @@
 </label>
 
 
-
-<button (click)="updateProduct()">儲存修改</button>
-
+<button type="button" (click)="goBack()">
+  回上一頁
+</button>
+<button type="button" (click)="updateProduct()">儲存修改</button>
 </form>
 
 }

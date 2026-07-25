@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, signal, computed  } from '@angular/core';
 import { RouterLink } from "@angular/router";
 import { ProductService } from '../services/product';
+import { environment } from '../../enviroments/enviroment';
 
 @Component({
   selector: 'app-home',
@@ -19,7 +20,7 @@ export class Home implements OnInit, OnDestroy {
       alt: 'Banner image 2',
     },
   ];
-
+  environment = environment;
   products = signal<any[]>([]);
   hotProducts = computed(()=>{
 

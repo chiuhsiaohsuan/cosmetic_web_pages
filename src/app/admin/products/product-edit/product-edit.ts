@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ProductService } from '../../../services/product';
+import { Location } from '@angular/common';
 
 
 @Component({
@@ -19,13 +20,16 @@ import { ProductService } from '../../../services/product';
 })
 export class ProductEdit {
 
+  constructor(
+  private location: Location
+) {}
 
   id!:number;
 
 
   loading = signal(true);
 
-
+  selectedFile?: File;
 
   private productService = inject(ProductService);
 
@@ -55,8 +59,22 @@ export class ProductEdit {
 
   });
 
+  onFileSelected(event:any){
 
+    const file = event.target.files[0];
 
+    if(file){
+
+      this.selectedFile = file;
+
+    }
+
+  }
+  goBack(){
+
+  this.location.back();
+
+}
   ngOnInit(){
 
 
@@ -103,28 +121,80 @@ export class ProductEdit {
   }
 
   updateProduct(){
+    const formData = new FormData();
+
+    formData.append(
+      "name",
+      this.productForm.value.name ?? ''
+    );
+
+
+    formData.append(
+      "price",
+      String(this.productForm.value.price ?? 0)
+    );
+
+
+    formData.append(
+      "category",
+      this.productForm.value.category ?? ''
+    );
+
+
+    formData.append(
+      "description",
+      this.productForm.value.description ?? ''
+    );
+
+
+    formData.append(
+      "stock",
+      String(this.productForm.value.stock ?? 0)
+    );
+
+
+    formData.append(
+      "isHot",
+      String(this.productForm.value.isHot ?? 0)
+    );
+
+
+    // 有選新圖片才傳
+    if(this.selectedFile){
+
+      formData.append(
+        "image",
+        this.selectedFile
+      );
+
+    }
+    else{
+
+      // 保留舊圖片
+      formData.append(
+        "oldImage",
+        this.productForm.value.image ?? ''
+      );
+
+    }
 
 
     this.productService
     .updateProduct(
       this.id,
-      this.productForm.value
+      formData
     )
     .subscribe({
 
       next:()=>{
 
-
         alert("修改成功");
-
 
         this.router.navigate([
           "/admin/products"
         ]);
 
-
       },
-
 
       error:(err)=>{
 
@@ -138,6 +208,4 @@ export class ProductEdit {
 
 
   }
-
-
 }

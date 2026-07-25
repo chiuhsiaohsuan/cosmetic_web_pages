@@ -4,6 +4,7 @@ import { ProductService } from '../services/product';
 import { CartService } from '../services/cart';
 import { AuthService } from '../services/auth';
 import { Location } from '@angular/common';
+import { environment } from '../../enviroments/enviroment';
 
 
 @Component({
@@ -16,6 +17,7 @@ export class ProductDetail implements OnInit {
 
   product = signal<any>(null);
   quantity = signal(1);
+  environment = environment;
 
   constructor(
     private route: ActivatedRoute,

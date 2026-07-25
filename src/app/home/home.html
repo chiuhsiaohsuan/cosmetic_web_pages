@@ -28,7 +28,7 @@
         @for(product of hotProducts(); track product.id) {
             <article class="product-card" [routerLink]="['/product', product.id]">
             <div class="product-image">
-                <img [src]="product.image" [alt]="product.name">
+                <img [src]="environment.imageUrl + product.image" [alt]="product.name">
             </div>
 
             <div class="product-info">

@@ -1,14 +1,14 @@
 require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
-const verifyToken = require('./middleware/verifyToken');
-const adminProductsRouter = require("./routes/adminProducts");
 const app = express();
 const db = require("./db");
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static("public"));
+app.use("/uploads",express.static("uploads"));
 
 
 app.get('/api/user',
