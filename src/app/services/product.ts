@@ -40,6 +40,12 @@ export class ProductService {
 
     return `${environment.imageUrl}/uploads/${path}`;
   }
+  getDetailImages(productId:number){
+
+    return this.http.get<any[]>(
+        `${this.apiUrl}/${productId}/detail-images`
+    );
+  }
   // =====================
   // 前台商品
   // =====================
@@ -97,13 +103,43 @@ export class ProductService {
 
   addProduct(formData:FormData){
 
-  return this.http.post(
-    `${environment.apiUrl}/admin/products`,
-    formData
-  );
+      return this.http.post<{
+          id:number
+      }>(
+          `${this.adminApiUrl}`,
+          formData
+      );
 
   }
+  uploadDetailImages(productId:number, images:File[]){
 
+    const formData = new FormData();
+
+
+    images.forEach(img=>{
+      
+      console.log(
+        "送出圖片:",
+        img.name,
+        img.size
+      );
+
+
+      formData.append(
+        "images",
+        img,
+        img.name
+      );
+
+    });
+
+
+    return this.http.put(
+      `${this.adminApiUrl}/${productId}/detail-images`,
+      formData
+    );
+
+  }
 
   // 修改商品
 

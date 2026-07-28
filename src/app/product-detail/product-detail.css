@@ -137,6 +137,33 @@
     padding-top: 5px;
 }
 
+.tabs {
+    display: flex;
+    margin-top: 30px;
+    border-bottom: 1px solid #ddd;
+}
+
+.tabs div {
+    padding: 15px 25px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.tabs div:hover {
+    color: #9FB8A3;
+}
+
+.tabs div.active {
+    color: #78907A;
+    border-bottom: 3px solid #78907A;
+    font-weight: bold;
+}
+
+.tab-content {
+    padding: 30px 10px;
+    line-height: 1.8;
+}
+
 @media(max-width:768px){
 
   .product-detail{

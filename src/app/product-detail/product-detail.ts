@@ -17,6 +17,7 @@ export class ProductDetail implements OnInit {
 
   product = signal<any>(null);
   quantity = signal(1);
+  detailImages = signal<any[]>([]);
   environment = environment;
 
   constructor(
@@ -26,6 +27,11 @@ export class ProductDetail implements OnInit {
     private authService: AuthService,
     private location: Location
   ){}
+  activeTab = signal('feature');
+
+  changeTab(tab: string) {
+    this.activeTab.set(tab);
+  }
   goBack() {
     this.location.back();
   }
@@ -66,10 +72,9 @@ export class ProductDetail implements OnInit {
       });
 
   }
+
   ngOnInit(){
-
     this.route.params.subscribe(params=>{
-
       const id = Number(params['id']);
 
       this.productService
@@ -78,12 +83,35 @@ export class ProductDetail implements OnInit {
 
         next:(data)=>{
 
+            // 存商品資料
           this.product.set(data);
+
+
+            // 取得產品特色圖片
+          this.productService
+          .getDetailImages(data.id)
+          .subscribe({
+
+            next:(images)=>{
+              
+              this.detailImages.set(images);
+
+            },
+
+            error:(err)=>{
+
+              console.log('取得特色圖片失敗', err);
+
+            }
+
+          });
+
 
         },
 
         error:(err)=>{
-          console.log(err);
+            console.log(err);
+
         }
 
       });

@@ -4,6 +4,9 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const db = require("./db");
+const productDetailImage = require('./routes/productDetailImage');
+const adminProductsRouter = require('./routes/adminProducts');
+
 
 app.use(cors({
     origin:[
@@ -21,6 +24,10 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.static("public"));
 app.use("/uploads",express.static("uploads"));
 
+app.use(
+    '/api/products',
+    productDetailImage
+);
 
 app.get('/api/user',
 verifyToken,

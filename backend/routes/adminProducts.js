@@ -37,6 +37,35 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage
 });
+const detailImageStorage = multer.diskStorage({
+
+    destination:(req,file,cb)=>{
+
+        cb(
+            null,
+            "uploads/product-detail-images"
+        );
+
+    },
+
+
+    filename:(req,file,cb)=>{
+
+        const ext = path.extname(file.originalname);
+
+        cb(
+            null,
+            Date.now()+ext
+        );
+
+    }
+
+});
+
+
+const detailUpload = multer({
+    storage:detailImageStorage
+});
 
 // 查詢所有商品
 router.get(
@@ -178,6 +207,61 @@ router.post(
 
     }
 );
+router.post(
+    "/:productId/detail-images",
+    verifyToken,
+    verifyAdmin,
+    detailUpload.array("images"),
+    (req,res)=>{
+
+        const productId = req.params.productId;
+
+        const files = req.files;
+
+
+        const values = files.map((file,index)=>[
+            productId,
+            `/uploads/product-detail-images/${file.filename}`,
+            index + 1
+        ]);
+
+
+        const sql = `
+            INSERT INTO product_detail_images
+            (
+                product_id,
+                image,
+                sort_order
+            )
+            VALUES ?
+        `;
+
+
+        db.query(
+            sql,
+            [values],
+            (err,result)=>{
+
+                if(err){
+
+                    return res.status(500).json({
+                        message:"特色圖片新增失敗",
+                        error:err
+                    });
+
+                }
+
+
+                res.json({
+                    message:"特色圖片新增成功"
+                });
+
+            }
+        );
+
+
+    }
+);
 // 修改商品
 router.put("/:id", verifyToken, verifyAdmin, upload.single("image"),
     (req,res)=>{
@@ -263,6 +347,182 @@ router.put("/:id", verifyToken, verifyAdmin, upload.single("image"),
 
             }
         );
+
+    }
+);
+
+// 修改產品特色圖片
+router.put(
+    "/:productId/detail-images",
+    verifyToken,
+    verifyAdmin,
+    detailUpload.array("images"),
+    (req,res)=>{
+
+        const productId = req.params.productId;
+
+        const files = req.files;
+
+        // 沒有新圖片
+        if(!files || files.length === 0){
+
+            return res.status(400).json({
+
+                message:"請上傳特色圖片"
+
+            });
+
+        }
+
+        const selectOldSql = `
+
+            SELECT image
+            FROM product_detail_images
+            WHERE product_id = ?
+
+        `;
+
+        db.query(
+            selectOldSql,
+            [productId],
+            (err,oldImages)=>{
+
+
+                if(err){
+
+                    return res.status(500).json({
+
+                        message:"查詢舊圖片失敗",
+                        error:err
+
+                    });
+
+                }
+
+                oldImages.forEach(item=>{
+
+
+                    const filePath = path.join(
+
+                        __dirname,
+
+                        "../uploads",
+
+                        item.image
+
+                    );
+
+
+                    fs.unlink(
+                        filePath,
+                        (err)=>{
+
+                            if(err){
+
+                                console.log(
+                                    "刪除圖片失敗:",
+                                    err.message
+                                );
+
+                            }
+
+                        }
+                    );
+
+
+                });
+
+                const deleteSql = `
+
+                    DELETE FROM product_detail_images
+                    WHERE product_id = ?
+
+                `;
+
+                db.query(
+                    deleteSql,
+                    [productId],
+                    (err)=>{
+
+
+                        if(err){
+
+                            return res.status(500).json({
+
+                                message:"刪除舊特色圖片資料失敗",
+                                error:err
+
+                            });
+
+                        }
+
+                        const values =
+                        files.map((file,index)=>{
+
+
+                            return [
+
+                                productId,
+
+                                `product-detail-images/${file.filename}`,
+
+                                index + 1
+
+                            ];
+
+
+                        });
+
+                        const insertSql = `
+
+                            INSERT INTO product_detail_images
+                            (
+                                product_id,
+                                image,
+                                sort_order
+                            )
+                            VALUES ?
+
+                        `;
+
+                        db.query(
+                            insertSql,
+                            [values],
+                            (err,result)=>{
+
+
+                                if(err){
+
+                                    return res.status(500).json({
+
+                                        message:"新增特色圖片失敗",
+                                        error:err
+
+                                    });
+
+                                }
+
+                                res.json({
+
+                                    message:"特色圖片修改成功"
+
+                                });
+
+
+
+                            }
+                        );
+
+
+
+                    }
+                );
+
+
+            }
+        );
+
+
 
     }
 );

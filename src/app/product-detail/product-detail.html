@@ -42,5 +42,73 @@
     </div>
 
 </div>
+ <!-- Tabs -->
+    <div class="tabs">
+        <div
+            [class.active]="activeTab() === 'feature'"
+            (click)="changeTab('feature')">
+            產品特色
+        </div>
 
+        <div
+            [class.active]="activeTab() === 'spec'"
+            (click)="changeTab('spec')">
+            產品規格
+        </div>
+
+        <div
+            [class.active]="activeTab() === 'save'"
+            (click)="changeTab('save')">
+            保存方式
+        </div>
+
+        <div
+            [class.active]="activeTab() === 'usage'"
+            (click)="changeTab('usage')">
+            使用說明
+        </div>
+
+        <div
+            [class.active]="activeTab() === 'notice'"
+            (click)="changeTab('notice')">
+            注意事項
+        </div>
+    </div>
+
+    <!-- 內容 -->
+    <div class="tab-content">
+
+        @switch(activeTab()) {
+
+            @case('feature'){
+
+                @for(img of detailImages(); track img.id){
+
+                    <img
+                        [src]="productService.getImageUrl(img.image)"
+                        class="feature-image">
+
+                }
+
+            }
+
+            @case('spec'){
+                <p>{{ product().specification }}</p>
+            }
+
+            @case('save'){
+                <p>{{ product().storage }}</p>
+            }
+
+            @case('usage'){
+                <p>{{ product().usage }}</p>
+            }
+
+            @case('notice'){
+                <p>{{ product().notice }}</p>
+            }
+
+        }
+
+    </div>
 }

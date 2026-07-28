@@ -12,8 +12,11 @@
 <label>價格</label>
 <input type="number" formControlName="price" placeholder="價格"/>
 
+<label>商品主圖</label>
+<input type="file" (change)="onMainImageSelected($event)"/>
 
-<input type="file" (change)="onFileSelected($event)"/>
+<label>產品特色</label>
+<input type="file" multiple (change)="onDetailImagesSelected($event)"/>
 
 
 <textarea formControlName="description" placeholder="商品描述"></textarea>

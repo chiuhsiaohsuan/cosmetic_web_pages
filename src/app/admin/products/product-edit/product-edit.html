@@ -22,8 +22,11 @@
   <input type="number" formControlName="price">
 
 
-  <input type="file" (change)="onFileSelected($event)">
+  <label>商品主圖</label>
+  <input type="file" (change)="onMainImageSelected($event)">
 
+  <label>新增產品特色圖片</label>
+  <input type="file" multiple (change)="onDetailImagesSelected($event)">
 
   <textarea formControlName="description"></textarea>
 

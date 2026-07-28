@@ -30,7 +30,12 @@ export class ProductEdit {
 
   loading = signal(true);
 
-  selectedFile?: File;
+  // 商品主圖
+  mainImage: File | null = null;
+
+
+  // 新增特色圖片
+  detailImages: File[] = [];
 
   private productService = inject(ProductService);
 
@@ -58,51 +63,150 @@ export class ProductEdit {
 
   });
 
-  async onFileSelected(event:any){
+  async onMainImageSelected(event:any){
 
-    const file = event.target.files[0];
+      const file = event.target.files[0];
 
-    if(!file){
-      return;
-    }
-    console.log(
-      "原始大小:",
-      (file.size / 1024 / 1024).toFixed(2),
-      "MB"
-    );
+      if(!file){
+          return;
+      }
 
-    const options = {
-      maxSizeMB: 0.5,          // 最大 500KB
-      maxWidthOrHeight: 1200,  // 最大寬高
-      useWebWorker: true
-    };
-
-    try {
-
-      const compressedFile =
-        await imageCompression(
-          file,
-          options
-        );
 
       console.log(
-        "壓縮後:",
-        (compressedFile.size / 1024 / 1024).toFixed(2),
-        "MB"
+          "主圖原始大小:",
+          (file.size / 1024 / 1024).toFixed(2),
+          "MB"
       );
 
-      this.selectedFile = compressedFile;
 
-    } catch(error){
+      const options = {
+
+          maxSizeMB:0.5,
+
+          maxWidthOrHeight:1200,
+
+          useWebWorker:true
+
+      };
+
+
+      try{
+
+
+          const compressedFile =
+          await imageCompression(
+              file,
+              options
+          );
+
+
+          console.log(
+              "主圖壓縮後:",
+              (compressedFile.size / 1024 / 1024).toFixed(2),
+              "MB"
+          );
+
+
+          this.mainImage = compressedFile;
+
+
+
+      }catch(error){
+
+
+          console.log(
+              "圖片壓縮失敗",
+              error
+          );
+
+
+          this.mainImage = file;
+
+
+      }
+
+  }
+  async onDetailImagesSelected(event:any){
+
+      const files = Array.from(
+          event.target.files
+      ) as File[];
+
+
+      this.detailImages = [];
+
+
+      const options = {
+
+          maxSizeMB:0.5,
+
+          maxWidthOrHeight:1200,
+
+          useWebWorker:true
+
+      };
+
+
+
+      for(const file of files){
+
+
+          try{
+
+
+              const compressedFile =
+              await imageCompression(
+                  file,
+                  options
+              );
+
+
+              // 重新建立 File，保留檔名
+              const newFile = new File(
+                  [compressedFile],
+                  file.name,
+                  {
+                      type: compressedFile.type
+                  }
+              );
+
+
+              console.log(
+                  "壓縮後:",
+                  newFile.name,
+                  newFile.size
+              );
+
+
+              this.detailImages.push(
+                  newFile
+              );
+
+
+
+          }catch(error){
+
+
+              console.log(
+                  "特色圖片壓縮失敗",
+                  error
+              );
+
+
+              this.detailImages.push(
+                  file
+              );
+
+          }
+
+      }
+
+
 
       console.log(
-        "圖片壓縮失敗",
-        error
+          "特色圖片數量:",
+          this.detailImages.length
       );
-
-      this.selectedFile = file;
-
-    }
 
   }
   goBack(){
@@ -196,8 +300,8 @@ export class ProductEdit {
     );
 
     // 有選新圖片才傳
-    if (this.selectedFile) {
-      formData.append("image", this.selectedFile);
+    if (this.mainImage) {
+      formData.append("image", this.mainImage);
     } else {
       // 保留舊圖片
       formData.append(
@@ -212,27 +316,75 @@ export class ProductEdit {
 
         next: () => {
 
-          this.submitting.set(false);
+          // 如果有新增特色圖片
+            if(this.detailImages.length > 0){
 
-          alert("修改成功");
 
-          this.router.navigate([
-            "/admin/products"
-          ]);
+                this.productService
+                .uploadDetailImages(
+                    this.id,
+                    this.detailImages
+                )
+                .subscribe({
+
+                    next:()=>{
+
+                        this.submitting.set(false);
+
+                        alert("修改成功");
+
+                        this.router.navigate([
+                            "/admin/products"
+                        ]);
+
+                    },
+
+
+                    error:(err)=>{
+
+                        console.log(
+                            "特色圖片上傳失敗",
+                            err
+                        );
+
+
+                        this.submitting.set(false);
+
+                    }
+
+                });
+
+            }else{
+
+
+                this.submitting.set(false);
+
+                alert("修改成功");
+
+                this.router.navigate([
+                    "/admin/products"
+                ]);
+
+
+            }
+
 
         },
 
-        error: (err) => {
+        error:(err)=>{
 
-          this.submitting.set(false);
 
-          console.log(err);
+            this.submitting.set(false);
 
-          alert("修改失敗");
+            console.log(err);
+
+            alert("修改失敗");
+
 
         }
 
-      });
+
+    });
 
   }
 
