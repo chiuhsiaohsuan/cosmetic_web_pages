@@ -55,7 +55,13 @@ export class ProductEdit {
 
     image:[''],
 
-    description:[''],
+    specification:[''],
+
+    storage:[''],
+
+    usage:[''],
+
+    notice:[''],
 
     stock:[0],
 
@@ -138,9 +144,11 @@ export class ProductEdit {
 
       const options = {
 
-          maxSizeMB:0.5,
+          maxSizeMB:1.5,
 
-          maxWidthOrHeight:1200,
+          maxWidthOrHeight:2500,
+
+          initialQuality: 0.95,
 
           useWebWorker:true
 
@@ -285,10 +293,22 @@ export class ProductEdit {
     );
 
     formData.append(
-      "description",
-      this.productForm.value.description ?? ""
+      "specification",
+      this.productForm.value.specification ?? ""
     );
 
+    formData.append(
+      "storage",
+      this.productForm.value.storage ?? ""
+    );    
+    formData.append(
+      "usage",
+      this.productForm.value.usage ?? ""
+    );
+    formData.append(
+      "notice",
+      this.productForm.value.notice ?? ""
+    );     
     formData.append(
       "stock",
       String(this.productForm.value.stock ?? 0)

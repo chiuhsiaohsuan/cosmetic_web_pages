@@ -10,6 +10,7 @@ const db = require("../db");
 
 const verifyToken = require("../middleware/verifyToken");
 const verifyAdmin = require("../middleware/verifyAdmin");
+const { not } = require("rxjs/internal/util/not");
 
 const storage = multer.diskStorage({
 
@@ -166,14 +167,17 @@ router.post(
         const {
             name,
             category,
-            description,
+            specification,
+            storage,
+            usage,
+            notice,
             price,
             stock,
             isHot
         } = req.body;
         const image = req.file ? `/uploads/products/${req.file.filename}`: null;
 
-        const sql = `INSERT INTO products(name, price, image, category, isHot, description, stock)VALUES (?, ?, ?, ?, ?, ?, ?)`;
+        const sql = `INSERT INTO products(name, price, image, category, isHot, specification, storage, \`usage\`, notice, stock)VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
 
         db.query(
@@ -184,7 +188,10 @@ router.post(
                 image,
                 category,
                 isHot,
-                description,
+                specification,
+                storage,
+                usage,
+                notice,
                 stock
             ],
             (err, result)=>{
@@ -272,7 +279,10 @@ router.put("/:id", verifyToken, verifyAdmin, upload.single("image"),
             price,
             category,
             isHot,
-            description,
+            specification,
+            storage,
+            usage,
+            notice,
             stock,
             oldImage
         } = req.body;
@@ -306,7 +316,7 @@ router.put("/:id", verifyToken, verifyAdmin, upload.single("image"),
 
         }
 
-        const sql = `UPDATE products SET name = ?, price = ?, image = ?, category = ?, isHot = ?, description = ?, stock = ? WHERE id = ?`;
+        const sql = `UPDATE products SET name = ?, price = ?, image = ?, category = ?, isHot = ?, specification = ?, storage = ?, \`usage\`=?, notice=?, stock = ? WHERE id = ?`;
 
 
         db.query(
@@ -317,7 +327,10 @@ router.put("/:id", verifyToken, verifyAdmin, upload.single("image"),
                 image,
                 category,
                 isHot,
-                description,
+                specification,
+                storage,
+                usage,
+                notice,
                 stock,
                 id
             ],
@@ -532,16 +545,21 @@ router.delete(
     verifyToken,
     verifyAdmin,
     (req,res)=>{
+
         const id = req.params.id;
 
-        // 先取得圖片路徑
-        const selectSql =
+
+        // 查主圖
+        const productSql =
         "SELECT image FROM products WHERE id = ?";
-        
+
+
         db.query(
-            selectSql,
+            productSql,
             [id],
-            (err,result)=>{
+            (err,productResult)=>{
+
+
                 if(err){
 
                     console.log(err);
@@ -553,7 +571,8 @@ router.delete(
 
                 }
 
-                if(result.length === 0){
+
+                if(productResult.length === 0){
 
                     return res.status(404)
                     .json({
@@ -562,16 +581,26 @@ router.delete(
 
                 }
 
-                const imagePath = result[0].image;
 
-                // 刪除資料
-                const deleteSql =
-                "DELETE FROM products WHERE id = ?";
+                const mainImage =
+                productResult[0].image;
+
+
+
+                // 查特色圖
+                const detailSql =
+                `
+                SELECT image 
+                FROM product_detail_images
+                WHERE product_id = ?
+                `;
+
 
                 db.query(
-                    deleteSql,
+                    detailSql,
                     [id],
-                    (err)=>{
+                    (err,detailResult)=>{
+
 
                         if(err){
 
@@ -579,55 +608,150 @@ router.delete(
 
                             return res.status(500)
                             .json({
-                                message:"刪除商品失敗"
+                                message:"查詢特色圖失敗"
                             });
 
                         }
 
-                        // 刪除圖片
-                        if(imagePath){
 
 
-                            const filePath =
-                            path.join(
-                                __dirname,
-                                "..",
-                                imagePath
-                            );
+                        const detailImages =
+                        detailResult.map(
+                            item=>item.image
+                        );
 
 
-                            fs.unlink(
-                                filePath,
-                                (err)=>{
 
-                                    if(err){
+                        // 刪特色圖資料
+                        db.query(
+                            `
+                            DELETE FROM product_detail_images
+                            WHERE product_id = ?
+                            `,
+                            [id],
+                            (err)=>{
 
-                                        console.log(
-                                            "圖片刪除失敗:",
-                                            err
-                                        );
 
-                                    }
+                                if(err){
+
+                                    console.log(err);
+
+                                    return res.status(500)
+                                    .json({
+                                        message:"刪除特色圖資料失敗"
+                                    });
 
                                 }
-                            );
 
 
-                        }
 
-                        res.json({
+                                // 刪商品資料
+                                db.query(
+                                    `
+                                    DELETE FROM products
+                                    WHERE id = ?
+                                    `,
+                                    [id],
+                                    (err)=>{
 
-                            message:"商品刪除成功"
 
-                        });
+                                        if(err){
+
+                                            console.log(err);
+
+                                            return res.status(500)
+                                            .json({
+                                                message:"刪除商品失敗"
+                                            });
+
+                                        }
+
+
+
+                                        // 刪主圖
+                                        if(mainImage){
+
+                                            const mainPath =
+                                            path.join(
+                                                __dirname,
+                                                "..",
+                                                mainImage
+                                            );
+
+
+                                            fs.unlink(
+                                                mainPath,
+                                                err=>{
+
+                                                    if(err)
+                                                        console.log(
+                                                            "主圖刪除失敗:",
+                                                            err.message
+                                                        );
+
+                                                }
+                                            );
+
+                                        }
+
+
+
+                                        // 刪特色圖
+                                        detailImages.forEach(
+                                            img=>{
+
+
+                                                const detailPath =
+                                                path.join(
+                                                    __dirname,
+                                                    "..",
+                                                    img
+                                                );
+
+
+                                                fs.unlink(
+                                                    detailPath,
+                                                    err=>{
+
+                                                        if(err)
+                                                            console.log(
+                                                                "特色圖刪除失敗:",
+                                                                err.message
+                                                            );
+
+                                                    }
+                                                );
+
+
+                                            }
+                                        );
+
+
+
+                                        res.json({
+                                            message:"商品刪除成功"
+                                        });
+
+
+
+                                    }
+                                );
+
+
+
+                            }
+                        );
+
 
 
                     }
                 );
 
 
+
             }
         );
+
 
 
     }

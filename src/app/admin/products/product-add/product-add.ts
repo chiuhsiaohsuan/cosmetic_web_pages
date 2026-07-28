@@ -26,7 +26,6 @@ export class ProductAdd {
   private router = inject(Router);
 
 
-
   productForm = this.fb.group({
 
     name:[''],
@@ -35,15 +34,19 @@ export class ProductAdd {
 
     price:[0],
 
-    description:[''],
+    spec:[''],
+
+    storage:[''],
+
+    usage:[''],
+
+    notice:[''],
 
     stock:[0],
 
     isHot:[0]
 
   });
-
-
 
   // 商品主圖
   mainImage: File | null = null;
@@ -89,8 +92,6 @@ export class ProductAdd {
 
   }
 
-
-
   // 商品主圖
   async onMainImageSelected(event:any){
 
@@ -114,8 +115,6 @@ export class ProductAdd {
 
 
   }
-
-
 
   // 產品特色圖片(多張)
   async onDetailImagesSelected(event:any){
@@ -150,10 +149,6 @@ export class ProductAdd {
 
   }
 
-
-
-
-
   addProduct(){
 
     if(this.productForm.invalid){
@@ -181,9 +176,24 @@ export class ProductAdd {
     );
 
     formData.append(
-      "description",
-      this.productForm.value.description ?? ''
+      "spec",
+      this.productForm.value.spec ?? ''
     );
+
+    formData.append(
+      "storage",
+      this.productForm.value.storage ?? ''
+    );    
+
+    formData.append(
+      "usage",
+      this.productForm.value.usage ?? ''
+    );
+
+    formData.append(
+      "notice",
+      this.productForm.value.notice ?? ''
+    );    
 
     formData.append(
       "stock",

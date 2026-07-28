@@ -28,7 +28,10 @@
   <label>新增產品特色圖片</label>
   <input type="file" multiple (change)="onDetailImagesSelected($event)">
 
-  <textarea formControlName="description"></textarea>
+  <textarea formControlName="specification" placeholder="產品規格"></textarea>
+  <textarea formControlName="storage" placeholder="保存方式"></textarea>
+  <textarea formControlName="usage" placeholder="使用說明"></textarea>
+  <textarea formControlName="notice" placeholder="注意事項"></textarea>
 
   <label>庫存</label>
   <input type="number" formControlName="stock">
