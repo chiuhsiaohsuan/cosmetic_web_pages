@@ -3,7 +3,7 @@
         ←
     </button>
 <div class="product-detail">
-    <img [src]="environment.imageUrl + product().image" [alt]="product().name">
+    <img [src]="productService.getImageUrl(product().image)" [alt]="product().name">
 
     <div class="info">
 

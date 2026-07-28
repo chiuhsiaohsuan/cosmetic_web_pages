@@ -36,7 +36,10 @@ export class ProductService {
     };
 
   }
+  getImageUrl(path: string) {
 
+    return `${environment.imageUrl}/uploads/${path}`;
+  }
   // =====================
   // 前台商品
   // =====================

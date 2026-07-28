@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ProductService } from '../../../services/product';
 import { Router } from '@angular/router';
+import imageCompression from 'browser-image-compression';
 
 
 @Component({
@@ -43,15 +44,53 @@ export class ProductAdd {
   });
 
   selectedFile: File | null = null;
-  onFileSelected(event:any){
+  async onFileSelected(event:any){
 
-  const file = event.target.files[0];
+    const file = event.target.files[0];
 
-  if(file){
-    this.selectedFile = file;
+    if(!file){
+      return;
+    }
+    console.log(
+      "原始大小:",
+      (file.size / 1024 / 1024).toFixed(2),
+      "MB"
+    );
+
+    const options = {
+      maxSizeMB: 0.5,          // 最大 500KB
+      maxWidthOrHeight: 1200,  // 最大寬高
+      useWebWorker: true
+    };
+
+    try {
+
+      const compressedFile =
+        await imageCompression(
+          file,
+          options
+        );
+
+      console.log(
+        "壓縮後:",
+        (compressedFile.size / 1024 / 1024).toFixed(2),
+        "MB"
+      );
+
+      this.selectedFile = compressedFile;
+
+    } catch(error){
+
+      console.log(
+        "圖片壓縮失敗",
+        error
+      );
+
+      this.selectedFile = file;
+
+    }
+
   }
-
-}
 
   addProduct(){
 
@@ -124,7 +163,6 @@ export class ProductAdd {
 
       },
 
-
       error:(err)=>{
 
         console.log(err);
@@ -133,17 +171,13 @@ export class ProductAdd {
 
       },
 
-
       complete:()=>{
 
         this.submitting.set(false);
 
       }
 
-    });
-
-
+      });
   }
-
 
 }

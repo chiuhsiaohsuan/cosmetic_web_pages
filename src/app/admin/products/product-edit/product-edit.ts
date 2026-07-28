@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ProductService } from '../../../services/product';
 import { Location } from '@angular/common';
+import imageCompression from 'browser-image-compression';
 
 
 @Component({
@@ -39,8 +40,6 @@ export class ProductEdit {
 
   private route = inject(ActivatedRoute);
 
-
-
   productForm = this.fb.group({
 
     name:[''],
@@ -59,11 +58,47 @@ export class ProductEdit {
 
   });
 
-  onFileSelected(event:any){
+  async onFileSelected(event:any){
 
     const file = event.target.files[0];
 
-    if(file){
+    if(!file){
+      return;
+    }
+    console.log(
+      "原始大小:",
+      (file.size / 1024 / 1024).toFixed(2),
+      "MB"
+    );
+
+    const options = {
+      maxSizeMB: 0.5,          // 最大 500KB
+      maxWidthOrHeight: 1200,  // 最大寬高
+      useWebWorker: true
+    };
+
+    try {
+
+      const compressedFile =
+        await imageCompression(
+          file,
+          options
+        );
+
+      console.log(
+        "壓縮後:",
+        (compressedFile.size / 1024 / 1024).toFixed(2),
+        "MB"
+      );
+
+      this.selectedFile = compressedFile;
+
+    } catch(error){
+
+      console.log(
+        "圖片壓縮失敗",
+        error
+      );
 
       this.selectedFile = file;
 
@@ -74,7 +109,7 @@ export class ProductEdit {
 
   this.location.back();
 
-}
+  }
   ngOnInit(){
 
 
@@ -119,93 +154,86 @@ export class ProductEdit {
 
 
   }
+  submitting = signal(false);
+  updateProduct() {
 
-  updateProduct(){
+    if (this.submitting()) {
+      return;
+    }
+
+    this.submitting.set(true);
+
     const formData = new FormData();
 
     formData.append(
       "name",
-      this.productForm.value.name ?? ''
+      this.productForm.value.name ?? ""
     );
-
 
     formData.append(
       "price",
       String(this.productForm.value.price ?? 0)
     );
 
-
     formData.append(
       "category",
-      this.productForm.value.category ?? ''
+      this.productForm.value.category ?? ""
     );
-
 
     formData.append(
       "description",
-      this.productForm.value.description ?? ''
+      this.productForm.value.description ?? ""
     );
-
 
     formData.append(
       "stock",
       String(this.productForm.value.stock ?? 0)
     );
 
-
     formData.append(
       "isHot",
       String(this.productForm.value.isHot ?? 0)
     );
 
-
     // 有選新圖片才傳
-    if(this.selectedFile){
-
-      formData.append(
-        "image",
-        this.selectedFile
-      );
-
-    }
-    else{
-
+    if (this.selectedFile) {
+      formData.append("image", this.selectedFile);
+    } else {
       // 保留舊圖片
       formData.append(
         "oldImage",
-        this.productForm.value.image ?? ''
+        this.productForm.value.image ?? ""
       );
-
     }
 
-
     this.productService
-    .updateProduct(
-      this.id,
-      formData
-    )
-    .subscribe({
+      .updateProduct(this.id, formData)
+      .subscribe({
 
-      next:()=>{
+        next: () => {
 
-        alert("修改成功");
+          this.submitting.set(false);
 
-        this.router.navigate([
-          "/admin/products"
-        ]);
+          alert("修改成功");
 
-      },
+          this.router.navigate([
+            "/admin/products"
+          ]);
 
-      error:(err)=>{
+        },
 
-        console.log(err);
+        error: (err) => {
 
-        alert("修改失敗");
+          this.submitting.set(false);
 
-      }
+          console.log(err);
 
-    });
+          alert("修改失敗");
 
+        }
+
+      });
 
   }
+
 }

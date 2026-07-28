@@ -3,9 +3,9 @@ export const environment = {
   production:false,
 
   apiUrl:
-  'https://collecting-porcelain-story-proxy.trycloudflare.com/api',
+  'https://queue-gamecube-practical-attention.trycloudflare.com/api',
 
   imageUrl:
-  'https://collecting-porcelain-story-proxy.trycloudflare.com'
+  'https://queue-gamecube-practical-attention.trycloudflare.com'
 
 };

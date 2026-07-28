@@ -21,14 +21,14 @@ export class ProductDetail implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private productService: ProductService,
+    public productService: ProductService,
     private cartService: CartService,
     private authService: AuthService,
     private location: Location
   ){}
-    goBack() {
-      this.location.back();
-    }
+  goBack() {
+    this.location.back();
+  }
   addCart(){
       if(!this.authService.isLogin()){
 

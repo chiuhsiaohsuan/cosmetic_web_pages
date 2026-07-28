@@ -13,37 +13,38 @@
 <form [formGroup]="productForm">
 
 
-<input formControlName="name">
+  <input formControlName="name">
 
 
-<input formControlName="category">
+  <input formControlName="category">
 
-<label>價格</label>
-<input type="number" formControlName="price">
-
-
-<input type="file" (change)="onFileSelected($event)">
+  <label>價格</label>
+  <input type="number" formControlName="price">
 
 
-<textarea formControlName="description"></textarea>
-
-<label>庫存</label>
-<input type="number" formControlName="stock">
+  <input type="file" (change)="onFileSelected($event)">
 
 
-<label>
+  <textarea formControlName="description"></textarea>
 
-    <input type="checkbox" formControlName="isHot">
-
-    熱門
-
-</label>
+  <label>庫存</label>
+  <input type="number" formControlName="stock">
 
 
-<button type="button" (click)="goBack()">
-  回上一頁
-</button>
-<button type="button" (click)="updateProduct()">儲存修改</button>
+  <label>
+
+      <input type="checkbox" formControlName="isHot">
+
+      熱門
+
+  </label>
+
+
+  <button type="button" (click)="goBack()">
+    回上一頁
+  </button>
+  <button type="button" (click)="updateProduct()" [disabled]="submitting()">
+    {{submitting() ? '修改中...' : '儲存修改'}}
+  </button>
 </form>
-
 }

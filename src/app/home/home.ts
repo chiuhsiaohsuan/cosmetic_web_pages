@@ -30,7 +30,7 @@ export class Home implements OnInit, OnDestroy {
 
   });
   constructor(
-    private productService:ProductService
+    public productService:ProductService
   ){}
 
   currentSlide = signal(0);

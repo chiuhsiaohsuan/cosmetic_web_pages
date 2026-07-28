@@ -179,13 +179,8 @@ router.post(
     }
 );
 // 修改商品
-router.put(
-    "/:id",
-    verifyToken,
-    verifyAdmin,
-    upload.single("image"),
+router.put("/:id", verifyToken, verifyAdmin, upload.single("image"),
     (req,res)=>{
-
         const id = req.params.id;
 
         const {
@@ -194,23 +189,41 @@ router.put(
             category,
             isHot,
             description,
-            stock
+            stock,
+            oldImage
         } = req.body;
 
-        let image;
+        let image = oldImage;
+
         if(req.file){
 
-            image =
-            "/images/uploads/" + req.file.filename;
+            image = "products/" + req.file.filename;
 
-        }
-        else{
+            if(oldImage){
 
-            image = req.body.oldImage;
+                const oldPath = path.join(
+                    __dirname,
+                    "..",
+                    "uploads",
+                    oldImage
+                );
+
+                fs.unlink(oldPath,(err)=>{
+
+                    if(err){
+                        console.log("舊圖片刪除失敗:",err);
+                    }else{
+                        console.log("舊圖片刪除成功:",oldPath);
+                    }
+
+                });
+
+            }
 
         }
 
         const sql = `UPDATE products SET name = ?, price = ?, image = ?, category = ?, isHot = ?, description = ?, stock = ? WHERE id = ?`;
+
 
         db.query(
             sql,
@@ -229,8 +242,7 @@ router.put(
                 if(err){
                     console.log(err);
 
-                    return res.status(500)
-                    .json({
+                    return res.status(500).json({
                         message:"修改商品失敗"
                     });
                 }
@@ -238,8 +250,7 @@ router.put(
 
                 if(result.affectedRows === 0){
 
-                    return res.status(404)
-                    .json({
+                    return res.status(404).json({
                         message:"找不到商品"
                     });
 

@@ -14,7 +14,7 @@ export class Product {
  constructor(
   private route: ActivatedRoute,
   private router: Router,
-  private productService: ProductService
+  public productService: ProductService
 ) {}
   goDetail(id:number){
 
@@ -44,6 +44,9 @@ export class Product {
       this.selectedCategory.set(
         params['category'] ?? 'all'
       );
+      const page = Number(params['page']) || 1;
+
+      this.currentPage.set(page);
 
     });
   }
@@ -114,6 +117,16 @@ export class Product {
   changePage(page:number){
 
     this.currentPage.set(page);
+    this.router.navigate([],{
+
+    queryParams:{
+      page: page
+    },
+
+    queryParamsHandling:'merge'
+
+  });
+
 
   }
 
