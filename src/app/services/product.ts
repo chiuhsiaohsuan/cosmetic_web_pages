@@ -14,7 +14,7 @@ export class ProductService {
 
 
   // 後台商品 API
-  private adminApiUrl = `${environment.apiUrl}/admin/products`;
+  private adminApiUrl = `${environment.adminApiUrl}/products`;
 
 
 

@@ -3,9 +3,12 @@ export const environment = {
   production:false,
 
   apiUrl:
-  'https://queue-gamecube-practical-attention.trycloudflare.com/api',
+  'https://nicholas-cheers-jonathan-gorgeous.trycloudflare.com/api',
+
+  adminApiUrl:
+  'https://nicholas-cheers-jonathan-gorgeous.trycloudflare.com/api/admin',
 
   imageUrl:
-  'https://queue-gamecube-practical-attention.trycloudflare.com'
+  'https://nicholas-cheers-jonathan-gorgeous.trycloudflare.com'
 
 };

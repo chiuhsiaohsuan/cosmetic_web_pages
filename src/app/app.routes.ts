@@ -16,6 +16,8 @@ import { ProductAdd } from './admin/products/product-add/product-add';
 import { ProductList } from './admin/products/product-list/product-list';
 import { MainLayout } from './main-layout/main-layout';
 import { adminGuard } from './admin/guard';
+import {  AdminMemberComponent } from './admin/member/member';
+import { Member } from './member/member';
 
 export const routes: Routes = [
   {
@@ -32,7 +34,8 @@ export const routes: Routes = [
     { path: 'login', component: Login },
     { path: 'register', component: Register },
     { path: 'blog', component: Blog },
-    { path: 'cart', component: Cart }
+    { path: 'cart', component: Cart },
+    { path: 'member', component: Member }
   ]
   },
   { path:'admin', component: AdminLayout,
@@ -56,6 +59,10 @@ export const routes: Routes = [
     {
       path:'products',
       component:ProductList
+    },
+    {
+      path:'members',
+      component: AdminMemberComponent
     }
    ]
   }

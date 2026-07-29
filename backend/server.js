@@ -6,6 +6,8 @@ const app = express();
 const db = require("./db");
 const productDetailImage = require('./routes/productDetailImage');
 const adminProductsRouter = require('./routes/adminProducts');
+const adminRouter = require('./routes/admin');
+const userRouter = require('./routes/user');
 
 
 app.use(cors({
@@ -23,10 +25,14 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static("public"));
 app.use("/uploads",express.static("uploads"));
-
+app.use('/api', userRouter);
 app.use(
     '/api/products',
     productDetailImage
+);
+app.use(
+    '/api/admin',
+    adminRouter
 );
 
 app.get('/api/user',
@@ -128,7 +134,7 @@ app.post("/api/register",async(req,res)=>{
 
     const bcrypt = require('bcrypt');
     const hashPassword = await bcrypt.hash(password, 10);
-    const sql = `INSERT INTO users(name,birthday,password,phone,email)VALUES(?,?,?,?,?)`;
+    const sql = `INSERT INTO users(name,birthday,password,phone,email,status)VALUES(?,?,?,?,?,?)`;
 
     db.query(
         sql,
@@ -137,7 +143,8 @@ app.post("/api/register",async(req,res)=>{
           birthday,
           hashPassword,
           phone,
-          email
+          email,
+          'active'
         ],
         (err,result)=>{
 
@@ -200,7 +207,21 @@ app.post('/api/login',(req,res)=>{
             return res.status(401)
             .json({message:"密碼錯誤"});
         }
+        if(user.status === 'disabled'){
 
+            return res.status(403)
+            .json({
+                message:"帳號已停權，請聯絡管理員"
+            });
+
+        }
+        if(user.is_deleted === 1){
+
+            return res.status(403).json({
+                message:'帳號不存在'
+            });
+
+        }
 
         const token = jwt.sign(
             {

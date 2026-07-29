@@ -20,6 +20,22 @@ export class Navbar implements OnInit {
   /** 手機版 Accordion */
   aboutOpen = signal(false);
   blogOpen = signal(false);
+  /**會員menu */
+  showMemberMenu = false;
+
+  toggleMemberMenu(event: MouseEvent){
+
+      event.stopPropagation();
+
+      this.showMemberMenu = !this.showMemberMenu;
+
+  }
+  @HostListener('document:click')
+    closeMemberMenu(){
+
+        this.showMemberMenu = false;
+
+    }
 
   /** 開關 Drawer */
   toggleMenu(): void {

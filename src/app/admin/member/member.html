@@ -1,0 +1,108 @@
+<h2>會員管理</h2>
+
+<table>
+
+    <thead>
+    <tr>
+        <th>角色</th>
+        <th>姓名</th>
+        <th>Email</th>
+        <th>電話</th>
+        <th>狀態</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    @for(user of users(); track user.id){
+
+        <tr>
+            <td>
+                @if(user.role === 'admin'){
+                    <span>👑 管理員</span>
+                }
+                @else{
+                    <span>👤 會員</span>
+                }
+            </td>
+            <td>{{user.name}}</td>
+
+            <td>{{user.email}}</td>
+
+            <td>{{user.phone}}</td>
+
+            <td>
+
+                @if(user.status === 'active'){
+
+                    <span>🟢 啟用</span>
+
+                }
+                @else{
+
+                    <span>🔴 停權</span>
+
+                }
+
+            </td>
+
+            <td>
+
+                <button
+                (click)="showDetail(user)">
+                    查看
+                </button>
+
+                <button
+                (click)="changeStatus(user)">
+
+                    @if(user.status === 'active'){
+                        停權
+                    }
+                    @else{
+                        啟用
+                    }
+
+                </button>
+
+                <button (click)="deleteUser(user)">
+                    刪除
+                </button>
+
+            </td>
+
+        </tr>
+
+    }
+
+    </tbody>
+
+</table>
+@if(selectedUser()){
+
+    <div class="modal-bg">
+
+        <div class="modal">
+
+            <h3>
+            會員詳細資料
+            </h3>
+
+            <p>ID：{{selectedUser().id}}</p>
+
+            <p>姓名：{{selectedUser().name}}</p>
+
+            <p>電話：{{selectedUser().phone}}</p>
+
+            <p>Email：{{selectedUser().email}}</p>
+
+            <p>生日：{{selectedUser().birthday}}</p>
+
+            <button (click)="closeDetail()">關閉</button>
+
+        </div>
+
+    </div>
+
+}
