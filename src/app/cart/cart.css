@@ -100,6 +100,17 @@ button:hover {
 .delete-btn:hover {
     background-color: #c22121;
 }
+.checkout-btn{
+  text-decoration: none;
+  color: #fff;
+  border: solid;
+  background-color: #78907A;
+  padding:8px 15px;
+  border-radius:6px;
+}
+.checkout-btn:hover{
+  background-color: #6b8f71;
+}
 
 /* 總結區 */
 hr {

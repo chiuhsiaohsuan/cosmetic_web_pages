@@ -1,0 +1,166 @@
+.payment-container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* 標題 */
+.payment-container h2 {
+    margin-bottom: 25px;
+    text-align: center;
+    font-size: 28px;
+}
+
+/* 訂單資訊 */
+.order-info {
+    padding: 20px;
+    margin-bottom: 20px;
+    background: #f7f7f7;
+    border-radius: 8px;
+}
+
+.order-info p {
+    margin: 8px 0;
+    font-size: 16px;
+}
+
+.order-info strong {
+    font-size: 18px;
+}
+
+/* 匯款資訊 */
+.bank-info {
+    padding: 20px;
+    margin-bottom: 25px;
+    background: #eef3ef;
+    border: 1px solid #d9ded8;
+    border-radius: 8px;
+}
+
+.bank-info h3 {
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.bank-info p {
+    margin: 10px 0;
+    line-height: 1.6;
+}
+
+.bank-info strong {
+    font-size: 20px;
+}
+
+/* 付款表單 */
+.payment-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.payment-form label {
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.payment-form input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+
+    border: 1px solid #ccc;
+    border-radius: 6px;
+
+    font-size: 16px;
+    outline: none;
+
+    transition: border-color 0.2s;
+}
+
+.payment-form input:focus {
+    border-color: #D9DED8;
+    box-shadow: 0 0 8px rgba(63, 155, 75, 0.25);
+}
+
+/* 送出按鈕 */
+.payment-form button {
+    padding: 13px;
+    margin-top: 5px;
+
+    border: none;
+    border-radius: 6px;
+
+    background: #78907A;
+    color: white;
+
+    font-size: 16px;
+    cursor: pointer;
+
+    transition: background 0.2s;
+}
+
+.payment-form button:hover {
+    background: #6B8F71;
+}
+
+/* 稍後付款 */
+.payment-form a {
+    margin-top: 15px;
+    text-align: center;
+
+    color: #666;
+    text-decoration: none;
+}
+
+.payment-form a:hover {
+    text-decoration: underline;
+}
+
+/* 付款成功 */
+.payment-success {
+    padding: 35px 20px;
+    text-align: center;
+}
+
+.payment-success h2 {
+    margin-bottom: 20px;
+}
+
+.payment-success p {
+    margin: 12px 0;
+    font-size: 16px;
+}
+
+.payment-success a {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 11px 25px;
+
+    background: #78907A;
+    color: white;
+
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.payment-success a:hover {
+    background: #6B8F71;
+}
+
+
+/* 手機版 */
+@media (max-width: 600px) {
+
+    .payment-container {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .payment-container h2 {
+        font-size: 24px;
+    }
+
+}

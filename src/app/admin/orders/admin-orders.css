@@ -1,0 +1,105 @@
+.admin-orders-container {
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+}
+
+.admin-orders-container h1 {
+  margin-bottom: 24px;
+  font-size: 24px;
+  color: #222;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+th,
+td {
+  padding: 14px 12px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+th {
+  background: #222;
+  color: white;
+  font-size: 14px;
+}
+
+tr:hover {
+  background: #f7f7f7;
+}
+
+button {
+  border: none;
+  padding: 8px 12px;
+  margin: 0 3px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.2s ease;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button:first-child {
+  background: #3498db;
+  color: white;
+}
+
+button:first-child:hover:not(:disabled) {
+  background: #4aa7e8;
+}
+
+button:last-child {
+  background: #27ae60;
+  color: white;
+}
+
+button:last-child:hover:not(:disabled) {
+  background: #2fc06f;
+}
+
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+.pagination button {
+  background: #222;
+  color: white;
+}
+
+.loading,
+.error,
+.empty {
+  padding: 16px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.loading {
+  background: #f0f7ff;
+}
+
+.error {
+  background: #ffe6e6;
+  color: #b93a3a;
+}
+
+.empty {
+  background: #f7f7f7;
+}

@@ -1,0 +1,64 @@
+<div class="admin-orders-container">
+  <h1>訂單管理</h1>
+
+  @if (loading()) {
+    <div class="loading">讀取中...</div>
+  }
+
+  @if (errorMessage()) {
+    <div class="error">{{ errorMessage() }}</div>
+  }
+
+  @if (!loading() && !errorMessage() && orders().length === 0) {
+    <div class="empty">目前沒有任何訂單資料。</div>
+  }
+
+  @if (!loading() && orders().length > 0) {
+    <table>
+      <thead>
+        <tr>
+          <th>訂單編號</th>
+          <th>會員</th>
+          <th>收件人</th>
+          <th>金額</th>
+          <th>訂單狀態</th>
+          <th>付款狀態</th>
+          <th>建立時間</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (order of orders(); track order.id) {
+          <tr>
+            <td>#{{ order.id }}</td>
+            <td>{{ order.user_name || '無' }}</td>
+            <td>{{ order.receiver_name }}</td>
+            <td>{{ order.total_amount }}</td>
+            <td>{{ order.order_status }}</td>
+            <td>{{ order.payment_status }}</td>
+            <td>{{ order.created_at | date:'yyyy/MM/dd HH:mm' }}</td>
+            <td>
+              <button
+                (click)="updateStatus(order, '處理中')"
+                [disabled]="order.order_status === '處理中'"
+              >處理中</button>
+              <button
+                (click)="updateStatus(order, '已出貨')"
+                [disabled]="order.order_status === '已出貨'"
+              >已出貨</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="pagination">
+      <button (click)="prevPage()" [disabled]="currentPage() === 1">上一頁</button>
+      <span>第 {{ currentPage() }} / {{ totalPages() }} 頁</span>
+      <button
+        (click)="nextPage()"
+        [disabled]="currentPage() === totalPages()"
+      >下一頁</button>
+    </div>
+  }
+</div>

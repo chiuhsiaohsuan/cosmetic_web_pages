@@ -14,10 +14,14 @@ import { ProductEdit } from './admin/products/product-edit/product-edit';
 import { AdminLayout } from './admin/admin-layout/admin-layout';
 import { ProductAdd } from './admin/products/product-add/product-add';
 import { ProductList } from './admin/products/product-list/product-list';
+import { AdminOrders } from './admin/orders/admin-orders';
 import { MainLayout } from './main-layout/main-layout';
 import { adminGuard } from './admin/guard';
 import {  AdminMemberComponent } from './admin/member/member';
 import { Member } from './member/member';
+import { Checkout } from './checkout/checkout';
+import { Payment } from './payment/payment';
+import { Orders } from './orders/orders';
 
 export const routes: Routes = [
   {
@@ -35,7 +39,10 @@ export const routes: Routes = [
     { path: 'register', component: Register },
     { path: 'blog', component: Blog },
     { path: 'cart', component: Cart },
-    { path: 'member', component: Member }
+    { path: 'member', component: Member },
+    { path: 'checkout', component: Checkout },
+    { path: 'payment/:orderId', component: Payment },
+    { path: 'orders', component: Orders }
   ]
   },
   { path:'admin', component: AdminLayout,
@@ -59,6 +66,10 @@ export const routes: Routes = [
     {
       path:'products',
       component:ProductList
+    },
+    {
+      path:'orders',
+      component: AdminOrders
     },
     {
       path:'members',

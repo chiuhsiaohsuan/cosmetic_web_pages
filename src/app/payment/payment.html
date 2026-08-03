@@ -1,0 +1,116 @@
+<div class="payment-container">
+
+    @if (!submitted()) {
+
+        <h2>付款資訊</h2>
+
+        <div class="order-info">
+
+            <p>
+                訂單編號：
+                <strong>{{ orderId() }}</strong>
+            </p>
+
+            <p>
+                應付金額：
+                <strong>{{ totalAmount() }} 元</strong>
+            </p>
+
+        </div>
+
+
+        <div class="bank-info">
+
+            <h3>匯款資訊</h3>
+
+            <p>銀行：XXX銀行</p>
+
+            <p>銀行代碼：XXX</p>
+
+            <p>帳號：XXXXXXXXXXXX</p>
+
+            <p>
+                請匯款
+                <strong>{{ totalAmount() }} 元</strong>
+            </p>
+
+        </div>
+
+
+        <div class="payment-form">
+
+            <label>
+                匯款人姓名
+            </label>
+
+            <input
+                type="text"
+                [ngModel]="payerName()"
+                (ngModelChange)="payerName.set($event)"
+                placeholder="請輸入匯款人姓名"
+            >
+
+
+            <label>
+                匯款後五碼
+            </label>
+
+            <input
+                type="text"
+                maxlength="5"
+                [ngModel]="accountLast5()"
+                (ngModelChange)="accountLast5.set($event)"
+                placeholder="請輸入後五碼"
+            >
+
+
+            <label>
+                匯款金額
+            </label>
+
+            <input
+                type="number"
+                [ngModel]="amount()"
+                (ngModelChange)="amount.set($event)"
+            >
+
+
+            <button (click)="submitPayment()">
+                送出付款資訊
+            </button>
+
+            <a routerLink="/">
+                稍後付款
+            </a>
+
+        </div>
+
+    }
+
+    @else {
+
+        <div class="payment-success">
+
+            <h2>付款資訊已送出</h2>
+
+            <p>
+                訂單編號：{{ orderId() }}
+            </p>
+
+            <p>
+                目前付款狀態：待確認
+            </p>
+
+            <p>
+                我們會確認銀行入帳後成立訂單。
+            </p>
+
+            <a routerLink="/">
+                回首頁
+            </a>
+
+        </div>
+
+    }
+
+</div>

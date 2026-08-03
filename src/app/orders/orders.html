@@ -1,0 +1,177 @@
+<div class="orders-container">
+
+  <h1>我的訂單</h1>
+
+
+  @if (loading()) {
+
+    <div class="loading">
+      載入訂單中...
+    </div>
+
+  }
+
+
+  @if (!loading() && errorMessage()) {
+
+    <div class="error">
+      {{ errorMessage() }}
+    </div>
+
+  }
+
+
+  @if (!loading() && !errorMessage() && orders().length === 0) {
+
+    <div class="empty">
+
+      <p>目前還沒有訂單</p>
+
+      <a routerLink="/">
+        開始購物
+      </a>
+
+    </div>
+
+  }
+
+
+  @for (order of orders(); track order.id) {
+
+    <div class="order-card">
+
+
+      <!-- 訂單標題 -->
+
+      <div class="order-header">
+
+        <div>
+
+          <h2>
+            訂單 #{{ order.id }}
+          </h2>
+
+          <p class="date">
+            {{ order.created_at | date:'yyyy/MM/dd HH:mm' }}
+          </p>
+
+        </div>
+
+
+        <div class="status-area">
+
+        <span class="order-status">
+            訂單狀態：{{ order.order_status }}
+        </span>
+
+
+        @if (order.payment_status === '未付款') {
+
+            <a
+            class="payment-status unpaid"
+            [routerLink]="['/payment', order.id]"
+            >
+            付款狀態：未付款
+            </a>
+
+        } @else {
+
+            <span
+            class="payment-status"
+            >
+            付款狀態：{{ order.payment_status }}
+            </span>
+
+        }
+
+        </div>
+
+      </div>
+
+
+      <!-- 收件資訊 -->
+
+      <div class="receiver">
+
+        <h3>收件資訊</h3>
+
+        <p>
+          姓名：{{ order.receiver_name }}
+        </p>
+
+        <p>
+          電話：{{ order.receiver_phone }}
+        </p>
+
+        <p>
+          地址：{{ order.receiver_address }}
+        </p>
+
+      </div>
+
+
+      <!-- 商品 -->
+
+      <div class="items">
+
+        <h3>商品明細</h3>
+
+
+        @for (item of order.items; track item.product_id) {
+
+          <div class="item">
+
+            <div class="item-name">
+
+              {{ item.product_name }}
+
+            </div>
+
+
+            <div class="item-quantity">
+
+              x {{ item.quantity }}
+
+            </div>
+
+
+            <div class="item-price">
+
+              ${{ item.price }}
+
+            </div>
+
+
+            <div class="item-subtotal">
+
+              ${{ item.subtotal }}
+
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+
+      <!-- 總金額 -->
+
+      <div class="order-footer">
+
+        <span>
+          訂單金額
+        </span>
+
+        <strong>
+          ${{ order.total_amount }}
+        </strong>
+
+      </div>
+
+
+    </div>
+
+  }
+
+</div>

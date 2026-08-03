@@ -7,7 +7,10 @@ const db = require("./db");
 const productDetailImage = require('./routes/productDetailImage');
 const adminProductsRouter = require('./routes/adminProducts');
 const adminRouter = require('./routes/admin');
+const orderRouter = require('./routes/order');
+const paymentRouter = require('./routes/payment');
 const userRouter = require('./routes/user');
+const adminOrdersRouter = require('./routes/adminOrders');
 
 
 app.use(cors({
@@ -33,6 +36,22 @@ app.use(
 app.use(
     '/api/admin',
     adminRouter
+);
+app.use(
+    "/api/admin/products",
+    adminProductsRouter
+);
+app.use(
+    '/api/admin/orders',
+    adminOrdersRouter
+);
+app.use(
+    '/api/orders',
+    orderRouter
+);
+app.use(
+    "/api/admin/payments",
+    paymentRouter
 );
 
 app.get('/api/user',
@@ -67,10 +86,6 @@ verifyToken,
 
 
 });
-app.use(
-    "/api/admin/products",
-    adminProductsRouter
-);
 //取得全部商品
 app.get("/api/products",(req,res)=>{
 

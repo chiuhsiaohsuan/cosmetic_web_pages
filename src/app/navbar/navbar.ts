@@ -1,5 +1,5 @@
 import { Component, HostListener, signal, OnInit, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../services/auth';
 import { CartService } from '../services/cart';
 
@@ -13,6 +13,7 @@ import { CartService } from '../services/cart';
 export class Navbar implements OnInit {
 
   private cartService = inject(CartService);
+  private router = inject(Router);
   cartCount = this.cartService.totalQuantity;
   /** 漢堡選單 */
   isMenuOpen = signal(false);
@@ -30,6 +31,13 @@ export class Navbar implements OnInit {
       this.showMemberMenu = !this.showMemberMenu;
 
   }
+
+  handleMemberDropdownAction(event?: MouseEvent): void {
+    event?.stopPropagation();
+    this.showMemberMenu = false;
+    this.closeMenu();
+  }
+
   @HostListener('document:click')
     closeMemberMenu(){
 
@@ -142,8 +150,11 @@ export class Navbar implements OnInit {
   }
 
   logout() {
+    this.showMemberMenu = false;
+    this.closeMenu();
     this.auth.logout();
     this.cartService.clearCart();
+    this.router.navigate(['/']);
   }
 
 }

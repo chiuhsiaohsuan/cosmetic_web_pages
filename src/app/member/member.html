@@ -3,29 +3,52 @@
     <h2>會員資料</h2>
 
     <div class="form-group">
-
         <label>姓名</label>
-
         <input type="text" [(ngModel)]="user().name">
-
     </div>
 
     <div class="form-group">
-
         <label>Email</label>
-
         <input type="email" [(ngModel)]="user().email">
-
     </div>
 
     <div class="form-group">
-
         <label>電話</label>
-
         <input type="text" [(ngModel)]="user().phone">
-
     </div>
 
-    <button (click)="updateUser()">儲存修改</button>
+    <button (click)="updateUser()">儲存會員資料</button>
+
+
+    <hr>
+
+
+    <h2>修改密碼</h2>
+
+    <div class="form-group">
+        <label>目前密碼</label>
+        <input type="password" [(ngModel)]="user().oldPassword">
+    </div>
+
+    <div class="form-group">
+        <label>新密碼</label>
+        <input type="password" [(ngModel)]="user().newPassword">
+    </div>
+
+    <div class="form-group">
+        <label>確認新密碼</label>
+        <input type="password" [(ngModel)]="user().confirmPassword">
+    </div>
+    @if(
+        this.user().newPassword &&
+        this.user().confirmPassword &&
+        this.user().newPassword !== this.user().confirmPassword
+    ) {
+        <p class="error">
+            兩次輸入的密碼不一致
+        </p>
+    }
+
+    <button (click)="changePassword()">修改密碼</button>
 
 </div>
