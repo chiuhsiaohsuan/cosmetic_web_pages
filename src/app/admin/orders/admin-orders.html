@@ -30,7 +30,7 @@
       <tbody>
         @for (order of orders(); track order.id) {
           <tr>
-            <td>#{{ order.id }}</td>
+            <td class="clickable-order-id" (click)="showOrderDetail(order)">#{{ order.id }}</td>
             <td>{{ order.user_name || '無' }}</td>
             <td>{{ order.receiver_name }}</td>
             <td>{{ order.total_amount }}</td>
@@ -38,14 +38,36 @@
             <td>{{ order.payment_status }}</td>
             <td>{{ order.created_at | date:'yyyy/MM/dd HH:mm' }}</td>
             <td>
-              <button
-                (click)="updateStatus(order, '處理中')"
-                [disabled]="order.order_status === '處理中'"
-              >處理中</button>
-              <button
-                (click)="updateStatus(order, '已出貨')"
-                [disabled]="order.order_status === '已出貨'"
-              >已出貨</button>
+              <div class="action-cell">
+                <div class="status-actions">
+                  <button
+                    (click)="updateStatus(order, '已成立')"
+                    [disabled]="order.order_status === '已成立'"
+                  >已成立</button>
+                  <button
+                    (click)="updateStatus(order, '已出貨')"
+                    [disabled]="order.order_status === '已出貨'"
+                  >已出貨</button>
+                  <button
+                    (click)="updateStatus(order, '已取消')"
+                    [disabled]="order.order_status === '已取消'"
+                  >已取消</button>
+                </div>
+                <div class="payment-actions">
+                  <button
+                    (click)="updatePaymentStatus(order, '已付款')"
+                    [disabled]="order.payment_status === '已付款'"
+                  >標記為已付款</button>
+                  <button
+                    (click)="updatePaymentStatus(order, '待確認')"
+                    [disabled]="order.payment_status === '待確認'"
+                  >標記為待確認</button>
+                  <button
+                    (click)="updatePaymentStatus(order, '未付款')"
+                    [disabled]="order.payment_status === '未付款'"
+                  >標記為未付款</button>
+                </div>
+              </div>
             </td>
           </tr>
         }
@@ -59,6 +81,91 @@
         (click)="nextPage()"
         [disabled]="currentPage() === totalPages()"
       >下一頁</button>
+    </div>
+  }
+
+  @if(showDetailModal()) {
+    <div class="modal-backdrop" (click)="closeDetailModal()"></div>
+    <div class="detail-modal">
+      <div class="modal-header">
+        <h2>訂單明細 #{{ selectedOrder()?.id }}</h2>
+        <button class="close-btn" (click)="closeDetailModal()">×</button>
+      </div>
+
+      @if(detailLoading()) {
+        <div class="modal-loading">讀取中...</div>
+      } @else {
+        @if(detailError()) {
+          <div class="modal-error">{{ detailError() }}</div>
+        } @else {
+          @if(selectedOrder()) {
+            <div class="modal-content">
+              <div class="detail-row">
+                <span>會員</span>
+                <strong>{{ selectedOrder()?.user_name || '無' }}</strong>
+              </div>
+              <div class="detail-row">
+                <span>收件人</span>
+                <strong>{{ selectedOrder()?.receiver_name }}</strong>
+              </div>
+              <div class="detail-row">
+                <span>電話</span>
+                <strong>{{ selectedOrder()?.receiver_phone }}</strong>
+              </div>
+              <div class="detail-row">
+                <span>地址</span>
+                <strong>{{ selectedOrder()?.receiver_address }}</strong>
+              </div>
+              <div class="detail-row">
+                <span>訂單狀態</span>
+                <strong>{{ selectedOrder()?.order_status }}</strong>
+              </div>
+              <div class="detail-row">
+                <span>付款狀態</span>
+                <strong>{{ selectedOrder()?.payment_status }}</strong>
+              </div>
+              <div class="detail-row">
+                <span>總金額</span>
+                <strong>{{ selectedOrder()?.total_amount }}</strong>
+              </div>
+              <div class="detail-row">
+                <span>建立時間</span>
+                <strong>{{ selectedOrder()?.created_at | date:'yyyy/MM/dd HH:mm' }}</strong>
+              </div>
+              <div class="detail-row">
+                <span>確認付款時間</span>
+                <strong>{{ selectedOrder()?.paid_at ? (selectedOrder()?.paid_at | date:'yyyy/MM/dd HH:mm') : '尚未確認' }}</strong>
+              </div>
+
+              <div class="items-table">
+                <div class="items-title">商品明細</div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>商品</th>
+                      <th>數量</th>
+                      <th>單價</th>
+                      <th>付款時間</th>
+                      <th>小計</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (item of selectedOrder()?.items || []; track item.product_id) {
+                      <tr>
+                        <td>{{ item.product_name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.price }}</td>
+                        <td>{{ item.submitted_at ? (item.submitted_at | date:'yyyy/MM/dd HH:mm') : '無' }}</td>
+                        <td>{{ item.subtotal }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          }
+        }
+      }
     </div>
   }
 </div>

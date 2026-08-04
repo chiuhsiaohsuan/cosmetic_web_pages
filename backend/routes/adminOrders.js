@@ -90,7 +90,8 @@ router.get(
         oi.product_id,
         oi.quantity,
         oi.price,
-        p.name AS product_name
+        p.name AS product_name,
+        pay.submitted_at
       FROM orders o
       LEFT JOIN users u
         ON o.user_id = u.id
@@ -98,6 +99,8 @@ router.get(
         ON o.id = oi.order_id
       LEFT JOIN products p
         ON oi.product_id = p.id
+      LEFT JOIN payments pay
+        ON o.id = pay.order_id
       WHERE o.id = ?
     `;
 
@@ -126,6 +129,7 @@ router.get(
         order_status: results[0].order_status,
         payment_status: results[0].payment_status,
         created_at: results[0].created_at,
+        submitted_at: results[0].submitted_at,
         paid_at: results[0].paid_at,
         items: []
       };
@@ -137,6 +141,7 @@ router.get(
             product_name: row.product_name,
             quantity: row.quantity,
             price: row.price,
+            submitted_at: row.submitted_at,
             subtotal: row.quantity * row.price
           });
         }
@@ -173,6 +178,9 @@ router.put(
       fields.push("payment_status = ?");
       values.push(payment_status);
     }
+    if (payment_status === '已付款') {
+      fields.push("paid_at = NOW()");
+    }
 
     const sql = `
       UPDATE orders
@@ -182,18 +190,74 @@ router.put(
 
     values.push(orderId);
 
-    db.query(sql, values, (err, result) => {
-      if (err) {
-        console.error("更新訂單狀態失敗", err);
-        return res.status(500).json({
-          message: "更新訂單失敗"
-        });
-      }
-
+    const completeUpdate = () => {
       res.json({
         message: "訂單狀態已更新"
       });
-    });
+    };
+
+    if (payment_status === '已付款') {
+      db.beginTransaction((err) => {
+        if (err) {
+          console.error("Transaction 開始失敗", err);
+          return res.status(500).json({
+            message: "更新訂單失敗"
+          });
+        }
+
+        db.query(sql, values, (err, result) => {
+          if (err) {
+            return db.rollback(() => {
+              console.error("更新訂單狀態失敗", err);
+              res.status(500).json({
+                message: "更新訂單失敗"
+              });
+            });
+          }
+
+          const paymentSql = `
+            UPDATE payments
+            SET status = '已確認', confirmed_at = NOW()
+            WHERE order_id = ? AND status != '已確認'
+          `;
+
+          db.query(paymentSql, [orderId], (err) => {
+            if (err) {
+              return db.rollback(() => {
+                console.error("更新付款狀態失敗", err);
+                res.status(500).json({
+                  message: "更新付款失敗"
+                });
+              });
+            }
+
+            db.commit((err) => {
+              if (err) {
+                return db.rollback(() => {
+                  console.error("Transaction commit 失敗", err);
+                  res.status(500).json({
+                    message: "更新訂單失敗"
+                  });
+                });
+              }
+
+              completeUpdate();
+            });
+          });
+        });
+      });
+    } else {
+      db.query(sql, values, (err, result) => {
+        if (err) {
+          console.error("更新訂單狀態失敗", err);
+          return res.status(500).json({
+            message: "更新訂單失敗"
+          });
+        }
+
+        completeUpdate();
+      });
+    }
   }
 );
 

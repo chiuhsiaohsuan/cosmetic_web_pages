@@ -32,11 +32,11 @@
     flex: 1;
 }
 
-.logo a {
-    text-decoration: none;
-    color: #404040;
-    font-size: 24px;
-    font-weight: bold;
+/* logo image sizing */
+.logo-image {
+    width: 48px;
+    height: auto;
+    object-fit: contain;
 }
 
 .home-link,
@@ -46,8 +46,8 @@
     align-items: center;
     justify-content: center;
 
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
 
     color: #404040;
     text-decoration: none;
@@ -370,6 +370,9 @@
     .logo a {
         font-size: 22px;
     }
+    .logo-image {
+        width: 40px;
+    }
 
 }
 
@@ -389,6 +392,10 @@
     .logo {
 
         flex: unset;
+    }
+
+    .logo-image {
+        width: 36px;
     }
 
     .menu-toggle {
@@ -545,4 +552,15 @@
         font-size: 20px;
     }
 
+}
+
+/* Standalone home-link (SVG anchor) — align vertically with menu items */
+.header > a.home-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 70px;
+    padding: 0 12px;
+    color: #404040;
+    text-decoration: none;
 }

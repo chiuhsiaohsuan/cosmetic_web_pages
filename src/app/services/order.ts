@@ -7,6 +7,7 @@ export interface OrderItem {
   product_name: string;
   quantity: number;
   price: number;
+  submitted_at: string | null;
   subtotal: number;
 }
 
