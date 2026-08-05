@@ -15,6 +15,7 @@ import { AdminLayout } from './admin/admin-layout/admin-layout';
 import { ProductAdd } from './admin/products/product-add/product-add';
 import { ProductList } from './admin/products/product-list/product-list';
 import { AdminOrders } from './admin/orders/admin-orders';
+import { AdminOrderAdd } from './admin/orders/admin-order-add/admin-order-add';
 import { MainLayout } from './main-layout/main-layout';
 import { adminGuard } from './admin/guard';
 import {  AdminMemberComponent } from './admin/member/member';
@@ -66,6 +67,10 @@ export const routes: Routes = [
     {
       path:'products',
       component:ProductList
+    },
+    {
+      path:'orders/add',
+      component: AdminOrderAdd
     },
     {
       path:'orders',

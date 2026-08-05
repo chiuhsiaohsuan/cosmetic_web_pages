@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth';
@@ -12,7 +12,7 @@ import { CartService } from '../services/cart';
   templateUrl: './checkout.html',
   styleUrl: './checkout.css',
 })
-export class Checkout {
+export class Checkout implements OnInit {
 
   private http = inject(HttpClient);
   private authService = inject(AuthService);
@@ -21,7 +21,38 @@ export class Checkout {
 
   receiverName = '';
   receiverPhone = '';
+  receiverEmail = '';
   receiverAddress = '';
+
+  ngOnInit() {
+    const user = this.authService.getUser();
+
+    if (user) {
+      this.receiverName = user.name || '';
+      this.receiverEmail = user.email || '';
+      this.receiverPhone = user.phone || '';
+    }
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      return;
+    }
+
+    this.http.get<any>(`${environment.apiUrl}/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }).subscribe({
+      next: (userData) => {
+        this.receiverName = userData.name || this.receiverName;
+        this.receiverPhone = userData.phone || this.receiverPhone;
+        this.receiverEmail = userData.email || this.receiverEmail;
+      },
+      error: () => {
+        // 讀取會員資料失敗時不影響結帳流程
+      }
+    });
+  }
 
   createOrder() {
 
@@ -45,7 +76,8 @@ export class Checkout {
       user_id: user.id,
       receiver_name: this.receiverName,
       receiver_phone: this.receiverPhone,
-      receiver_address: this.receiverAddress
+      receiver_address: this.receiverAddress,
+      receiver_email: this.receiverEmail || null
     };
 
     this.http.post<any>(

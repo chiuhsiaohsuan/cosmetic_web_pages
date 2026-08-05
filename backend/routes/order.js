@@ -9,6 +9,7 @@ router.post('/', (req, res) => {
         user_id,
         receiver_name,
         receiver_phone,
+        receiver_email,
         receiver_address
     } = req.body;
 
@@ -17,6 +18,7 @@ router.post('/', (req, res) => {
         !user_id ||
         !receiver_name ||
         !receiver_phone ||
+        !receiver_email ||
         !receiver_address
     ) {
         return res.status(400).json({
@@ -102,6 +104,7 @@ router.post('/', (req, res) => {
                     user_id,
                     receiver_name,
                     receiver_phone,
+                    receiver_email,
                     receiver_address,
                     total_amount,
                     order_status,
@@ -116,6 +119,7 @@ router.post('/', (req, res) => {
                     user_id,
                     receiver_name,
                     receiver_phone,
+                    receiver_email,
                     receiver_address,
                     totalAmount
                 ],
@@ -318,9 +322,10 @@ router.get('/my', verifyToken, (req, res) => {
     SELECT
       o.id,
       o.user_id,
-      o.receiver_name,
-      o.receiver_phone,
-      o.receiver_address,
+            o.receiver_name,
+            o.receiver_phone,
+            o.receiver_email,
+            o.receiver_address,
       o.total_amount,
       o.order_status,
       o.payment_status,
@@ -373,8 +378,9 @@ router.get('/my', verifyToken, (req, res) => {
           user_id: row.user_id,
 
           receiver_name: row.receiver_name,
-          receiver_phone: row.receiver_phone,
-          receiver_address: row.receiver_address,
+                    receiver_phone: row.receiver_phone,
+                    receiver_email: row.receiver_email,
+                    receiver_address: row.receiver_address,
 
           total_amount: row.total_amount,
 
@@ -428,6 +434,7 @@ router.get('/:id', (req, res) => {
             user_id,
             receiver_name,
             receiver_phone,
+            receiver_email,
             receiver_address,
             total_amount,
             order_status,
@@ -458,4 +465,35 @@ router.get('/:id', (req, res) => {
     });
 
 });
+
+router.put('/:id/status', verifyToken, (req, res) => {
+  const orderId = req.params.id;
+  const { order_status } = req.body;
+
+  if (!order_status) {
+    return res.status(400).json({ message: '需要 order_status' });
+  }
+
+  const userId = req.user.id;
+
+  const sql = `
+    UPDATE orders
+    SET order_status = ?
+    WHERE id = ? AND user_id = ?
+  `;
+
+  db.query(sql, [order_status, orderId, userId], (err, result) => {
+    if (err) {
+      console.error('更新訂單狀態失敗', err);
+      return res.status(500).json({ message: '更新訂單失敗' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: '找不到該訂單或無權限更新' });
+    }
+
+    res.json({ message: '訂單狀態已更新' });
+  });
+});
+
 module.exports = router;

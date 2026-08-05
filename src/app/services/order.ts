@@ -18,6 +18,7 @@ export interface Order {
 
   receiver_name: string;
   receiver_phone: string;
+  receiver_email?: string | null;
   receiver_address: string;
 
   total_amount: number;
@@ -54,5 +55,16 @@ export class OrderService {
       `${this.apiUrl}/my`,
       { headers }
     );
+  }
+
+  updateStatus(id: number, orderStatus: string) {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    return this.http.put(`${this.apiUrl}/${id}/status`, {
+      order_status: orderStatus
+    }, { headers });
   }
 }

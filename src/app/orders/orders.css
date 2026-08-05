@@ -206,7 +206,161 @@
   font-size: 18px;
 }
 
+.complete-order-btn {
+  margin-top: 12px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #78907A;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
 
-.order-footer strong {
-  font-size: 24px;
+.complete-order-btn:hover {
+  background: #6B8f71;
+}
+.status-modal .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.status-modal .modal-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.status-modal .close-btn {
+  border: none;
+  background: transparent;
+  font-size: 1.6rem;
+  cursor: pointer;
+  color: #333;
+}
+
+.status-modal .modal-body {
+  display: grid;
+  gap: 22px;
+}
+
+.modal-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  padding: 18px;
+  background: #fafafa;
+}
+
+.modal-summary strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.modal-summary p {
+  margin: 0;
+  color: #222;
+  font-weight: 600;
+}
+
+.timeline {
+  display: grid;
+  gap: 16px;
+}
+
+.timeline-item {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 14px;
+  align-items: start;
+  position: relative;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: 13px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #eeeeee;
+  border-radius: 2px;
+}
+
+.timeline-item.active::before {
+  background: #9FB8A3;
+}
+
+.timeline-marker {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #eee;
+  margin: 0px 7px;
+  z-index: 1;
+}
+
+.timeline-item.active .timeline-marker {
+  background: #9FB8A3;
+  box-shadow: 0 0 0 4px rgba(45, 223, 98, 0.144);
+}
+
+.timeline-content {
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: #f9fff7;
+  border: 1px solid #e6ebff;
+}
+
+.timeline-item.active .timeline-content {
+  background: #e3f1e4;
+  border-color: #d4ffc7;
+}
+
+.timeline-title {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.timeline-desc {
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.status-link {
+  cursor: pointer;
+  color: #17ce20;
+  text-decoration: none;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 998;
+}
+
+.status-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(92vw, 760px);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  padding: 24px;
+}
+
+.timeline-time {
+  color: #888;
+  font-size: 13px;
 }

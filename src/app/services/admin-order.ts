@@ -35,4 +35,14 @@ export class AdminOrderService {
       payment_status: paymentStatus
     });
   }
+
+  createOrder(data: {
+    user_id: number;
+    receiver_name: string;
+    receiver_phone: string;
+    receiver_address: string;
+    items: Array<{ product_id: number; quantity: number }>;
+  }) {
+    return this.http.post(`${this.apiUrl}`, data);
+  }
 }

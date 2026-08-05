@@ -1,0 +1,115 @@
+form {
+  width: 720px;
+  max-width: 100%;
+  background: #fff;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  display: grid;
+  gap: 20px;
+}
+
+.admin-order-add-container {
+  padding: 24px;
+}
+
+.admin-order-add-container h2 {
+  margin-bottom: 20px;
+  font-size: 28px;
+  color: #222;
+}
+
+label {
+  font-weight: 600;
+  color: #333;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #2d6cdf;
+  box-shadow: 0 0 0 4px rgba(45, 108, 223, 0.12);
+}
+
+.product-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr auto;
+  gap: 12px;
+  align-items: end;
+}
+
+button[type="button"],
+button[type="submit"] {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 10px;
+  background: #2d6cdf;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button[type="button"]:hover,
+button[type="submit"]:hover:not(:disabled) {
+  background: #245bb5;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.items-table {
+  background: #f8fbff;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #e9eff8;
+}
+
+.items-heading {
+  margin-bottom: 12px;
+  font-weight: 700;
+  color: #111;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 12px 10px;
+  text-align: left;
+  border-bottom: 1px solid #e6ebf3;
+}
+
+th {
+  color: #555;
+  font-weight: 600;
+}
+
+.order-total {
+  margin-top: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.error {
+  color: #b93a3a;
+  background: #ffeeef;
+  padding: 14px 16px;
+  border: 1px solid #f1c2c2;
+  border-radius: 12px;
+}

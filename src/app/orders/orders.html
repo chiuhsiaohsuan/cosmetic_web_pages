@@ -40,138 +40,98 @@
 
     <div class="order-card">
 
-
       <!-- 訂單標題 -->
-
       <div class="order-header">
-
         <div>
-
-          <h2>
-            訂單 #{{ order.id }}
-          </h2>
-
-          <p class="date">
-            {{ order.created_at | date:'yyyy/MM/dd HH:mm' }}
-          </p>
-
+          <h2>訂單 #{{ order.id }}</h2>
+          <p class="date">{{ order.created_at | date:'yyyy/MM/dd HH:mm' }}</p>
         </div>
-
 
         <div class="status-area">
+          <span class="order-status status-link" (click)="openStatusModal(order)">
+            查看訂單狀態
+          </span>
 
-        <span class="order-status">
-            訂單狀態：{{ order.order_status }}
-        </span>
-
-
-        @if (order.payment_status === '未付款') {
-
-            <a
-            class="payment-status unpaid"
-            [routerLink]="['/payment', order.id]"
-            >
-            付款狀態：未付款
+          @if (order.payment_status === '未付款') {
+            <a class="payment-status unpaid" [routerLink]="['/payment', order.id]">
+              付款狀態：未付款
             </a>
-
-        } @else {
-
-            <span
-            class="payment-status"
-            >
-            付款狀態：{{ order.payment_status }}
-            </span>
-
-        }
-
+          } @else {
+            <span class="payment-status">付款狀態：{{ order.payment_status }}</span>
+          }
         </div>
-
+        @if (order.order_status === '已出貨') {
+          <button class="complete-order-btn" (click)="completeOrder(order)">確認收貨</button>
+        }
       </div>
-
 
       <!-- 收件資訊 -->
-
       <div class="receiver">
-
         <h3>收件資訊</h3>
-
-        <p>
-          姓名：{{ order.receiver_name }}
-        </p>
-
-        <p>
-          電話：{{ order.receiver_phone }}
-        </p>
-
-        <p>
-          地址：{{ order.receiver_address }}
-        </p>
-
+        <p>姓名：{{ order.receiver_name }}</p>
+        <p>電話：{{ order.receiver_phone }}</p>
+        <p>電子郵件：{{ order.receiver_email }}</p>
+        <p>地址：{{ order.receiver_address }}</p>
       </div>
-
 
       <!-- 商品 -->
-
       <div class="items">
-
         <h3>商品明細</h3>
-
-
         @for (item of order.items; track item.product_id) {
-
           <div class="item">
-
-            <div class="item-name">
-
-              {{ item.product_name }}
-
-            </div>
-
-
-            <div class="item-quantity">
-
-              x {{ item.quantity }}
-
-            </div>
-
-
-            <div class="item-price">
-
-              ${{ item.price }}
-
-            </div>
-
-
-            <div class="item-subtotal">
-
-              ${{ item.subtotal }}
-
-            </div>
-
+            <div class="item-name">{{ item.product_name }}</div>
+            <div class="item-quantity">x {{ item.quantity }}</div>
+            <div class="item-price">${{ item.price }}</div>
+            <div class="item-subtotal">${{ item.subtotal }}</div>
           </div>
-
         }
-
       </div>
-
 
       <!-- 總金額 -->
-
       <div class="order-footer">
-
-        <span>
-          訂單金額
-        </span>
-
-        <strong>
-          ${{ order.total_amount }}
-        </strong>
-
+        <span>訂單金額</span>
+        <strong>${{ order.total_amount }}</strong>
       </div>
-
-
     </div>
-
   }
 
+  @if (showStatusModal()) {
+    <div class="modal-backdrop" (click)="closeStatusModal()"></div>
+    <div class="status-modal">
+      <div class="modal-header">
+        <h2>訂單進度 #{{ selectedOrder()?.id }}</h2>
+        <button class="close-btn" (click)="closeStatusModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-summary">
+          <div>
+            <strong>訂單狀態</strong>
+            <p>{{ selectedOrder()?.order_status }}</p>
+          </div>
+          <div>
+            <strong>付款狀態</strong>
+            <p>{{ selectedOrder()?.payment_status }}</p>
+          </div>
+          <div>
+            <strong>成立時間</strong>
+            <p>{{ selectedOrder()?.created_at | date:'yyyy/MM/dd HH:mm' }}</p>
+          </div>
+        </div>
+        <div class="timeline">
+          @for (step of statusTimeline(); track step.title) {
+            <div class="timeline-item" [class.active]="step.active">
+              <div class="timeline-marker"></div>
+              <div class="timeline-content">
+                <div class="timeline-title">{{ step.title }}</div>
+                <div class="timeline-desc">{{ step.description }}</div>
+                <div class="timeline-time">
+                  {{ step.time ? (step.time | date:'yyyy/MM/dd HH:mm') : '等待中' }}
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
 </div>

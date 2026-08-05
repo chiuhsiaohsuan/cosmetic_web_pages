@@ -1,0 +1,74 @@
+<div class="admin-order-add-container">
+  <h2>新增訂單</h2>
+
+  @if (errorMessage()) {
+    <div class="error">{{ errorMessage() }}</div>
+  }
+
+  <form [formGroup]="orderForm">
+    <label>會員（可空）</label>
+    <select formControlName="user_id">
+      <option value="">不指定會員（訪客訂單）</option>
+      @for (user of users(); track user.id) {
+        <option value="{{ user.id }}">{{ user.name }} ({{ user.email }})</option>
+      }
+    </select>
+
+    <label>收件人姓名</label>
+    <input type="text" formControlName="receiver_name" placeholder="收件人姓名" />
+
+    <label>收件人電話</label>
+    <input type="text" formControlName="receiver_phone" placeholder="收件人電話" />
+
+    <label>收件人電子郵件</label>
+    <input type="text" formControlName="receiver_email" placeholder="收件人電子郵件" />
+
+    <label>收件地址</label>
+    <input type="text" formControlName="receiver_address" placeholder="收件地址" />
+
+    <label>新增商品</label>
+    <div class="product-row">
+      <select formControlName="selectedProductId">
+        <option value="">請選擇商品</option>
+        @for (product of products(); track product.id) {
+          <option value="{{ product.id }}">{{ product.name }} - ${{ product.price }}</option>
+        }
+      </select>
+      <input type="number" formControlName="selectedQuantity" min="1" />
+      <button type="button" (click)="addItem()">加入</button>
+    </div>
+
+    @if (items().length > 0) {
+      <div class="items-table">
+        <div class="items-heading">已加入商品</div>
+        <table>
+          <thead>
+            <tr>
+              <th>商品</th>
+              <th>數量</th>
+              <th>單價</th>
+              <th>小計</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of items(); track item.product_id) {
+              <tr>
+                <td>{{ item.product_name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.price }}</td>
+                <td>${{ item.subtotal }}</td>
+                <td><button type="button" (click)="removeItem($index)">移除</button></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        <div class="order-total">總金額：${{ orderTotal() }}</div>
+      </div>
+    }
+
+    <button type="button" (click)="createOrder()" [disabled]="loading()">
+      {{ loading() ? '建立中...' : '建立訂單' }}
+    </button>
+  </form>
+</div>
