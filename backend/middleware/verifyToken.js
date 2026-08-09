@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-
+const db = require('../db');
 
 function verifyToken(req, res, next){
 
@@ -31,10 +31,28 @@ function verifyToken(req, res, next){
 
             }
 
+            db.query(
+                'SELECT status FROM users WHERE id = ?',
+                [user.id],
+                (dbErr, rows)=>{
+                    if (dbErr) {
+                        console.error(dbErr);
+                        return res.status(500).json({ message: '驗證失敗' });
+                    }
 
-            req.user = user;
+                    if (!rows.length) {
+                        return res.status(401).json({ message: '使用者不存在' });
+                    }
 
-            next();
+                    if (rows[0].status === 'disabled') {
+                        res.set('X-Account-Disabled', 'true');
+                        return res.status(403).json({ message: '帳號已停權' });
+                    }
+
+                    req.user = user;
+                    next();
+                }
+            );
 
         }
     );

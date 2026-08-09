@@ -30,7 +30,7 @@ export class Checkout implements OnInit {
     if (user) {
       this.receiverName = user.name || '';
       this.receiverEmail = user.email || '';
-      this.receiverPhone = user.phone || '';
+      this.receiverPhone = user.phone || user.mobile || '';
     }
 
     const token = localStorage.getItem('token');

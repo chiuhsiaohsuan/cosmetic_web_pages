@@ -18,7 +18,7 @@ export interface Order {
 
   receiver_name: string;
   receiver_phone: string;
-  receiver_email?: string | null;
+  receiver_email: string;
   receiver_address: string;
 
   total_amount: number;

@@ -1,5 +1,7 @@
 import { Component, signal  } from '@angular/core';
+import { Router } from '@angular/router';
 import { AdminMemberService } from '../../services/admin-member';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-member',
@@ -12,7 +14,9 @@ export class  AdminMemberComponent {
   selectedUser = signal<any>(null);
 
   constructor(
-    private adminMemberService: AdminMemberService
+    private adminMemberService: AdminMemberService,
+    private authService: AuthService,
+    private router: Router
   ){}
 
 
@@ -46,19 +50,32 @@ export class  AdminMemberComponent {
 
       this.adminMemberService
       .updateStatus(user.id,newStatus)
-      .subscribe(()=>{
+      .subscribe({
+        next: () => {
           this.users.update(users =>
-
-              users.map(item =>
-
-                  item.id === user.id
-                  ? {
-                      ...item,
-                      status:newStatus
+            users.map(item =>
+              item.id === user.id
+                ? {
+                    ...item,
+                    status:newStatus
                   }
-                  : item
-              )
+                : item
+            )
           );
+
+          if (newStatus === 'disabled') {
+            const currentUser = this.authService.getUser();
+            if (currentUser && currentUser.id === user.id) {
+              localStorage.removeItem('user');
+              localStorage.removeItem('token');
+              this.authService.logout();
+              window.location.href = '/login';
+            }
+          }
+        },
+        error: () => {
+          alert('更新會員狀態失敗');
+        }
       });
 
   }

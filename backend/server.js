@@ -11,24 +11,29 @@ const orderRouter = require('./routes/order');
 const paymentRouter = require('./routes/payment');
 const userRouter = require('./routes/user');
 const adminOrdersRouter = require('./routes/adminOrders');
+const transporter = require('./middleware/mailer');
+const forgotPassRouter = require('./routes/forgotPass');
 
 
 app.use(cors({
     origin:[
         'http://localhost:4200',
-        'https://web-cosmetic-c11d0.web.app'
+        'https://web-cosmetic-c11d0.web.app',
+        'https://chengyi-group.com.tw'
     ],
     methods:['GET','POST','PUT','DELETE','OPTIONS'],
     allowedHeaders:[
         'Content-Type',
         'Authorization'
-    ]
+    ],
+    exposedHeaders:['X-Account-Disabled']
 }));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static("public"));
 app.use("/uploads",express.static("uploads"));
 app.use('/api', userRouter);
+app.use('/api', forgotPassRouter);
 app.use(
     '/api/products',
     productDetailImage
@@ -258,6 +263,7 @@ app.post('/api/login',(req,res)=>{
                 id:user.id,
                 name:user.name,
                 email:user.email,
+                phone:user.phone,
                 role:user.role
             }
         });

@@ -17,6 +17,11 @@ export class ApiService {
           password
       });
     }
+  forgotPassword(email: string) {
+      return this.http.post(`${this.apiUrl}/forgot-password`, {
+          email
+      });
+  }
   register(
       name:string,
       birthday:string,

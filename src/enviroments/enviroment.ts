@@ -3,12 +3,12 @@ export const environment = {
   production:false,
 
   apiUrl:
-  'https://nicholas-cheers-jonathan-gorgeous.trycloudflare.com/api',
+  'https://api.chengyi-group.com.tw/api',
 
   adminApiUrl:
-  'https://nicholas-cheers-jonathan-gorgeous.trycloudflare.com/api/admin',
+  'https://api.chengyi-group.com.tw/api/admin',
 
   imageUrl:
-  'https://nicholas-cheers-jonathan-gorgeous.trycloudflare.com'
+  'https://api.chengyi-group.com.tw'
 
 };

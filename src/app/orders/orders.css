@@ -307,7 +307,7 @@
 
 .timeline-item.active .timeline-marker {
   background: #9FB8A3;
-  box-shadow: 0 0 0 4px rgba(45, 223, 98, 0.144);
+  box-shadow: 0 0 0 4px rgba(165, 202, 176, 0.144);
 }
 
 .timeline-content {
@@ -342,7 +342,7 @@
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.45);
-  z-index: 998;
+  z-index: 1099;
 }
 
 .status-modal {
@@ -356,7 +356,7 @@
   background: #fff;
   border-radius: 18px;
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.2);
-  z-index: 999;
+  z-index: 1100;
   padding: 24px;
 }
 

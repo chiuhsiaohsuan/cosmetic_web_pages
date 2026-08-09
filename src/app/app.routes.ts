@@ -6,6 +6,7 @@ import{ Product } from './product/product';
 import{ ProductDetail } from './product-detail/product-detail';
 import{ Login } from './login/login';
 import{ Register } from './register/register';
+import{ ForgotPassword } from './login/forgot-password';
 import{ Team } from './about/team/team';
 import{ Vision } from './about/vision/vision';
 import{ Blog } from './blog/blog'; 
@@ -23,6 +24,7 @@ import { Member } from './member/member';
 import { Checkout } from './checkout/checkout';
 import { Payment } from './payment/payment';
 import { Orders } from './orders/orders';
+import { ResetPasswordComponent } from './reset-password/reset-password';
 
 export const routes: Routes = [
   {
@@ -37,13 +39,15 @@ export const routes: Routes = [
     { path: 'product', component: Product },
     { path: 'product/:id', component: ProductDetail },
     { path: 'login', component: Login },
+    { path: 'forgot-password', component: ForgotPassword },
     { path: 'register', component: Register },
     { path: 'blog', component: Blog },
     { path: 'cart', component: Cart },
     { path: 'member', component: Member },
     { path: 'checkout', component: Checkout },
     { path: 'payment/:orderId', component: Payment },
-    { path: 'orders', component: Orders }
+    { path: 'orders', component: Orders },
+    { path: 'reset-password', component: ResetPasswordComponent }
   ]
   },
   { path:'admin', component: AdminLayout,

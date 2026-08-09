@@ -1,5 +1,8 @@
-import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, EMPTY, Subscription, timer } from 'rxjs';
+import { catchError, exhaustMap } from 'rxjs/operators';
+import { environment } from '../../enviroments/enviroment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +13,30 @@ export class AuthService {
     localStorage.getItem('user') !== null
   );
   loginStatus$ = this.loginStatus.asObservable();
+  private sessionCheck?: Subscription;
+
+  constructor(private http: HttpClient) {}
+
+  // Detect account suspension even while the member leaves the browser idle.
+  startSessionMonitoring() {
+    if (this.sessionCheck) {
+      return;
+    }
+
+    this.sessionCheck = timer(0, 5000).pipe(
+      exhaustMap(() => {
+        if (!this.isLogin()) {
+          return EMPTY;
+        }
+
+        return this.http.get(`${environment.apiUrl}/user`).pipe(
+          // The interceptor removes the credentials when the server reports a
+          // suspended account. Stop this request without producing an error.
+          catchError(() => EMPTY)
+        );
+      })
+    ).subscribe();
+  }
 
   
   // 登入
