@@ -363,6 +363,39 @@ router.put("/:id", verifyToken, verifyAdmin, upload.single("image"),
 
     }
 );
+// 商品下架
+router.put("/:id/status", (req, res) => {
+
+    const productId = req.params.id;
+
+    const sql = `
+        UPDATE products
+        SET status = IF(status = 'active', 'inactive', 'active')
+        WHERE id = ?
+    `;
+
+    db.query(sql, [productId], (err, result) => {
+
+        if (err) {
+            console.error(err);
+            return res.status(500).json({
+                message: "Database error"
+            });
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({
+                message: "找不到此商品"
+            });
+        }
+
+        res.json({
+            message: "商品狀態更新成功"
+        });
+
+    });
+
+});
 
 // 修改產品特色圖片
 router.put(

@@ -21,16 +21,49 @@
   color: red;
 }
 
+.empty {
+
+    text-align:center;
+
+    padding:60px 20px;
+
+    border:1px dashed #ccc;
+
+    border-radius:10px;
+
+}
 
 .empty p {
-  margin-bottom: 20px;
+
+    color:#777;
+
+    margin-bottom:25px;
+
 }
 
 
 .empty a {
-  text-decoration: none;
+
+    display:inline-block;
+
+    padding:10px 20px;
+
+    background:#6B8f71;
+
+    color:white;
+
+    text-decoration:none;
+
+    border-radius:6px;
+
 }
 
+
+.empty a:hover {
+
+    opacity:0.8;
+
+}
 
 /* =========================
    訂單卡片
@@ -313,8 +346,8 @@
 .timeline-content {
   padding: 14px 18px;
   border-radius: 16px;
-  background: #f9fff7;
-  border: 1px solid #e6ebff;
+  background: #fdfdfd;
+  border: 1px solid #edf3ee;
 }
 
 .timeline-item.active .timeline-content {

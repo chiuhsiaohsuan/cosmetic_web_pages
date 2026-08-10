@@ -6,6 +6,7 @@
     <th>價格</th>
     <th>庫存</th>
     <th>熱門</th>
+    <th>狀態</th>
     <th>操作</th>
   </tr>
   @for (p of products(); track p.id) {
@@ -21,9 +22,20 @@
 
         <td>{{ p.isHot ? '是' : '否' }}</td>
 
+        <td>{{ p.status === 'active' ? '上架中' : '已下架' }}</td>
+
         <td>
-        <button  [routerLink]="['/admin/products/edit', p.id]">修改</button>
-        <button (click)="deleteProduct(p.id)">刪除</button>
+            <button [routerLink]="['/admin/products/edit', p.id]">
+            修改
+            </button>
+
+            <button (click)="toggleProductStatus(p.id)">
+            {{ p.status === 'active' ? '下架' : '上架' }}
+            </button>
+
+            <button (click)="deleteProduct(p.id)">
+            刪除
+            </button>
         </td>
 
     </tr>

@@ -25,6 +25,7 @@ import { Checkout } from './checkout/checkout';
 import { Payment } from './payment/payment';
 import { Orders } from './orders/orders';
 import { ResetPasswordComponent } from './reset-password/reset-password';
+import { LocationComponent } from './about/location/location';
 
 export const routes: Routes = [
   {
@@ -47,7 +48,8 @@ export const routes: Routes = [
     { path: 'checkout', component: Checkout },
     { path: 'payment/:orderId', component: Payment },
     { path: 'orders', component: Orders },
-    { path: 'reset-password', component: ResetPasswordComponent }
+    { path: 'reset-password', component: ResetPasswordComponent },
+    { path: 'about/location', component: LocationComponent }
   ]
   },
   { path:'admin', component: AdminLayout,

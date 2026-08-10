@@ -13,6 +13,7 @@ const userRouter = require('./routes/user');
 const adminOrdersRouter = require('./routes/adminOrders');
 const transporter = require('./middleware/mailer');
 const forgotPassRouter = require('./routes/forgotPass');
+const verificationCodes = new Map();
 
 
 app.use(cors({
@@ -94,7 +95,7 @@ verifyToken,
 //取得全部商品
 app.get("/api/products",(req,res)=>{
 
-    const sql = "SELECT * FROM products";
+    const sql = "SELECT * FROM products WHERE status='active'";
 
     db.query(sql,(err,result)=>{
 
@@ -140,7 +141,117 @@ app.get('/api/products/:id',(req,res)=>{
 
 
 });
+app.post("/api/send-verification-code", async (req, res) => {
 
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({
+            success: false,
+            message: "請輸入電子郵件"
+        });
+    }
+
+    // 產生 6 位數驗證碼
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // 儲存驗證碼，5 分鐘後過期
+    verificationCodes.set(email, {
+        code: code,
+        expires: Date.now() + 5 * 60 * 1000,
+        verified: false
+    });
+
+    try {
+
+        await transporter.sendMail({
+            from: `"${process.env.MAIL_FROM_NAME}"<${process.env.MAIL_FROM}>`,
+            to: email,
+            subject: "會員註冊 Email 驗證碼",
+            html: `
+                <h2>會員註冊驗證</h2>
+
+                <p>您好，您的電子郵件驗證碼是：</p>
+
+                <h1>${code}</h1>
+
+                <p>驗證碼 5 分鐘內有效。</p>
+
+                <p>如果不是您本人操作，請忽略此信件。</p>
+            `
+        });
+
+        console.log(`驗證碼 ${code} 已寄送至 ${email}`);
+
+        res.json({
+            success: true,
+            message: "驗證碼已寄出"
+        });
+
+    } catch (error) {
+
+        console.error("Email 發送失敗:", error);
+
+        // 寄信失敗就把驗證碼刪掉
+        verificationCodes.delete(email);
+
+        res.status(500).json({
+            success: false,
+            message: "驗證碼寄送失敗"
+        });
+    }
+});
+app.post("/api/verify-email", (req, res) => {
+
+    const { email, code } = req.body;
+
+    if (!email || !code) {
+        return res.status(400).json({
+            success: false,
+            message: "請輸入 Email 和驗證碼"
+        });
+    }
+
+    const data = verificationCodes.get(email);
+
+    // 找不到驗證碼
+    if (!data) {
+        return res.status(400).json({
+            success: false,
+            message: "驗證碼不存在或已失效"
+        });
+    }
+
+    // 驗證碼過期
+    if (Date.now() > data.expires) {
+
+        verificationCodes.delete(email);
+
+        return res.status(400).json({
+            success: false,
+            message: "驗證碼已過期，請重新取得"
+        });
+    }
+
+    // 驗證碼錯誤
+    if (data.code !== code) {
+        return res.status(400).json({
+            success: false,
+            message: "驗證碼錯誤"
+        });
+    }
+
+    // 驗證成功
+    data.verified = true;
+
+    verificationCodes.set(email, data);
+
+    res.json({
+        success: true,
+        message: "Email 驗證成功"
+    });
+
+});
 app.post("/api/register",async(req,res)=>{
 
     const {
@@ -151,7 +262,17 @@ app.post("/api/register",async(req,res)=>{
         email
     } = req.body;
 
+    // 檢查 Email 是否已驗證
+    const verification = verificationCodes.get(email);
 
+    if (!verification || !verification.verified) {
+
+        return res.status(400).json({
+            success: false,
+            message: "請先完成電子郵件驗證"
+        });
+
+    }
     const bcrypt = require('bcrypt');
     const hashPassword = await bcrypt.hash(password, 10);
     const sql = `INSERT INTO users(name,birthday,password,phone,email,status)VALUES(?,?,?,?,?,?)`;
@@ -177,7 +298,8 @@ app.post("/api/register",async(req,res)=>{
                 .json(err);
 
             }
-
+            // 註冊完成後刪除驗證碼
+            verificationCodes.delete(email);
             res.json({
 
                 success:true,

@@ -37,8 +37,8 @@ select {
 input:focus,
 select:focus {
   outline: none;
-  border-color: #2d6cdf;
-  box-shadow: 0 0 0 4px rgba(45, 108, 223, 0.12);
+  border-color: #2f2e32;
+  box-shadow: 0 0 0 3px rgba(24, 16, 40, 0.15);
 }
 
 .product-row {
@@ -53,7 +53,7 @@ button[type="submit"] {
   padding: 12px 18px;
   border: none;
   border-radius: 10px;
-  background: #2d6cdf;
+  background: black;
   color: white;
   font-size: 16px;
   cursor: pointer;
@@ -61,7 +61,7 @@ button[type="submit"] {
 
 button[type="button"]:hover,
 button[type="submit"]:hover:not(:disabled) {
-  background: #245bb5;
+  background: #333;
 }
 
 button:disabled {

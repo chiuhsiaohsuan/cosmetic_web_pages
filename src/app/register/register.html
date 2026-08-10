@@ -13,7 +13,52 @@
         </div>
         <div class="input-group">
             <label for="email">電子郵件</label>
-            <input type="email" id="email" [(ngModel)]="email" name="email" placeholder="請輸入 Email">
+
+            <div class="email-group">
+                <input
+                    type="email"
+                    id="email"
+                    [(ngModel)]="email"
+                    name="email"
+                    placeholder="請輸入 Email"
+                >
+
+                <button
+                    type="button"
+                    (click)="sendVerificationCode()"
+                    [disabled]="email === '' || sendingCode"
+                >
+                    {{ sendingCode ? '發送中...' : '發送驗證碼' }}
+                </button>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="verificationCode">電子郵件驗證碼</label>
+
+            <div class="verification-group">
+                <input
+                    type="text"
+                    id="verificationCode"
+                    [(ngModel)]="verificationCode"
+                    name="verificationCode"
+                    placeholder="請輸入驗證碼"
+                >
+
+                <button
+                    type="button"
+                    (click)="verifyEmail()"
+                    [disabled]="verificationCode === ''"
+                >
+                    驗證
+                </button>
+            </div>
+
+            @if(emailVerified) {
+                <p class="success">
+                    ✓ 電子郵件驗證成功
+                </p>
+            }
         </div>
 
         <div class="input-group">

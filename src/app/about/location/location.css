@@ -1,0 +1,22 @@
+.location-page {
+  width: 100%;
+  padding: 60px 8%;
+  box-sizing: border-box;
+}
+
+.location-page h1 {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.map-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.map-container iframe {
+  display: block;
+}

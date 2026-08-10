@@ -166,7 +166,14 @@ export class ProductService {
     );
 
   }
-
+  // 下架商品
+  disableProduct(id: number) {
+    return this.http.put(
+      `${this.adminApiUrl}/${id}/status`,
+      {},
+      this.getHeaders()
+    );
+  }
 
 
 }

@@ -40,6 +40,21 @@ export class ApiService {
           email
           }
       );
-      }
+    }
+    sendVerificationCode(email: string) {
+        return this.http.post(
+            `${this.apiUrl}/send-verification-code`,
+            { email }
+        );
+    }
 
+    verifyEmail(email: string, code: string) {
+        return this.http.post(
+            `${this.apiUrl}/verify-email`,
+            {
+            email,
+            code
+            }
+        );
+    }
 }

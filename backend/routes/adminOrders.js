@@ -264,9 +264,6 @@ router.put(
   }
 );
 
-module.exports = router;
-
-// 新增訂單（後台）：可以帶 user_id 或不帶（訪客）
 router.post(
   '/',
   verifyToken,
@@ -390,3 +387,4 @@ router.post(
     });
   }
 );
+module.exports = router;

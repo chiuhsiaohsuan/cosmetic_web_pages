@@ -86,4 +86,23 @@ export class ProductList {
       });
 
   }
+  toggleProductStatus(id: number) {
+
+    this.productService.disableProduct(id).subscribe({
+
+      next: () => {
+
+        this.loadProducts();
+
+      },
+
+      error: (err) => {
+
+        console.error('商品狀態更新失敗', err);
+
+      }
+
+    });
+
+  }
 }

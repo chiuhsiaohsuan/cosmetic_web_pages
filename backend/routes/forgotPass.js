@@ -30,8 +30,8 @@ router.post('/forgot-password', (req, res) => {
         }
 
         if (result.length === 0) {
-            return res.status(404).json({
-                message: '找不到此電子郵件'
+            return res.status(200).json({
+                message: '如果此電子郵件已註冊，重設密碼信將會寄出'
             });
         }
 

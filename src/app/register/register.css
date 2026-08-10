@@ -1,113 +1,168 @@
-/* 註冊頁背景 */
 .register-container {
     width: 100%;
     min-height: calc(100vh - 80px);
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px 20px 50px;
+    padding: 32px 20px 50px;
     box-sizing: border-box;
-    background: #F3F8F4;
+    background: #f3f8f4;
 }
 
-/* 註冊卡片 */
 .register-form {
-    width: 100%;
-    max-width: 420px;
-    background: #fff;
+    width: min(100%, 420px);
     padding: 40px 35px;
+    box-sizing: border-box;
+    background: #fff;
     border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(55, 76, 59, 0.12);
     text-align: center;
 }
 
-/* 標題 */
 .register-form h2 {
-    margin-bottom: 30px;
+    margin: 0 0 30px;
     color: #333;
     font-size: 30px;
 }
 
-/* 輸入欄位 */
 .input-group {
-    text-align: left;
     margin-bottom: 20px;
+    text-align: left;
 }
 
 .input-group label {
     display: block;
     margin-bottom: 8px;
     color: #555;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .input-group input {
     width: 100%;
     padding: 12px 15px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    font-size: 16px;
     box-sizing: border-box;
-    transition: 0.3s;
+    border: 1px solid #d9ded8;
+    border-radius: 10px;
+    color: #333;
+    font-size: 16px;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-/* 輸入框 focus */
 .input-group input:focus {
-    border-color: #D9DED8;
+    border-color: #78907a;
     outline: none;
-    box-shadow: 0 0 8px rgba(63, 155, 75, 0.25);
+    box-shadow: 0 0 0 3px rgba(120, 144, 122, 0.16);
 }
-.error{
-    color: rgb(219, 36, 36);
+
+.email-group,
+.verification-group {
+    display: flex;
+    gap: 10px;
 }
-/* 註冊按鈕 */
-.register-form button {
-    width: 100%;
-    padding: 14px;
-    background: #78907A;
-    color: white;
+
+.email-group input,
+.verification-group input {
+    min-width: 0;
+    flex: 1;
+}
+
+.email-group button,
+.verification-group button {
+    flex: 0 0 auto;
+    min-height: 46px;
+    padding: 0 14px;
     border: none;
     border-radius: 10px;
-    font-size: 18px;
+    background: #9fb8a3;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
     cursor: pointer;
-    transition: 0.3s;
+    transition: background 0.2s, transform 0.2s;
 }
 
-.register-form button:hover {
-    background: #6B8F71;
+.email-group button:hover:not(:disabled),
+.verification-group button:hover:not(:disabled) {
+    background: #78907a;
+}
+
+.email-group button:disabled,
+.verification-group button:disabled {
+    background: #d8ded8;
+    color: #889088;
+    cursor: not-allowed;
+}
+
+.error,
+.success {
+    margin: 7px 0 0;
+    font-size: 14px;
+}
+
+.error {
+    color: #c84d4d;
+}
+
+.success {
+    color: #56845d;
+}
+
+.register-form > button[type='submit'] {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #78907a;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.register-form > button[type='submit']:hover {
+    background: #6b8f71;
     transform: translateY(-2px);
 }
 
-/* 返回登入 */
 .login-link {
-    margin-top: 20px;
+    margin: 20px 0 0;
     color: #666;
 }
 
 .login-link a {
-    color: #9FB8A3;
+    color: #78907a;
+    font-weight: 700;
     text-decoration: none;
-    font-weight: bold;
-    cursor: pointer;
 }
 
 .login-link a:hover {
     text-decoration: underline;
 }
 
-
-/* 手機版 */
-@media (max-width: 768px) {
-
+@media (max-width: 480px) {
     .register-container {
-        padding: 90px 20px 20px;
+        align-items: flex-start;
+        padding: 24px 16px 40px;
     }
 
     .register-form {
-        padding: 30px 25px;
+        padding: 30px 22px;
     }
 
     .register-form h2 {
         font-size: 26px;
+    }
+
+    .email-group,
+    .verification-group {
+        flex-direction: column;
+    }
+
+    .email-group button,
+    .verification-group button {
+        width: 100%;
+        min-height: 44px;
     }
 }
