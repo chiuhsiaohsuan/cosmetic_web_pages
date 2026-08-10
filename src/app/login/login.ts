@@ -1,8 +1,8 @@
-import { Component, resource } from '@angular/core';
-import { RouterLink } from "@angular/router";
+import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../services/api';
-import { AuthService } from '../services/auth'; 
+import { AuthService } from '../services/auth';
 import { Router } from '@angular/router';
 
 @Component({
@@ -12,36 +12,44 @@ import { Router } from '@angular/router';
   styleUrl: './login.css',
 })
 export class Login {
+
   email = '';
   password = '';
- constructor(
+
+  constructor(
     private api: ApiService,
     private auth: AuthService,
     private router: Router
   ) {}
+
   login() {
 
     this.api.login(this.email, this.password)
       .subscribe({
 
-        next: (res:any) => {
+        next: () => {
 
-          this.auth.login(res.token, res.user);
+          this.api.getMe().subscribe({
 
+          next: (res: any) => {
 
-          if(res.user.role === "admin") {
+              this.auth.setUser(res.user);
 
-            this.router.navigate([
-              "/admin/products"
-            ]);
+              if (res.user.role === 'admin') {
+                  this.router.navigate(['/admin/products']);
+              } else {
+                  this.router.navigate(['/']);
+              }
 
-          } else {
+          },
 
-            this.router.navigate([
-              "/"
-            ]);
+            error: () => {
 
-          }
+              alert('無法取得使用者資料');
+
+            }
+
+          });
 
         },
 
@@ -54,4 +62,5 @@ export class Login {
       });
 
   }
+
 }

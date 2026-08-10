@@ -38,7 +38,9 @@
     height: auto;
     object-fit: contain;
 }
-
+.home-svg{
+    margin-left:50px;
+}
 .home-link,
 .cart-link,
 .login-link {

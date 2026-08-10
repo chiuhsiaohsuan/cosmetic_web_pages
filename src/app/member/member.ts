@@ -1,4 +1,4 @@
-import { Component, signal  } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -10,11 +10,12 @@ import { environment } from '../../enviroments/enviroment';
   templateUrl: './member.html',
   styleUrl: './member.css',
 })
-export class Member{
-  user = signal<any>({
-    name:'',
-    email:'',
-    phone:'',
+export class Member {
+
+  user = signal({
+    name: '',
+    email: '',
+    phone: '',
     oldPassword: '',
     newPassword: '',
     confirmPassword: ''
@@ -22,38 +23,29 @@ export class Member{
 
   constructor(
     private http: HttpClient
-  ){}
+  ) {}
 
-  ngOnInit(){
-
+  ngOnInit() {
     this.loadUser();
-
   }
 
-  //取得會員資料
-  loadUser(){
-
-    const token = localStorage.getItem('token');
+  // 取得會員資料
+  loadUser() {
 
     this.http.get(
-
-      `${environment.apiUrl}/user`,
-
+      `${environment.apiUrl}/me`,
       {
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
+        withCredentials: true
       }
-
     )
     .subscribe({
 
-      next:(res:any)=>{
+      next: (res: any) => {
 
-       this.user.set({
-          name: res.name,
-          email: res.email,
-          phone: res.phone,
+        this.user.set({
+          name: res.user.name,
+          email: res.user.email,
+          phone: res.user.phone,
 
           oldPassword: '',
           newPassword: '',
@@ -70,13 +62,11 @@ export class Member{
 
     });
 
-
   }
 
-  //修改會員資料
-  updateUser(){
+  // 修改會員資料
+  updateUser() {
 
-    const token = localStorage.getItem('token');
     const data = {
       name: this.user().name,
       email: this.user().email,
@@ -84,34 +74,36 @@ export class Member{
     };
 
     this.http.put(
-
-      `${environment.apiUrl}/user/update`, data,
+      `${environment.apiUrl}/user/update`,
+      data,
       {
-        headers:{
-          Authorization:`Bearer ${token}`
-        }
+        withCredentials: true
       }
-
     )
     .subscribe({
 
-      next:(res:any)=>{
+      next: (res: any) => {
 
-        alert("會員資料修改成功");
+        alert('會員資料修改成功');
 
       },
 
-      error:(err)=>{
+      error: (err) => {
 
         console.log(err);
+
+        alert(
+          err.error?.message ||
+          '會員資料修改失敗'
+        );
 
       }
 
     });
 
   }
-  
-// 修改密碼
+
+  // 修改密碼
   changePassword() {
 
     const oldPassword = this.user().oldPassword;
@@ -145,8 +137,6 @@ export class Member{
 
     }
 
-    const token = localStorage.getItem('token');
-
     const data = {
       oldPassword: oldPassword,
       newPassword: newPassword
@@ -156,9 +146,7 @@ export class Member{
       `${environment.apiUrl}/user/password`,
       data,
       {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        withCredentials: true
       }
     )
     .subscribe({
@@ -181,7 +169,10 @@ export class Member{
 
         console.log(err);
 
-        alert(err.error?.message || '密碼修改失敗');
+        alert(
+          err.error?.message ||
+          '密碼修改失敗'
+        );
 
       }
 

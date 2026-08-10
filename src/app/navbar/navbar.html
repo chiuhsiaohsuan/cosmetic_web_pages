@@ -15,7 +15,7 @@
         </a>
 
     </div>
-        <a class="home-link" routerLink="/">
+        <a class="home-link home-svg" routerLink="/">
             <svg xmlns="http://www.w3.org/2000/svg"
                  width="30"
                  height="30"
@@ -118,23 +118,7 @@
                 [class.mobile-open]="blogOpen()">
 
                 <a
-                    routerLink="/blog/share"
-                    (click)="closeMenu()">
-
-                    使用者分享
-
-                </a>
-
-                <a
-                    routerLink="/blog/knowledge"
-                    (click)="closeMenu()">
-
-                    保養知識
-
-                </a>
-
-                <a
-                    routerLink="/blog/trend"
+                    routerLink="/blog"
                     (click)="closeMenu()">
 
                     保養趨勢

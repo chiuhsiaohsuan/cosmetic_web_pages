@@ -12,10 +12,34 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   login(email: string, password: string) {
-      return this.http.post(`${this.apiUrl}/login`, {
-          email,
-          password
-      });
+    return this.http.post(
+      `${this.apiUrl}/login`,
+      {
+        email,
+        password
+      },
+      {
+        withCredentials: true
+      }
+    );
+  }
+    // 取得目前登入的使用者
+    getMe() {
+        return this.http.get(
+        `${this.apiUrl}/me`,
+        {
+            withCredentials: true
+        }
+        );
+    }
+    logout() {
+    return this.http.post(
+        `${this.apiUrl}/logout`,
+        {},
+            {
+                withCredentials: true
+            }
+        );
     }
   forgotPassword(email: string) {
       return this.http.post(`${this.apiUrl}/forgot-password`, {

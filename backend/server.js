@@ -4,6 +4,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const db = require("./db");
+const cookieParser = require('cookie-parser');
 const productDetailImage = require('./routes/productDetailImage');
 const adminProductsRouter = require('./routes/adminProducts');
 const adminRouter = require('./routes/admin');
@@ -19,9 +20,10 @@ const verificationCodes = new Map();
 app.use(cors({
     origin:[
         'http://localhost:4200',
-        'https://web-cosmetic-c11d0.web.app',
+        'http://dev.chengyi-group.com.tw:4200',
         'https://chengyi-group.com.tw'
     ],
+    credentials: true,
     methods:['GET','POST','PUT','DELETE','OPTIONS'],
     allowedHeaders:[
         'Content-Type',
@@ -30,6 +32,7 @@ app.use(cors({
     exposedHeaders:['X-Account-Disabled']
 }));
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static("public"));
 app.use("/uploads",express.static("uploads"));
@@ -315,86 +318,125 @@ app.post("/api/register",async(req,res)=>{
 });
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-app.post('/api/login',(req,res)=>{
+const verifyToken = require("./middleware/verifyToken");
 
-    const {email,password}=req.body;
+app.post('/api/login', (req, res) => {
 
+    const { email, password } = req.body;
 
-    const sql =
-    "SELECT * FROM users WHERE email=?";
+    const sql = "SELECT * FROM users WHERE email=?";
 
+    db.query(sql, [email], async (err, result) => {
 
-    db.query(sql,[email],async(err,result)=>{
-
-        if(err)
+        if (err) {
             return res.status(500).json(err);
-
-
-        if(result.length===0){
-            return res.status(401)
-            .json({message:"帳號不存在"});
         }
 
+        if (result.length === 0) {
+            return res.status(401).json({
+                message: "帳號不存在"
+            });
+        }
 
-        const user=result[0];
+        const user = result[0];
 
-
-        const checkPassword =
-        await bcrypt.compare(
+        const checkPassword = await bcrypt.compare(
             password,
             user.password
         );
 
-        if(!checkPassword){
-            return res.status(401)
-            .json({message:"密碼錯誤"});
-        }
-        if(user.status === 'disabled'){
-
-            return res.status(403)
-            .json({
-                message:"帳號已停權，請聯絡管理員"
+        if (!checkPassword) {
+            return res.status(401).json({
+                message: "密碼錯誤"
             });
-
         }
-        if(user.is_deleted === 1){
 
+        if (user.status === 'disabled') {
             return res.status(403).json({
-                message:'帳號不存在'
+                message: "帳號已停權，請聯絡管理員"
             });
+        }
 
+        if (user.is_deleted === 1) {
+            return res.status(403).json({
+                message: "帳號不存在"
+            });
         }
 
         const token = jwt.sign(
             {
-                id:user.id,
-                email:user.email,
-                role:user.role
+                id: user.id,
+                email: user.email,
+                role: user.role
             },
             process.env.JWT_SECRET,
             {
-                expiresIn:'2h'
+                expiresIn: '2h'
             }
         );
 
+        // JWT 放進 HttpOnly Cookie
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            maxAge: 2 * 60 * 60 * 1000
+        });
 
         res.json({
-            message:"登入成功",
-            token:token,
-            user:{
-                id:user.id,
-                name:user.name,
-                email:user.email,
-                phone:user.phone,
-                role:user.role
+            message: "登入成功",
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                role: user.role
             }
         });
 
+    });
+});
+app.get('/api/me', verifyToken, (req, res) => {
 
+    const sql = `
+        SELECT id, name, email, phone, role
+        FROM users
+        WHERE id = ?
+          AND is_deleted = 0
+          AND status != 'disabled'
+    `;
+
+    db.query(sql, [req.user.id], (err, result) => {
+
+        if (err) {
+            return res.status(500).json({
+                message: '資料庫錯誤'
+            });
+        }
+
+        if (result.length === 0) {
+            return res.status(401).json({
+                message: '使用者不存在'
+            });
+        }
+
+        res.json({
+            user: result[0]
+        });
+    });
+});
+app.post('/api/logout', (req, res) => {
+
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none'
     });
 
+    res.json({
+        message: '登出成功'
+    });
 });
-
 app.post('/api/cart/add', (req, res) => {
     const { user_id, product_id, quantity } = req.body;
 

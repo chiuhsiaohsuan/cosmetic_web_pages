@@ -1,63 +1,71 @@
 const jwt = require('jsonwebtoken');
 const db = require('../db');
 
-function verifyToken(req, res, next){
+function verifyToken(req, res, next) {
 
-    const authHeader = req.headers.authorization;
+    const token = req.cookies?.token;
 
-
-    if(!authHeader){
-
+    if (!token) {
         return res.status(401).json({
-            message:"沒有 Token"
+            message: '沒有 Token'
         });
-
     }
-
-
-    const token = authHeader.split(" ")[1];
-
 
     jwt.verify(
         token,
         process.env.JWT_SECRET,
-        (err, user)=>{
+        (err, user) => {
 
-            if(err){
-
-                return res.status(403).json({
-                    message:"Token 無效"
+            if (err) {
+                return res.status(401).json({
+                    message: 'Token 無效或已過期'
                 });
-
             }
 
             db.query(
-                'SELECT status FROM users WHERE id = ?',
+                'SELECT status, is_deleted FROM users WHERE id = ?',
                 [user.id],
-                (dbErr, rows)=>{
+                (dbErr, rows) => {
+
                     if (dbErr) {
                         console.error(dbErr);
-                        return res.status(500).json({ message: '驗證失敗' });
+
+                        return res.status(500).json({
+                            message: '驗證失敗'
+                        });
                     }
 
                     if (!rows.length) {
-                        return res.status(401).json({ message: '使用者不存在' });
+                        return res.status(401).json({
+                            message: '使用者不存在'
+                        });
+                    }
+
+                    if (rows[0].is_deleted === 1) {
+                        return res.status(403).json({
+                            message: '帳號不存在'
+                        });
                     }
 
                     if (rows[0].status === 'disabled') {
-                        res.set('X-Account-Disabled', 'true');
-                        return res.status(403).json({ message: '帳號已停權' });
+
+                        res.set(
+                            'X-Account-Disabled',
+                            'true'
+                        );
+
+                        return res.status(403).json({
+                            message: '帳號已停權'
+                        });
                     }
 
                     req.user = user;
+
                     next();
                 }
             );
-
         }
     );
-
 }
-
 
 module.exports = verifyToken;

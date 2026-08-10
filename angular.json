@@ -62,7 +62,10 @@
               "buildTarget": "cosmetic:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "allowedHosts": ["dev.chengyi-group.com.tw"]
+          }
         },
         "test": {
           "builder": "@angular/build:unit-test"
