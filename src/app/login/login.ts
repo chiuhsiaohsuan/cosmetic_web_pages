@@ -15,6 +15,7 @@ export class Login {
 
   email = '';
   password = '';
+  rememberMe = false;
 
   constructor(
     private api: ApiService,
@@ -24,7 +25,7 @@ export class Login {
 
   login() {
 
-    this.api.login(this.email, this.password)
+    this.api.login(this.email, this.password, this.rememberMe)
       .subscribe({
 
         next: () => {

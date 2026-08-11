@@ -68,12 +68,12 @@
 
         <div class="input-group">
             <label for="password">密碼</label>
-            <input type="password" id="password" [(ngModel)]="password" name="password" placeholder="請輸入密碼">
+            <input type="password" id="password" [(ngModel)]="password" name="password" placeholder="請輸入密碼" autocomplete="new-password">
         </div>
 
         <div class="input-group">
             <label for="confirm-password">確認密碼</label>
-            <input type="password" id="confirm-password" [(ngModel)]="confirmPassword" name="confirmPassword" placeholder="再次輸入密碼">
+            <input type="password" id="confirm-password" [(ngModel)]="confirmPassword" name="confirmPassword" placeholder="再次輸入密碼" autocomplete="new-password">
             @if(password !== confirmPassword && confirmPassword !== '') {
                 <p class="error">
                     兩次輸入的密碼不一致

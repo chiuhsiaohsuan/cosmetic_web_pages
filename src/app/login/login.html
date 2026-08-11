@@ -1,15 +1,22 @@
 <div class="login-container">
-    <form class="login-form" (ngSubmit)="login()">
+    <form class="login-form" (ngSubmit)="login()" autocomplete="on">
         <h2>會員登入</h2>
 
         <div class="input-group">
             <label for="email">電子郵件</label>
-            <input type="email" [(ngModel)]="email" id="email" name="email" placeholder="請輸入 Email" required>
+            <input type="email" [(ngModel)]="email" id="email" name="email" placeholder="請輸入 Email" autocomplete="username" required>
         </div>
 
         <div class="input-group">
             <label for="password">密碼</label>
-            <input type="password" [(ngModel)]="password" id="password" name="password" placeholder="請輸入密碼" required>
+            <input type="password" [(ngModel)]="password" id="password" name="password" placeholder="請輸入密碼" autocomplete="current-password" required>
+        </div>
+        <div class="remember-me">
+            <label>
+                <input type="checkbox" [(ngModel)]="rememberMe" name="rememberMe">記住我
+            </label>
+        </div>
+        <div class="forgot-password">
             <a class="forgot-password-link" routerLink="/forgot-password">忘記密碼?</a>
         </div>
 

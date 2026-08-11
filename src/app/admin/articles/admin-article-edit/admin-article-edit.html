@@ -1,0 +1,149 @@
+<section class="article-edit-page">
+
+  <div class="page-header">
+
+    <div>
+      <h1>編輯文章</h1>
+      <p>修改文章內容</p>
+    </div>
+
+  </div>
+
+
+  <div class="form-card">
+
+    <form>
+
+      <!-- 標題 -->
+      <div class="form-group">
+
+        <label for="title">
+          文章標題
+        </label>
+
+        <input
+          id="title"
+          type="text"
+          [(ngModel)]="article().title"
+          name="title"
+          placeholder="請輸入文章標題"
+        >
+
+      </div>
+
+
+      <!-- 描述 -->
+      <div class="form-group">
+
+        <label for="description">
+          文章描述
+        </label>
+
+        <textarea
+          id="description"
+          [(ngModel)]="article().description"
+          name="description"
+          rows="4"
+          placeholder="請輸入文章描述">
+        </textarea>
+
+      </div>
+
+
+      <!-- 分類 -->
+      <div class="form-group">
+
+        <label for="category">
+          文章分類
+        </label>
+
+        <select
+          id="category"
+          [(ngModel)]="article().category"
+          name="category">
+
+          <option value="">請選擇分類</option>
+
+          <option value="trend">
+            保養趨勢
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- 日期 -->
+      <div class="form-group">
+
+        <label for="date">
+          發布日期
+        </label>
+
+        <input
+          id="date"
+          type="date"
+          [(ngModel)]="article().date"
+          name="date"
+        >
+
+      </div>
+
+
+      <!-- 圖片 -->
+      <div class="form-group">
+
+        <label for="image">
+          圖片檔名
+        </label>
+
+        <input
+          id="image"
+          type="text"
+          [(ngModel)]="article().image"
+          name="image"
+          placeholder="例如：article01.jpg"
+        >
+
+      </div>
+
+
+      @if (article().image) {
+
+        <div class="image-preview">
+
+          <p>目前圖片</p>
+
+          <img
+            [src]="'assets/images/' + article().image"
+            [alt]="article().title"
+          >
+
+        </div>
+
+      }
+
+
+      <!-- 按鈕 -->
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="cancel-btn"
+          routerLink="/admin/articles">
+          取消
+        </button>
+
+        <button
+          type="submit"
+          class="save-btn" (click)="saveArticle()">
+          儲存修改
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</section>

@@ -11,12 +11,13 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  login(email: string, password: string) {
+  login(email: string, password: string, rememberMe: boolean) {
     return this.http.post(
       `${this.apiUrl}/login`,
       {
         email,
-        password
+        password,
+        rememberMe
       },
       {
         withCredentials: true

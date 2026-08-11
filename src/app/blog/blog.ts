@@ -1,39 +1,32 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { DatePipe } from '@angular/common';
+import { Article, ArticleService } from '../services/admin-article';
 
 @Component({
   selector: 'app-blog',
-  imports: [],
+  imports: [DatePipe],
   templateUrl: './blog.html',
   styleUrl: './blog.css',
 })
 export class Blog implements OnInit {
 
-  articles = [
-    {
-      id:1,
-      title:'2026美容保養新趨勢',
-      description:'探索AI科技、生技研發與智慧美容帶來的新世代保養方式。',
-      category:'trend',
-      date:'2026.07.05',
-      image:'pic.jpg'
-    }
-  ];
+  articles = signal<Article[]>([]);
+
   categories = [
-    { name:'保養趨勢', value:'trend' }
+    { name: '保養趨勢', value: 'trend' }
   ];
 
   selectedCategory = signal('trend');
 
-
   constructor(
-    private route: ActivatedRoute
-  ){}
+    private route: ActivatedRoute,
+    private articleService: ArticleService
+  ) {}
 
+  ngOnInit() {
 
-  ngOnInit(){
-
-    this.route.queryParams.subscribe(params=>{
+    this.route.queryParams.subscribe(params => {
 
       this.selectedCategory.set(
         params['category'] ?? 'trend'
@@ -41,18 +34,32 @@ export class Blog implements OnInit {
 
     });
 
+    // 從後端取得文章
+    this.articleService.getArticles().subscribe({
+
+      next: (data) => {
+        this.articles.set(data);
+      },
+
+      error: (err) => {
+        console.error('取得文章失敗:', err);
+      }
+
+    });
+
   }
-  changeCategory(category:string){
+
+  changeCategory(category: string) {
 
     this.selectedCategory.set(category);
 
   }
 
-  filteredArticles = computed(()=>{
+  filteredArticles = computed(() => {
 
     const category = this.selectedCategory();
 
-    return this.articles.filter(
+    return this.articles().filter(
       article => article.category === category
     );
 

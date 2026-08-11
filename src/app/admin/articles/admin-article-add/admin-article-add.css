@@ -1,0 +1,135 @@
+/* 整個後台頁面 */
+.article-add {
+  min-height: 100vh;
+  padding: 40px;
+  background: #f7f7f9;
+  box-sizing: border-box;
+}
+
+/* 頁面標題 */
+.page-header {
+  margin-bottom: 30px;
+}
+
+.page-header h1 {
+  margin: 0 0 8px;
+  font-size: 30px;
+  font-weight: 700;
+  color: #333;
+}
+
+.page-header p {
+  margin: 0;
+  color: #888;
+  font-size: 15px;
+}
+
+/* 表單卡片 */
+form {
+  max-width: 850px;
+  padding: 35px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* 每一個欄位 */
+.form-group {
+  margin-bottom: 24px;
+}
+
+/* Label */
+.form-group label {
+  display: block;
+  margin-bottom: 9px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #444;
+}
+
+/* Input、Textarea、Select 共用 */
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  color: #333;
+  font-size: 15px;
+  font-family: inherit;
+  box-sizing: border-box;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+/* Placeholder */
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #aaa;
+}
+
+/* Textarea */
+.form-group textarea {
+  min-height: 130px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+/* Select */
+.form-group select {
+  cursor: pointer;
+}
+
+/* Focus 效果 */
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+
+  border-color: #2f2e32;
+
+  box-shadow: 0 0 0 3px rgba(24, 16, 40, 0.15);
+}
+
+/* 新增文章按鈕 */
+button[type="submit"] {
+  width: 100%;
+  padding: 13px 20px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 8px;
+  background: #333;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button[type="submit"]:hover {
+  background:#141414;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(18, 18, 19, 0.25);
+}
+
+/* 按下按鈕 */
+button[type="submit"]:active {
+  transform: translateY(0);
+}
+
+/* 手機版 */
+@media (max-width: 768px) {
+  .article-add {
+    padding: 25px 15px;
+  }
+
+  .page-header h1 {
+    font-size: 25px;
+  }
+
+  form {
+    padding: 25px 20px;
+  }
+}

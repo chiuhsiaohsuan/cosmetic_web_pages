@@ -12,6 +12,7 @@ const orderRouter = require('./routes/order');
 const paymentRouter = require('./routes/payment');
 const userRouter = require('./routes/user');
 const adminOrdersRouter = require('./routes/adminOrders');
+const adminArticleRouter = require('./routes/adminArticle');
 const transporter = require('./middleware/mailer');
 const forgotPassRouter = require('./routes/forgotPass');
 const verificationCodes = new Map();
@@ -38,6 +39,7 @@ app.use(express.static("public"));
 app.use("/uploads",express.static("uploads"));
 app.use('/api', userRouter);
 app.use('/api', forgotPassRouter);
+app.use('/api/articles', adminArticleRouter);
 app.use(
     '/api/products',
     productDetailImage
@@ -322,7 +324,7 @@ const verifyToken = require("./middleware/verifyToken");
 
 app.post('/api/login', (req, res) => {
 
-    const { email, password } = req.body;
+    const { email, password, rememberMe } = req.body;
 
     const sql = "SELECT * FROM users WHERE email=?";
 
@@ -347,7 +349,7 @@ app.post('/api/login', (req, res) => {
 
         if (!checkPassword) {
             return res.status(401).json({
-                message: "密碼錯誤"
+                message: "帳號或密碼錯誤"
             });
         }
 
@@ -359,7 +361,7 @@ app.post('/api/login', (req, res) => {
 
         if (user.is_deleted === 1) {
             return res.status(403).json({
-                message: "帳號不存在"
+                message: "帳號或密碼錯誤"
             });
         }
 
@@ -371,17 +373,33 @@ app.post('/api/login', (req, res) => {
             },
             process.env.JWT_SECRET,
             {
-                expiresIn: '2h'
+                expiresIn: rememberMe ? '30d' : '2h'
             }
         );
 
-        // JWT 放進 HttpOnly Cookie
-        res.cookie('token', token, {
+        const token = jwt.sign(
+            {
+                id: user.id,
+                email: user.email,
+                role: user.role
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: rememberMe ? '30d' : '2h'
+            }
+        );
+
+        const cookieOptions = {
             httpOnly: true,
             secure: true,
-            sameSite: 'none',
-            maxAge: 2 * 60 * 60 * 1000
-        });
+            sameSite: 'none'
+        };
+
+        if (rememberMe) {
+            cookieOptions.maxAge = 30 * 24 * 60 * 60 * 1000;
+        }
+
+        res.cookie('token', token, cookieOptions);
 
         res.json({
             message: "登入成功",

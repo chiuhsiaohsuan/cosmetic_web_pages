@@ -1,0 +1,278 @@
+/* 整個文章管理頁面 */
+.articles-page {
+  min-height: 100vh;
+  padding: 40px;
+  background: #f7f7f9;
+  box-sizing: border-box;
+}
+
+
+/* 頁面標題 */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.page-header h1 {
+  margin: 0 0 8px;
+  font-size: 30px;
+  color: #333;
+}
+
+.page-header p {
+  margin: 0;
+  color: #888;
+  font-size: 15px;
+}
+
+
+/* 新增文章按鈕 */
+.add-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #333;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.add-btn:hover {
+  background: #555;
+  transform: translateY(-1px);
+}
+
+
+/* 搜尋區 */
+.filter-card {
+  display: flex;
+  gap: 20px;
+  padding: 25px;
+  margin-bottom: 25px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.search-box,
+.category-box {
+  flex: 1;
+}
+
+.search-box label,
+.category-box label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+}
+
+.search-box input,
+.category-box select {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.search-box input:focus,
+.category-box select:focus {
+  outline: none;
+
+  border-color: #2f2e32;
+
+  box-shadow: 0 0 0 3px rgba(24, 16, 40, 0.15);
+}
+
+
+/* 文章表格 */
+.article-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 25px;
+  border-bottom: 1px solid #eee;
+}
+
+.table-header h2 {
+  margin: 0;
+  font-size: 19px;
+  color: #333;
+}
+
+.article-count {
+  color: #999;
+  font-size: 14px;
+}
+
+
+/* 表格 */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #fafafa;
+}
+
+th {
+  padding: 15px 20px;
+  text-align: left;
+  color: #777;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+td {
+  padding: 16px 20px;
+  border-top: 1px solid #eee;
+  color: #555;
+  font-size: 14px;
+}
+
+tbody tr {
+  transition: background 0.2s;
+}
+
+tbody tr:hover {
+  background: #fcfaff;
+}
+
+
+/* 文章圖片 */
+.article-image {
+  width: 65px;
+  height: 55px;
+  overflow: hidden;
+  border-radius: 7px;
+  background: #eee;
+}
+
+.article-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+/* 文章標題與描述 */
+.article-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.article-info strong {
+  color: #333;
+  font-size: 15px;
+}
+
+.article-info span {
+  color: #999;
+  font-size: 13px;
+}
+
+
+/* 分類 */
+.category {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: #f3e8ff;
+  color: #7c3aed;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+/* 操作按鈕 */
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.actions button {
+  padding: 7px 13px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+
+/* 編輯 */
+.edit-btn {
+  border: 1px solid #333;
+  background: #333;
+  color: #f9f9fa
+}
+
+.edit-btn:hover {
+  background: #555;
+  color: white;
+}
+
+
+/* 刪除 */
+.delete-btn {
+  border: 1px solid #ef4444;
+  background: white;
+  color: #ef4444;
+}
+
+.delete-btn:hover {
+  background: #ef4444;
+  color: white;
+}
+
+
+/* 沒有文章 */
+.empty {
+  padding: 60px;
+  text-align: center;
+  color: #999;
+}
+
+
+/* 手機版 */
+@media (max-width: 768px) {
+
+  .articles-page {
+    padding: 25px 15px;
+  }
+
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .filter-card {
+    flex-direction: column;
+  }
+
+  .add-btn {
+    width: 100%;
+  }
+
+}
