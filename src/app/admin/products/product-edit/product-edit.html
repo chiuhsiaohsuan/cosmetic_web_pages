@@ -23,11 +23,96 @@
 
 
   <label>商品主圖</label>
-  <input type="file" (change)="onMainImageSelected($event)">
+
+  <input
+    type="file"
+    accept="image/*"
+    (change)="onMainImageSelected($event)"
+  >
+
+
+  @if (mainImagePreview()) {
+
+    <!-- 使用者選了新圖片 -->
+    <div class="image-preview">
+
+      <p>新主圖預覽</p>
+
+      <img
+        [src]="mainImagePreview()"
+        alt="新主圖預覽"
+      >
+    </div>
+
+  }
+  @else if (existingMainImage) {
+
+    <!-- 沒選新圖片，顯示原本圖片 -->
+    <div class="image-preview">
+
+      <p>目前商品主圖</p>
+
+      <img
+        [src]="environment.imageUrl + '/uploads/' +existingMainImage"
+        alt="目前商品主圖"
+      >
+
+    </div>
+
+  }
 
   <label>新增產品特色圖片</label>
   <input type="file" multiple (change)="onDetailImagesSelected($event)">
+  @if (detailImagePreviews().length > 0) {
 
+    <div class="detail-image-preview">
+
+      <p>新增圖片預覽</p>
+
+      <div class="detail-image-list">
+
+        @for (
+          image of detailImagePreviews();
+          track $index
+        ) {
+
+          <img
+            [src]="image"
+            alt="新增特色圖片"
+          >
+
+        }
+
+      </div>
+
+    </div>
+
+  }
+  @else if (existingDetailImages.length > 0) {
+
+    <div class="detail-image-preview">
+
+      <p>目前產品特色圖片</p>
+
+      <div class="detail-image-list">
+
+        @for (
+          image of existingDetailImages;
+          track $index
+        ) {
+
+          <img
+            [src]="environment.imageUrl + '/uploads/' + image"
+            alt="目前特色圖片"
+          >
+
+        }
+
+      </div>
+
+    </div>
+
+  }
   <textarea formControlName="specification" placeholder="產品規格"></textarea>
   <textarea formControlName="storage" placeholder="保存方式"></textarea>
   <textarea formControlName="usage" placeholder="使用說明"></textarea>

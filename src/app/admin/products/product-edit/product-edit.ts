@@ -1,9 +1,10 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ProductService } from '../../../services/product';
 import { Location } from '@angular/common';
 import imageCompression from 'browser-image-compression';
+import { environment } from '../../../../enviroments/enviroment';
 
 
 @Component({
@@ -19,23 +20,24 @@ import imageCompression from 'browser-image-compression';
   styleUrl:'./product-edit.css'
 
 })
-export class ProductEdit {
+export class ProductEdit implements OnDestroy{
 
   constructor(
   private location: Location
 ) {}
 
   id!:number;
-
+  environment = environment;
 
   loading = signal(true);
 
-  // 商品主圖
   mainImage: File | null = null;
-
-
-  // 新增特色圖片
   detailImages: File[] = [];
+ 
+  existingMainImage: string | null = null;
+  existingDetailImages: string[] = [];
+  mainImagePreview = signal<string | null>(null);
+  detailImagePreviews = signal<string[]>([]);
 
   private productService = inject(ProductService);
 
@@ -69,152 +71,220 @@ export class ProductEdit {
 
   });
 
-  async onMainImageSelected(event:any){
+  async onMainImageSelected(event: any) {
 
-      const file = event.target.files[0];
+    const file =
+      event.target.files[0];
 
-      if(!file){
-          return;
-      }
+    if (!file) {
+      return;
+    }
+
+
+    console.log(
+      "主圖原始大小:",
+      (file.size / 1024 / 1024).toFixed(2),
+      "MB"
+    );
+
+
+    // 如果之前已經有新的預覽
+    const oldPreview =
+      this.mainImagePreview();
+
+    if (oldPreview) {
+
+      URL.revokeObjectURL(
+        oldPreview
+      );
+
+    }
+
+
+    const options = {
+
+      maxSizeMB: 0.5,
+
+      maxWidthOrHeight: 1200,
+
+      useWebWorker: true
+
+    };
+
+
+    try {
+
+      const compressedFile =
+        await imageCompression(
+          file,
+          options
+        );
 
 
       console.log(
-          "主圖原始大小:",
-          (file.size / 1024 / 1024).toFixed(2),
-          "MB"
+        "主圖壓縮後:",
+        (compressedFile.size / 1024 / 1024).toFixed(2),
+        "MB"
       );
 
 
-      const options = {
-
-          maxSizeMB:0.5,
-
-          maxWidthOrHeight:1200,
-
-          useWebWorker:true
-
-      };
+      this.mainImage =
+        compressedFile;
 
 
-      try{
+      // 建立新圖片預覽
+      const previewUrl =
+        URL.createObjectURL(
+          compressedFile
+        );
 
 
-          const compressedFile =
-          await imageCompression(
-              file,
-              options
-          );
+      this.mainImagePreview.set(
+        previewUrl
+      );
 
 
-          console.log(
-              "主圖壓縮後:",
-              (compressedFile.size / 1024 / 1024).toFixed(2),
-              "MB"
-          );
+    } catch (error) {
+
+      console.log(
+        "圖片壓縮失敗",
+        error
+      );
 
 
-          this.mainImage = compressedFile;
+      this.mainImage =
+        file;
 
 
-
-      }catch(error){
-
-
-          console.log(
-              "圖片壓縮失敗",
-              error
-          );
+      // 壓縮失敗也可以預覽原圖
+      const previewUrl =
+        URL.createObjectURL(file);
 
 
-          this.mainImage = file;
+      this.mainImagePreview.set(
+        previewUrl
+      );
 
-
-      }
+    }
 
   }
-  async onDetailImagesSelected(event:any){
+  async onDetailImagesSelected(event: any) {
 
-      const files = Array.from(
-          event.target.files
+    const files =
+      Array.from(
+        event.target.files
       ) as File[];
 
 
-      this.detailImages = [];
+    // 釋放上一批預覽
+    this.detailImagePreviews()
+      .forEach(url => {
+
+        URL.revokeObjectURL(url);
+
+      });
 
 
-      const options = {
-
-          maxSizeMB:1.5,
-
-          maxWidthOrHeight:2500,
-
-          initialQuality: 0.95,
-
-          useWebWorker:true
-
-      };
+    this.detailImages = [];
 
 
-
-      for(const file of files){
-
-
-          try{
+    const previews: string[] = [];
 
 
-              const compressedFile =
-              await imageCompression(
-                  file,
-                  options
-              );
+    const options = {
+
+      maxSizeMB: 1.5,
+
+      maxWidthOrHeight: 2500,
+
+      initialQuality: 0.95,
+
+      useWebWorker: true
+
+    };
 
 
-              // 重新建立 File，保留檔名
-              const newFile = new File(
-                  [compressedFile],
-                  file.name,
-                  {
-                      type: compressedFile.type
-                  }
-              );
+    for (const file of files) {
+
+      try {
+
+        const compressedFile =
+          await imageCompression(
+            file,
+            options
+          );
 
 
-              console.log(
-                  "壓縮後:",
-                  newFile.name,
-                  newFile.size
-              );
+        const newFile =
+          new File(
+            [compressedFile],
+            file.name,
+            {
+              type: compressedFile.type
+            }
+          );
 
 
-              this.detailImages.push(
-                  newFile
-              );
+        console.log(
+          "壓縮後:",
+          newFile.name,
+          newFile.size
+        );
 
 
-
-          }catch(error){
-
-
-              console.log(
-                  "特色圖片壓縮失敗",
-                  error
-              );
+        this.detailImages.push(
+          newFile
+        );
 
 
-              this.detailImages.push(
-                  file
-              );
+        // 建立預覽
+        const previewUrl =
+          URL.createObjectURL(
+            newFile
+          );
 
-          }
+
+        previews.push(
+          previewUrl
+        );
+
+
+      } catch (error) {
+
+        console.log(
+          "特色圖片壓縮失敗",
+          error
+        );
+
+
+        this.detailImages.push(
+          file
+        );
+
+
+        // 壓縮失敗也預覽原圖
+        const previewUrl =
+          URL.createObjectURL(file);
+
+
+        previews.push(
+          previewUrl
+        );
 
       }
 
+    }
 
 
-      console.log(
-          "特色圖片數量:",
-          this.detailImages.length
-      );
+    this.detailImagePreviews.set(
+      previews
+    );
+
+
+    console.log(
+      "特色圖片數量:",
+      this.detailImages.length
+    );
 
   }
   goBack(){
@@ -235,35 +305,80 @@ export class ProductEdit {
 
   }
 
-  loadProduct(){
+  loadProduct() {
 
-
+    // 取得商品基本資料
     this.productService
-    .getProduct(this.id)
-    .subscribe({
+      .getProduct(this.id)
+      .subscribe({
 
-      next:(res)=>{
+        next: (res) => {
 
-
-        this.productForm.patchValue(res);
-
-
-        this.loading.set(false);
-
-
-      },
+          console.log(
+            '商品資料:',
+            res
+          );
 
 
-      error:(err)=>{
+          // 填入表單
+          this.productForm.patchValue(
+            res
+          );
 
-        console.log(err);
 
-        this.loading.set(false);
+          // 原本商品主圖
+          this.existingMainImage =
+            res.image ?? null;
 
-      }
 
-    });
+          // 商品基本資料載入完成
+          this.loading.set(false);
 
+
+          // 再取得特色圖片
+          this.productService
+            .getDetailImages(this.id)
+            .subscribe({
+
+              next: (images) => {
+
+                console.log(
+                  '特色圖片:',
+                  images
+                );
+
+
+                this.existingDetailImages =
+                  images.map(
+                    item => item.image
+                  );
+
+              },
+
+
+              error: (err) => {
+
+                console.log(
+                  '取得特色圖片失敗',
+                  err
+                );
+
+              }
+
+            });
+
+        },
+
+
+        error: (err) => {
+
+          console.log(err);
+
+          this.loading.set(false);
+
+        }
+
+      });
 
   }
   submitting = signal(false);
@@ -407,5 +522,28 @@ export class ProductEdit {
     });
 
   }
+  ngOnDestroy(): void {
 
+    // 釋放主圖預覽
+    const mainPreview =
+      this.mainImagePreview();
+
+    if (mainPreview) {
+
+      URL.revokeObjectURL(
+        mainPreview
+      );
+
+    }
+
+
+    // 釋放特色圖片預覽
+    this.detailImagePreviews()
+      .forEach(url => {
+
+        URL.revokeObjectURL(url);
+
+      });
+
+  }
 }

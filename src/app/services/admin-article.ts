@@ -26,7 +26,7 @@ export class ArticleService {
   }
   getArticle(id: number) {
     return this.http.get<any>(
-      `${this.apiUrl}/articles/${id}`
+      `${this.apiUrl}/${id}`
     );
   }
   addArticle(
@@ -52,22 +52,32 @@ export class ArticleService {
   }
   updateArticle(
     id: number,
-    article: {
-      title: string;
-      description: string;
-      category: string;
-      date: string;
-      image: string;
-    }
+    title: string,
+    description: string,
+    category: string,
+    date: string,
+    image?: File
   ) {
+
+    const formData = new FormData();
+
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('category', category);
+    formData.append('date', date);
+
+    if (image) {
+      formData.append('image', image);
+    }
+
     return this.http.put(
-      `${this.apiUrl}/articles/${id}`,
-      article
+      `${this.apiUrl}/${id}`,
+      formData
     );
   }
   deleteArticle(id: number) {
   return this.http.delete(
-    `${this.apiUrl}/articles/${id}`
+    `${this.apiUrl}/${id}`
   );
 }
 }

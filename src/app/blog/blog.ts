@@ -2,6 +2,7 @@ import { Component, OnInit, signal, computed } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { Article, ArticleService } from '../services/admin-article';
+import { environment } from '../../enviroments/enviroment';
 
 @Component({
   selector: 'app-blog',
@@ -12,9 +13,10 @@ import { Article, ArticleService } from '../services/admin-article';
 export class Blog implements OnInit {
 
   articles = signal<Article[]>([]);
-
+  environment = environment;
   categories = [
-    { name: '保養趨勢', value: 'trend' }
+    { name: '趨勢話題', value: 'trend' },
+     { name: '美麗分享', value: 'share' }
   ];
 
   selectedCategory = signal('trend');

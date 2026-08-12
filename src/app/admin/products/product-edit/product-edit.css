@@ -163,3 +163,37 @@ p {
   color: #666;
 
 }
+.image-preview {
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+.image-preview img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+
+.detail-image-preview {
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+
+.detail-image-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+
+.detail-image-list img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}

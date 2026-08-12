@@ -20,24 +20,51 @@
   <!-- 搜尋與篩選 -->
   <div class="filter-card">
 
+    <!-- 搜尋 -->
     <div class="search-box">
-      <label for="search">搜尋文章</label>
+
+      <label for="search">
+        搜尋文章
+      </label>
 
       <input
         id="search"
         type="text"
         placeholder="請輸入文章標題..."
+        [value]="searchKeyword()"
+        (input)="onSearch($event)"
       >
+
     </div>
 
 
+    <!-- 分類 -->
     <div class="category-box">
-      <label for="category">文章分類</label>
 
-      <select id="category">
-        <option value="">全部分類</option>
-        <option value="trend">保養趨勢</option>
+      <label for="category">
+        文章分類
+      </label>
+
+      <select
+        id="category"
+        [value]="selectedCategory()"
+        (change)="onCategoryChange($event)"
+      >
+
+        <option value="">
+          全部分類
+        </option>
+
+        <option value="trend">
+          趨勢話題
+        </option>
+
+        <option value="share">
+          美麗分享
+        </option>
+
       </select>
+
     </div>
 
   </div>
@@ -72,7 +99,7 @@
 
         <tbody>
 
-          @for (article of articles(); track article.id) {
+          @for (article of filteredArticles(); track article.id) {
 
             <tr>
 
@@ -81,10 +108,7 @@
 
                 <div class="article-image">
 
-                  <img
-                    [src]="'assets/images/' + article.image"
-                    [alt]="article.title"
-                  >
+                  <img [src]="environment.imageUrl + '/uploads/' + article.image" [alt]="article.title">
 
                 </div>
 
@@ -117,8 +141,8 @@
                   @if (article.category === 'trend') {
                     保養趨勢
                   }
-                  @else {
-                    {{ article.category }}
+                  @if (article.category === 'share') {
+                    美麗分享
                   }
 
                 </span>

@@ -76,16 +76,19 @@ export class AdminArticleAddComponent {
 
     const file = input.files[0];
 
+    // 確認是圖片
+    if (!file.type.startsWith('image/')) {
+
+      alert('請選擇圖片檔案');
+
+      input.value = '';
+
+      return;
+    }
+
     this.selectedFile = file;
 
-    // 圖片預覽
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      this.imagePreview = reader.result as string;
-    };
-
-    reader.readAsDataURL(file);
-
+    // 直接產生圖片預覽
+    this.imagePreview = URL.createObjectURL(file);
   }
 }

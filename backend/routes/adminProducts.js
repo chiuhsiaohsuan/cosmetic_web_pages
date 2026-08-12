@@ -77,47 +77,110 @@ router.get(
 
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
+    const search = req.query.search || '';
+
     const offset = (page - 1) * limit;
 
+    // 搜尋商品名稱
+    const searchValue = `%${search}%`;
+
     db.query(
-      "SELECT COUNT(*) AS total FROM products",
+      `
+      SELECT COUNT(*) AS total
+      FROM products
+      WHERE name LIKE ?
+      `,
+      [searchValue],
       (err, countResult) => {
 
         if (err) {
+
+          console.error('取得商品總數失敗:', err);
+
           return res.status(500).json({
             message: "資料庫錯誤"
           });
+
         }
 
         const total = countResult[0].total;
+
         const totalPages = Math.ceil(total / limit);
 
         db.query(
           `
           SELECT *
           FROM products
+          WHERE name LIKE ?
           ORDER BY id DESC
           LIMIT ? OFFSET ?
           `,
-          [limit, offset],
+          [searchValue, limit, offset],
           (err, products) => {
 
             if (err) {
+
+              console.error('取得商品失敗:', err);
+
               return res.status(500).json({
                 message: "資料庫錯誤"
               });
-            }
 
+            }
             res.json({
+
               data: products,
+
               total,
+
               page,
+
               limit,
+
               totalPages
+
             });
 
           }
         );
+
+      }
+    );
+
+  }
+);
+// 取得所有商品分類
+router.get(
+  "/categories",
+  verifyToken,
+  verifyAdmin,
+  (req, res) => {
+
+    db.query(
+      `
+      SELECT DISTINCT category
+      FROM products
+      WHERE category IS NOT NULL
+        AND category != ''
+      ORDER BY category
+      `,
+      (err, results) => {
+
+        if (err) {
+
+          console.error('取得商品分類失敗:', err);
+
+          return res.status(500).json({
+            message: '資料庫錯誤'
+          });
+
+        }
+
+        const categories = results.map(
+          item => item.category
+        );
+
+        res.json(categories);
 
       }
     );

@@ -1,47 +1,132 @@
 <h2>新增商品</h2>
 
-
 <form [formGroup]="productForm">
 
+  <input
+    type="text"
+    formControlName="name"
+    placeholder="商品名稱"
+  />
 
-<input type="text" formControlName="name" placeholder="商品名稱"/>
+  <input
+    type="text"
+    formControlName="category"
+    placeholder="分類"
+  />
+
+  <label>價格</label>
+  <input
+    type="number"
+    formControlName="price"
+    placeholder="價格"
+  />
+
+  <!-- 商品主圖 -->
+    <label>商品主圖</label>
+
+    <input
+    type="file"
+    accept="image/*"
+    (change)="onMainImageSelected($event)"
+    />
+
+    @if (mainImagePreview()) {
+
+    <div class="image-preview">
+
+        <p>主圖預覽</p>
+
+        <img
+        [src]="mainImagePreview()"
+        alt="商品主圖預覽"
+        />
+
+    </div>
+
+    }
 
 
-<input type="text" formControlName="category" placeholder="分類"/>
+  <!-- 產品特色圖片 -->
+    <label>產品特色</label>
 
-<label>價格</label>
-<input type="number" formControlName="price" placeholder="價格"/>
+    <input
+    type="file"
+    accept="image/*"
+    multiple
+    (change)="onDetailImagesSelected($event)"
+    />
 
-<label>商品主圖</label>
-<input type="file" (change)="onMainImageSelected($event)"/>
+    @if (detailImagePreviews().length > 0) {
 
-<label>產品特色</label>
-<input type="file" multiple (change)="onDetailImagesSelected($event)"/>
+    <div class="detail-image-preview">
+
+        <p>產品特色圖片預覽</p>
+
+        <div class="detail-image-list">
+
+        @for (
+            image of detailImagePreviews();
+            track $index
+        ) {
+
+            <img
+            [src]="image"
+            alt="產品特色圖片"
+            />
+
+        }
+
+        </div>
+
+    </div>
+
+    }
 
 
-<textarea formControlName="spec" placeholder="產品規格"></textarea>
-<textarea formControlName="storage" placeholder="保存方式"></textarea>
-<textarea formControlName="usage" placeholder="使用說明"></textarea>
-<textarea formControlName="notice" placeholder="注意事項"></textarea>
+  <textarea
+    formControlName="spec"
+    placeholder="產品規格"
+  ></textarea>
 
-<label>庫存</label>
-<input type="number" formControlName="stock" placeholder="庫存"/>
+  <textarea
+    formControlName="storage"
+    placeholder="保存方式"
+  ></textarea>
+
+  <textarea
+    formControlName="usage"
+    placeholder="使用說明"
+  ></textarea>
+
+  <textarea
+    formControlName="notice"
+    placeholder="注意事項"
+  ></textarea>
 
 
-<label>
+  <label>庫存</label>
+  <input
+    type="number"
+    formControlName="stock"
+    placeholder="庫存"
+  />
 
-    <input type="checkbox" formControlName="isHot"/>
 
+  <label>
+    <input
+      type="checkbox"
+      formControlName="isHot"
+    />
     熱門商品
+  </label>
 
-</label>
 
-
-<button (click)="addProduct()" [disabled]="submitting()">
-
-    {{submitting() ? '新增中...' : '新增商品'}}
-
-</button>
-
+  <button
+    type="button"
+    (click)="addProduct()"
+    [disabled]="submitting()"
+  >
+    {{ submitting() ? '新增中...' : '新增商品' }}
+  </button>
 
 </form>

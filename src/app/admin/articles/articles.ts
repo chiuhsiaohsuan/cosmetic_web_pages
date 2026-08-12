@@ -1,8 +1,8 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ArticleService, Article } from '../../services/admin-article';
 import { RouterLink } from '@angular/router';
-
+import { environment } from '../../../enviroments/enviroment';
 @Component({
   selector: 'app-articles',
   imports: [DatePipe,RouterLink],
@@ -12,8 +12,37 @@ import { RouterLink } from '@angular/router';
 export class AdminArticlesComponent implements OnInit {
 
   private articleService = inject(ArticleService);
+  environment = environment;
 
   articles = signal<Article[]>([]);
+  searchKeyword = signal('');
+  selectedCategory = signal('');
+
+  filteredArticles = computed(() => {
+
+    const keyword = this.searchKeyword()
+      .trim()
+      .toLowerCase();
+
+    const category = this.selectedCategory();
+
+    return this.articles().filter(article => {
+
+      // 搜尋文章標題
+      const matchKeyword =
+        article.title.toLowerCase().includes(keyword);
+
+      // 篩選分類
+      const matchCategory =
+        category === '' ||
+        article.category === category;
+
+      // 搜尋 + 分類都符合
+      return matchKeyword && matchCategory;
+
+    });
+
+  });
 
   ngOnInit(): void {
     this.getArticles();
@@ -36,6 +65,20 @@ export class AdminArticlesComponent implements OnInit {
 
       }
     });
+
+  }
+  onSearch(event: Event): void {
+
+    const input = event.target as HTMLInputElement;
+
+    this.searchKeyword.set(input.value);
+
+  }
+  onCategoryChange(event: Event): void {
+
+    const select = event.target as HTMLSelectElement;
+
+    this.selectedCategory.set(select.value);
 
   }
   deleteArticle(id: number) {

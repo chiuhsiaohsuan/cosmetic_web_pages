@@ -48,13 +48,12 @@ export class ProductAdd {
 
   });
 
-  // 商品主圖
+
   mainImage: File | null = null;
-
-
-  // 產品特色圖片
   detailImages: File[] = [];
 
+  mainImagePreview = signal<string | null>(null);
+  detailImagePreviews = signal<string[]>([]);
 
 
   // 壓縮圖片
@@ -93,60 +92,88 @@ export class ProductAdd {
   }
 
   // 商品主圖
-  async onMainImageSelected(event:any){
-
+  async onMainImageSelected(event: any) {
 
     const file = event.target.files[0];
 
-
-    if(!file){
+    if (!file) {
       return;
     }
 
-
     console.log(
-      "主圖原始大小",
+      '主圖原始大小',
       file.size / 1024 / 1024
     );
 
+    // 如果之前有預覽，先釋放
+    const oldPreview = this.mainImagePreview();
 
+    if (oldPreview) {
+      URL.revokeObjectURL(oldPreview);
+    }
+
+    // 壓縮
     this.mainImage =
       await this.compressImage(file);
 
+    console.log(
+      '主圖壓縮後大小',
+      this.mainImage.size / 1024 / 1024
+    );
 
+    // 建立新的預覽 URL
+    const previewUrl =
+      URL.createObjectURL(this.mainImage);
+
+    this.mainImagePreview.set(
+      previewUrl
+    );
   }
 
   // 產品特色圖片(多張)
-  async onDetailImagesSelected(event:any){
+  async onDetailImagesSelected(event: any) {
 
-
-    const files:Array<File> =
+    const files: File[] =
       Array.from(event.target.files);
 
+    // 先釋放之前的預覽 URL
+    const oldPreviews =
+      this.detailImagePreviews();
+
+    oldPreviews.forEach(url => {
+      URL.revokeObjectURL(url);
+    });
 
     this.detailImages = [];
 
+    const previews: string[] = [];
 
-    for(const file of files){
+    for (const file of files) {
 
-
+      // 壓縮
       const compressed =
         await this.compressImage(file);
 
-
+      // 儲存壓縮後圖片
       this.detailImages.push(
         compressed
       );
 
+      // 建立預覽
+      const previewUrl =
+        URL.createObjectURL(compressed);
+
+      previews.push(previewUrl);
     }
 
-
-    console.log(
-      "特色圖片數量",
-      this.detailImages.length
+    this.detailImagePreviews.set(
+      previews
     );
 
-
+    console.log(
+      '特色圖片數量',
+      this.detailImages.length
+    );
   }
 
   addProduct(){

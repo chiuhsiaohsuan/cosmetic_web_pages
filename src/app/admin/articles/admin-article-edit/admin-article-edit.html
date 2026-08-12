@@ -12,7 +12,7 @@
 
   <div class="form-card">
 
-    <form>
+    <form (ngSubmit)="saveArticle()">
 
       <!-- 標題 -->
       <div class="form-group">
@@ -65,7 +65,10 @@
           <option value="">請選擇分類</option>
 
           <option value="trend">
-            保養趨勢
+            趨勢話題
+          </option>
+          <option value="share">
+            美麗分享
           </option>
 
         </select>
@@ -90,38 +93,41 @@
       </div>
 
 
-      <!-- 圖片 -->
-      <div class="form-group">
-
-        <label for="image">
-          圖片檔名
-        </label>
+      <div>
+        <label>文章圖片</label>
 
         <input
-          id="image"
-          type="text"
-          [(ngModel)]="article().image"
-          name="image"
-          placeholder="例如：article01.jpg"
-        >
+          type="file"
+          accept="image/*"
+          (change)="onImageSelected($event)"
+        />
 
+        @if (imagePreview) {
+
+          <div>
+            <p>圖片預覽：</p>
+
+            <img
+              [src]="imagePreview"
+              width="300"
+              alt="圖片預覽"
+            />
+          </div>
+
+        } @else if (article().image) {
+
+          <div>
+            <p>目前圖片：</p>
+
+            <img
+              [src]="environment.imageUrl + '/uploads/' + article().image"
+              width="300"
+              alt="目前圖片"
+            />
+          </div>
+
+        }
       </div>
-
-
-      @if (article().image) {
-
-        <div class="image-preview">
-
-          <p>目前圖片</p>
-
-          <img
-            [src]="'assets/images/' + article().image"
-            [alt]="article().title"
-          >
-
-        </div>
-
-      }
 
 
       <!-- 按鈕 -->
@@ -136,7 +142,7 @@
 
         <button
           type="submit"
-          class="save-btn" (click)="saveArticle()">
+          class="save-btn">
           儲存修改
         </button>
 

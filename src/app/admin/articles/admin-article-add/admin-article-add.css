@@ -118,7 +118,17 @@ button[type="submit"]:hover {
 button[type="submit"]:active {
   transform: translateY(0);
 }
+.image-preview {
+  margin-top: 10px;
+}
 
+.image-preview img {
+  width: 300px;
+  height: 200px;
+  object-fit: contain;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
 /* 手機版 */
 @media (max-width: 768px) {
   .article-add {

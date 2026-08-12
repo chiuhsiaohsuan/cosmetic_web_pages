@@ -78,16 +78,28 @@ export class ProductService {
 
 
   // 後台取得全部商品
-  getAdminProducts(page: number = 1, limit: number = 10) {
+  getAdminProducts(
+    page: number = 1,
+    limit: number = 10,
+    search: string = '',
+    category: string = ''
+  ) {
 
     return this.http.get<any>(
-      `${this.adminApiUrl}?page=${page}&limit=${limit}`,
+      `${this.adminApiUrl}?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}&category=${encodeURIComponent(category)}`,
       this.getHeaders()
     );
 
   }
 
+  getProductCategories() {
 
+    return this.http.get<string[]>(
+      `${this.adminApiUrl}/categories`,
+      this.getHeaders()
+    );
+
+  }
 
   // 後台取得單一商品
   getProduct(id:number){
@@ -100,7 +112,6 @@ export class ProductService {
   }
 
   // 新增商品
-
   addProduct(formData:FormData){
 
       return this.http.post<{
@@ -111,19 +122,20 @@ export class ProductService {
       );
 
   }
-  uploadDetailImages(productId:number, images:File[]){
+  uploadDetailImages(
+    productId: number,
+    images: File[]
+  ) {
 
     const formData = new FormData();
 
+    images.forEach(img => {
 
-    images.forEach(img=>{
-      
       console.log(
         "送出圖片:",
         img.name,
         img.size
       );
-
 
       formData.append(
         "images",
@@ -133,12 +145,10 @@ export class ProductService {
 
     });
 
-
     return this.http.put(
       `${this.adminApiUrl}/${productId}/detail-images`,
       formData
     );
-
   }
 
   // 修改商品
