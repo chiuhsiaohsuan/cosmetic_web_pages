@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ArticleService, Article } from '../../services/admin-article';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { environment } from '../../../enviroments/enviroment';
 @Component({
   selector: 'app-articles',
@@ -12,6 +12,8 @@ import { environment } from '../../../enviroments/enviroment';
 export class AdminArticlesComponent implements OnInit {
 
   private articleService = inject(ArticleService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
   environment = environment;
 
   articles = signal<Article[]>([]);
@@ -45,6 +47,10 @@ export class AdminArticlesComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.selectedCategory.set(params['category'] ?? '');
+    });
+
     this.getArticles();
   }
 
@@ -79,6 +85,11 @@ export class AdminArticlesComponent implements OnInit {
     const select = event.target as HTMLSelectElement;
 
     this.selectedCategory.set(select.value);
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { category: select.value || null },
+    });
 
   }
   deleteArticle(id: number) {

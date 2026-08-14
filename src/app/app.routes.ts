@@ -10,6 +10,7 @@ import{ ForgotPassword } from './login/forgot-password';
 import{ Team } from './about/team/team';
 import{ Vision } from './about/vision/vision';
 import{ Blog } from './blog/blog'; 
+import { ArticleDetail } from './article-detail/article-detail';
 import{ Cart } from './cart/cart';
 import { ProductEdit } from './admin/products/product-edit/product-edit';
 import { AdminLayout } from './admin/admin-layout/admin-layout';
@@ -46,6 +47,7 @@ export const routes: Routes = [
     { path: 'forgot-password', component: ForgotPassword },
     { path: 'register', component: Register },
     { path: 'blog', component: Blog },
+    { path: 'blog/:id', component: ArticleDetail },
     { path: 'cart', component: Cart },
     { path: 'member', component: Member },
     { path: 'checkout', component: Checkout },

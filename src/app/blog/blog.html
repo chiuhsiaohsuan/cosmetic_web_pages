@@ -29,7 +29,7 @@
 
         @for(article of filteredArticles(); track article.id){
 
-            <article class="blog-card">
+            <article class="blog-card" [routerLink]="['/blog', article.id]" tabindex="0">
 
                 <img [src]="environment.imageUrl + '/uploads/' + article.image" [alt]="article.title">
 

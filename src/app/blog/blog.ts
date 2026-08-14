@@ -1,12 +1,12 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { Article, ArticleService } from '../services/admin-article';
 import { environment } from '../../enviroments/enviroment';
 
 @Component({
   selector: 'app-blog',
-  imports: [DatePipe],
+  imports: [DatePipe, RouterLink],
   templateUrl: './blog.html',
   styleUrl: './blog.css',
 })
@@ -23,6 +23,7 @@ export class Blog implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private articleService: ArticleService
   ) {}
 
@@ -54,6 +55,11 @@ export class Blog implements OnInit {
   changeCategory(category: string) {
 
     this.selectedCategory.set(category);
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { category },
+    });
 
   }
 

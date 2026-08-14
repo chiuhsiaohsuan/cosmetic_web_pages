@@ -119,6 +119,7 @@
 
                 <a
                     routerLink="/blog"
+                    [queryParams]="{ category: 'share' }"
                     (click)="closeMenu()">
 
                     美麗分享
@@ -126,6 +127,7 @@
                 </a>
                 <a
                     routerLink="/blog"
+                    [queryParams]="{ category: 'trend' }"
                     (click)="closeMenu()">
 
                     趨勢話題

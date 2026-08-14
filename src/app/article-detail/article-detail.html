@@ -1,0 +1,30 @@
+<section class="article-detail">
+  @if (loading()) {
+    <p class="status-message">文章載入中…</p>
+  } @else if (article(); as article) {
+    <button class="back-button" type="button" (click)="goBack()">← 返回文章列表</button>
+
+    <article>
+      <header class="article-header">
+        <span class="category">{{ article.category === 'trend' ? '趨勢話題' : '美麗分享' }}</span>
+        <h1>{{ article.title }}</h1>
+      </header>
+
+      <img class="article-image" [src]="environment.imageUrl + '/uploads/' + article.image" [alt]="article.title">
+
+      <div class="article-body">
+        <h2>{{ article.description }}</h2>
+        <p>{{ article.context }}</p>
+      </div>
+      <div class="article-footer">
+        <time>{{ article.date | date:'yyyy.MM.dd' }}</time>
+      </div>
+
+    </article>
+  } @else {
+    <div class="status-message">
+      <p>找不到這篇文章。</p>
+      <a routerLink="/blog">返回文章列表</a>
+    </div>
+  }
+</section>

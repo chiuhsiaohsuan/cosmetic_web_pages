@@ -48,7 +48,21 @@
         </textarea>
 
       </div>
+      <div class="form-group">
 
+        <label for="context">
+          文章內容
+        </label>
+
+        <textarea
+          id="context"
+          [(ngModel)]="article().context"
+          name="context"
+          rows="4"
+          placeholder="請輸入文章內容">
+        </textarea>
+
+      </div>
 
       <!-- 分類 -->
       <div class="form-group">
@@ -136,7 +150,7 @@
         <button
           type="button"
           class="cancel-btn"
-          routerLink="/admin/articles">
+          (click)="goBack()">
           取消
         </button>
 

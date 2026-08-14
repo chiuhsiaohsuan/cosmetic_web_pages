@@ -1,0 +1,10 @@
+.article-detail { max-width: 900px; margin: 0 auto; padding: 48px 24px 72px; }
+.back-button, .status-message a { color: #487052; font: inherit; }
+.back-button { border: 0; background: transparent; padding: 0; cursor: pointer; }
+.article-header { margin: 28px 0 24px; text-align: center; }
+.category { display: inline-block; margin-bottom: 14px; color: #689d66; font-size: .9rem; }
+.article-header h1 { margin: 0; color: #3e3030; font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.35; }
+.article-footer time { display: block; color: #8c8181; text-align: right;}
+.article-image { display: block; width: 100%; max-height: 500px; border-radius: 10px; object-fit: cover; }
+.article-body { margin: 32px auto 0; max-width: 720px; color: #485149; font-size: 1.1rem; line-height: 2; white-space: pre-line; }
+.status-message { padding: 72px 0; text-align: center; color: #485148; }

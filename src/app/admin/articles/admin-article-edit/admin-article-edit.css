@@ -73,8 +73,8 @@
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
-  border-color: #a88bc7;
-  box-shadow: 0 0 0 3px rgba(168, 139, 199, 0.12);
+  border-color: #444444;
+  box-shadow: 0 0 0 3px rgba(129, 129, 129, 0.12);
 }
 
 /* placeholder */
@@ -111,8 +111,8 @@ input[type="file"] {
 }
 
 input[type="file"]:hover {
-  border-color: #a88bc7;
-  background-color: #fcfaff;
+  border-color: #2c2c2c;
+  background-color: #f0f0f0;
 }
 
 /* 目前圖片 */

@@ -7,6 +7,7 @@ export interface Article {
   id: number;
   title: string;
   description: string;
+  context: string;
   category: string;
   date: string;
   image: string;
@@ -32,6 +33,7 @@ export class ArticleService {
   addArticle(
     title: string,
     description: string,
+    context: string,
     category: string,
     date: string,
     image: File
@@ -41,6 +43,7 @@ export class ArticleService {
 
     formData.append('title', title);
     formData.append('description', description);
+    formData.append('context', context);
     formData.append('category', category);
     formData.append('date', date);
     formData.append('image', image);
@@ -54,6 +57,7 @@ export class ArticleService {
     id: number,
     title: string,
     description: string,
+    context: string,
     category: string,
     date: string,
     image?: File
@@ -63,6 +67,7 @@ export class ArticleService {
 
     formData.append('title', title);
     formData.append('description', description);
+    formData.append('context', context);
     formData.append('category', category);
     formData.append('date', date);
 

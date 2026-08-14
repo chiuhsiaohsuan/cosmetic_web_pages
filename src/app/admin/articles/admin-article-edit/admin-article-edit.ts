@@ -1,12 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ArticleService, Article } from '../../../services/admin-article';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../../enviroments/enviroment';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-article-edit',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule],
   templateUrl: './admin-article-edit.html',
   styleUrl: './admin-article-edit.css',
 })
@@ -15,6 +16,7 @@ export class AdminArticleEditComponent {
   private route = inject(ActivatedRoute);
   private articleService = inject(ArticleService);
   private router = inject(Router);
+  private location = inject(Location);
 
   environment = environment;
 
@@ -26,6 +28,7 @@ export class AdminArticleEditComponent {
     id: 0,
     title: '',
     description: '',
+    context: '',
     category: '',
     date: '',
     image: ''
@@ -116,6 +119,7 @@ export class AdminArticleEditComponent {
         this.articleId,
         article.title,
         article.description,
+        article.context,
         article.category,
         article.date,
         this.selectedImage ?? undefined
@@ -147,5 +151,7 @@ export class AdminArticleEditComponent {
 
   }
 
-
+  goBack(): void {
+    this.location.back();
+  }
 }

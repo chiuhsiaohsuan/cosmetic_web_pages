@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ArticleService } from '../../../services/admin-article';
 
 @Component({
   selector: 'app-article-add',
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
   templateUrl: './admin-article-add.html',
   styleUrl: './admin-article-add.css'
 })
@@ -20,6 +20,7 @@ export class AdminArticleAddComponent {
   article = {
     title: '',
     description: '',
+    context:'',
     category: 'trend',
     date: '',
     image: ''
@@ -37,6 +38,7 @@ export class AdminArticleAddComponent {
     this.articleService.addArticle(
       this.article.title,
       this.article.description,
+      this.article.context,
       this.article.category,
       this.article.date,
       this.selectedFile

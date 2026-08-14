@@ -119,12 +119,13 @@ router.post('/', upload.single('image'), (req, res) => {
     const {
         title,
         description,
+        context,
         category,
         date
     } = req.body;
 
     // 檢查文字資料
-    if (!title || !description || !category || !date) {
+    if (!title || !description || !context || !category || !date) {
         return res.status(400).json({
             message: '請填寫完整文章資料'
         });
@@ -142,13 +143,14 @@ router.post('/', upload.single('image'), (req, res) => {
 
     const sql = `
         INSERT INTO articles
-        (title, description, category, date, image)
-        VALUES (?, ?, ?, ?, ?)
+        (title, description, context, category, date, image)
+        VALUES (?, ?, ?, ?, ?, ?)
     `;
 
     const values = [
         title,
         description,
+        context,
         category,
         date,
         image
@@ -182,11 +184,12 @@ router.put('/:id', upload.single('image'), (req, res) => {
     const {
         title,
         description,
+        context,
         category,
         date
     } = req.body;
 
-    if (!title || !description || !category || !date) {
+    if (!title || !description || !context || !category || !date) {
         return res.status(400).json({
             message: '請填寫完整文章資料'
         });
@@ -229,6 +232,7 @@ router.put('/:id', upload.single('image'), (req, res) => {
                 SET
                     title = ?,
                     description = ?,
+                    context = ?,
                     category = ?,
                     date = ?,
                     image = ?
@@ -238,6 +242,7 @@ router.put('/:id', upload.single('image'), (req, res) => {
             const values = [
                 title,
                 description,
+                context,
                 category,
                 date,
                 newImage,
@@ -293,6 +298,7 @@ router.put('/:id', upload.single('image'), (req, res) => {
             SET
                 title = ?,
                 description = ?,
+                context = ?,
                 category = ?,
                 date = ?
             WHERE id = ?
@@ -301,6 +307,7 @@ router.put('/:id', upload.single('image'), (req, res) => {
         const values = [
             title,
             description,
+            context,
             category,
             date,
             id
@@ -381,8 +388,6 @@ router.delete('/:id', (req, res) => {
             // 刪除圖片
             if (image) {
 
-                // image = articles/xxx.jpg
-                // uploadDir = uploads/articles
                 const imagePath = path.join(
                     uploadDir,
                     path.basename(image)
