@@ -13,6 +13,7 @@ const paymentRouter = require('./routes/payment');
 const userRouter = require('./routes/user');
 const adminOrdersRouter = require('./routes/adminOrders');
 const adminArticleRouter = require('./routes/adminArticle');
+const adminNewsRouter = require('./routes/adminNews');
 const transporter = require('./middleware/mailer');
 const forgotPassRouter = require('./routes/forgotPass');
 const verificationCodes = new Map();
@@ -39,7 +40,8 @@ app.use(express.static("public"));
 app.use("/uploads",express.static("uploads"));
 app.use('/api', userRouter);
 app.use('/api', forgotPassRouter);
-app.use('/api/articles', adminArticleRouter);
+app.use('/api/admin/articles', adminArticleRouter);
+app.use('/api/admin/news', adminNewsRouter);
 app.use(
     '/api/products',
     productDetailImage
@@ -364,18 +366,6 @@ app.post('/api/login', (req, res) => {
                 message: "帳號或密碼錯誤"
             });
         }
-
-        const token = jwt.sign(
-            {
-                id: user.id,
-                email: user.email,
-                role: user.role
-            },
-            process.env.JWT_SECRET,
-            {
-                expiresIn: rememberMe ? '30d' : '2h'
-            }
-        );
 
         const token = jwt.sign(
             {

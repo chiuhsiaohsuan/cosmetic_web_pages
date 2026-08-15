@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
+import { NewsService, News as NewsData } from '../services/news';
 
 @Component({
   selector: 'app-news',
@@ -8,47 +9,79 @@ import { Component } from '@angular/core';
 })
 export class News {
 
-  newsList = [
-    { date: '2026-07-08', title: '新商品上市，限時優惠中' },
-    { date: '2026-07-01', title: '夏季保養系列正式發售' },
-    { date: '2026-06-20', title: '新商品上市，限時優惠中' },
-    { date: '2026-06-18', title: '新品上市' },
-    { date: '2026-06-10', title: '會員優惠活動' },
-    { date: '2026-06-05', title: '父親節預購開始' },
-    { date: '2026-05-28', title: '新品到貨' },
-    { date: '2026-05-20', title: '夏日活動開跑' }
-  ];
+  private newsService = inject(NewsService);
 
-  pageSize = 5;
-  currentPage = 1;
+  newsList = signal<NewsData[]>([]);
 
-  get pages(): number[] {
-      const totalPages = Math.ceil(this.newsList.length / this.pageSize);
+  pageSize = signal(5);
 
-      return Array.from(
-          { length: totalPages },
-          (_, i) => i + 1
-      );
+  currentPage = signal(1);
+
+
+  ngOnInit(): void {
+    this.loadNews();
   }
 
+  loadNews(): void {
 
-  get pagedNews() {
-      const start = (this.currentPage - 1) * this.pageSize;
+    this.newsService.getNews().subscribe({
 
-      return this.newsList.slice(
-          start,
-          start + this.pageSize
-      );
-  }
+      next: (data) => {
 
+        console.log('取得新聞：', data);
 
-  changePage(page: number) {
+        this.newsList.set(data);
 
-      if (page < 1 || page > this.pages.length) {
-          return;
+        this.currentPage.set(1);
+
+      },
+
+      error: (err) => {
+
+        console.error('取得新聞失敗:', err);
+
       }
 
-      this.currentPage = page;
+    });
+  }
+
+  pages = computed(() => {
+
+    const totalPages = Math.ceil(
+      this.newsList().length / this.pageSize()
+    );
+
+    return Array.from(
+      { length: totalPages },
+      (_, i) => i + 1
+    );
+
+  });
+
+  pagedNews = computed(() => {
+
+    const start =
+      (this.currentPage() - 1) *
+      this.pageSize();
+
+    return this.newsList().slice(
+      start,
+      start + this.pageSize()
+    );
+
+  });
+
+  changePage(page: number): void {
+
+    if (
+      page < 1 ||
+      page > this.pages().length
+    ) {
+      return;
+    }
+
+    this.currentPage.set(page);
+
   }
 
 }

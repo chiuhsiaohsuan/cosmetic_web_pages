@@ -1,7 +1,24 @@
-/* =========================
-   搜尋與篩選區
-   ========================= */
+.page-header{
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+.page-header > .add-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #333;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
 
+.page-header > .add-btn:hover {
+  background: #555;
+  transform: translateY(-1px);
+}
 .filter-box {
   display: flex;
   align-items: flex-end;
@@ -13,18 +30,13 @@
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
 }
 
-
-/* 搜尋與分類區塊 */
-
 .search-box,
 .category-box {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  flex: 1;
 }
-
-
-/* 標題 */
 
 .search-box label,
 .category-box label {
@@ -33,11 +45,8 @@
   color: #333;
 }
 
-
-/* 搜尋輸入框 */
-
 .search-box input {
-  width: 280px;
+  width: 100%;
   height: 42px;
   padding: 0 14px;
   border: 1px solid #ddd;
@@ -48,26 +57,17 @@
   transition: 0.3s;
 }
 
-
-/* 搜尋框 focus */
-
 .search-box input:focus {
   border-color: #555;
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
 }
 
-
-/* placeholder */
-
 .search-box input::placeholder {
   color: #aaa;
 }
 
-
-/* 分類選單 */
-
 .category-box select {
-  width: 260px;
+  width: 100%;
   height: 42px;
   padding: 0 12px;
   border: 1px solid #ddd;
@@ -81,25 +81,14 @@
   transition: 0.3s;
 }
 
-
-/* 分類選單 focus */
-
 .category-box select:focus {
   border-color: #555;
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
 }
 
-
-/* 分類選單 hover */
-
 .category-box select:hover {
   border-color: #999;
 }
-
-
-/* =========================
-   表格外觀
-   ========================= */
 
 table {
   width: 100%;

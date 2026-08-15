@@ -32,8 +32,6 @@ export class ProductList {
 
         next: (data) => {
 
-          console.log('商品分類：', data);
-
           this.categories.set(data);
 
         },

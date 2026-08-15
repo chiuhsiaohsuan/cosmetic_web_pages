@@ -17,8 +17,8 @@
     </div>
         <a class="home-link home-svg" routerLink="/">
             <svg xmlns="http://www.w3.org/2000/svg"
-                 width="30"
-                 height="30"
+                 width="25"
+                 height="25"
                  fill="currentColor"
                  viewBox="0 0 16 16">
 
@@ -43,11 +43,9 @@
         class="menu"
         [class.open]="isMenuOpen()">
 
-        <!-- 關於我們 -->
-
     <div class="menu-item">
 
-        <a routerLink="/about">
+        <a routerLink="/about" (click)="closeMenu()">
             關於我們
         </a>
 
@@ -82,8 +80,6 @@
 
     </div>
 
-        <!-- 最新消息 -->
-
         <a
             routerLink="/news"
             (click)="closeMenu()">
@@ -91,8 +87,6 @@
             最新消息
 
         </a>
-
-        <!-- 商品 -->
 
         <a
             routerLink="/product"
@@ -102,11 +96,9 @@
 
         </a>
 
-        <!-- Blog -->
-
         <div class="menu-item">
 
-            <a routerLink="/blog">
+            <a routerLink="/blog" (click)="closeMenu()">
                 部落格
             </a>
                 <button
@@ -150,7 +142,8 @@
             <button class="member-btn" (click)="toggleMemberMenu($event)">
                 <svg xmlns="http://www.w3.org/2000/svg" height="25" width="25" viewBox="0 0 640 640">
                     <path d="M320 312C386.3 312 440 258.3 440 192C440 125.7 386.3 72 320 72C253.7 72 200 125.7 200 192C200 258.3 253.7 312 320 312zM290.3 368C191.8 368 112 447.8 112 546.3C112 562.7 125.3 576 141.7 576L498.3 576C514.7 576 528 562.7 528 546.3C528 447.8 448.2 368 349.7 368L290.3 368z"/>
-                </svg>{{userName}}
+                </svg>
+                <span>{{userName}}</span>
                 <span>{{showMemberMenu ? '▲':'▼'}}</span>
             </button>
             @if(showMemberMenu){
