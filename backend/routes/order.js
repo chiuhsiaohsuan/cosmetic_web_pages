@@ -3,7 +3,8 @@ const router = express.Router();
 const db = require('../db');
 const verifyToken = require("../middleware/verifyToken");
 
-router.post('/', (req, res) => {
+// 建立訂單
+router.post("/", (req, res) => {
 
     const {
         user_id,
@@ -13,7 +14,11 @@ router.post('/', (req, res) => {
         receiver_address
     } = req.body;
 
-    // 檢查資料
+
+    // =========================
+    // 1. 檢查訂單資料
+    // =========================
+
     if (
         !user_id ||
         !receiver_name ||
@@ -26,281 +31,472 @@ router.post('/', (req, res) => {
         });
     }
 
-    // 開始交易
-    db.beginTransaction((err) => {
+
+    // =========================
+    // 2. 從 Connection Pool
+    //    取得一條專用 connection
+    // =========================
+
+    db.getConnection((err, connection) => {
 
         if (err) {
-            console.error("Transaction 開始失敗", err);
+
+            console.error(
+                "取得資料庫連線失敗",
+                err
+            );
 
             return res.status(500).json({
                 message: "建立訂單失敗"
             });
         }
 
-        // 1. 查詢購物車
-        const cartSql = `
-            SELECT
-                c.product_id,
-                c.quantity,
-                p.name,
-                p.price,
-                p.stock
-            FROM cart_item c
-            JOIN products p
-                ON c.product_id = p.id
-            WHERE c.user_id = ?
-        `;
 
-        db.query(cartSql, [user_id], (err, cartItems) => {
+        // =========================
+        // 3. 開始 Transaction
+        // =========================
+
+        connection.beginTransaction((err) => {
 
             if (err) {
-                console.error("查詢購物車失敗", err);
 
-                return db.rollback(() => {
-                    res.status(500).json({
-                        message: "查詢購物車失敗"
-                    });
+                console.error(
+                    "Transaction 開始失敗",
+                    err
+                );
+
+                connection.release();
+
+                return res.status(500).json({
+                    message: "建立訂單失敗"
                 });
             }
 
-            // 購物車為空
-            if (cartItems.length === 0) {
 
-                return db.rollback(() => {
-                    res.status(400).json({
-                        message: "購物車是空的"
-                    });
-                });
+            // =========================
+            // 4. 查詢購物車
+            // =========================
 
-            }
-
-            // 2. 檢查庫存
-            for (const item of cartItems) {
-
-                if (item.quantity > item.stock) {
-
-                    return db.rollback(() => {
-                        res.status(400).json({
-                            message: `${item.name} 庫存不足`
-                        });
-                    });
-
-                }
-
-            }
-
-            // 3. 計算總金額
-            let totalAmount = 0;
-
-            cartItems.forEach(item => {
-                totalAmount += item.price * item.quantity;
-            });
-
-
-            // 4. 建立訂單
-            const orderSql = `
-                INSERT INTO orders
-                (
-                    user_id,
-                    receiver_name,
-                    receiver_phone,
-                    receiver_email,
-                    receiver_address,
-                    total_amount,
-                    order_status,
-                    payment_status
-                )
-                VALUES (?, ?, ?, ?, ?, '待付款', '未付款')
+            const cartSql = `
+                SELECT
+                    c.product_id,
+                    c.quantity,
+                    p.name,
+                    p.price,
+                    p.stock
+                FROM cart_item c
+                JOIN products p
+                    ON c.product_id = p.id
+                WHERE c.user_id = ?
             `;
 
-            db.query(
-                orderSql,
-                [
-                    user_id,
-                    receiver_name,
-                    receiver_phone,
-                    receiver_email,
-                    receiver_address,
-                    totalAmount
-                ],
-                (err, orderResult) => {
+
+            connection.query(
+                cartSql,
+                [user_id],
+                (err, cartItems) => {
 
                     if (err) {
-                        console.error("建立 orders 失敗", err);
 
-                        return db.rollback(() => {
+                        console.error(
+                            "查詢購物車失敗",
+                            err
+                        );
+
+                        return connection.rollback(() => {
+
+                            connection.release();
+
                             res.status(500).json({
-                                message: "建立訂單失敗"
+                                message: "查詢購物車失敗"
                             });
+
                         });
+
                     }
 
-                    const orderId = orderResult.insertId;
+
+                    // =========================
+                    // 5. 檢查購物車是否為空
+                    // =========================
+
+                    if (cartItems.length === 0) {
+
+                        return connection.rollback(() => {
+
+                            connection.release();
+
+                            res.status(400).json({
+                                message: "購物車是空的"
+                            });
+
+                        });
+
+                    }
 
 
-                    // 5. 建立 order_items
-                    const insertItem = (index) => {
+                    // =========================
+                    // 6. 先檢查目前庫存
+                    // =========================
 
-                        if (index >= cartItems.length) {
+                    for (const item of cartItems) {
 
-                            // 全部 order_items 建立完成
-                            // 開始扣庫存
-                            updateStock(0);
+                        if (item.quantity > item.stock) {
 
-                            return;
+                            return connection.rollback(() => {
+
+                                connection.release();
+
+                                res.status(400).json({
+                                    message:
+                                        `${item.name} 庫存不足，目前庫存：${item.stock}，購買數量：${item.quantity}`
+                                });
+
+                            });
+
                         }
 
-                        const item = cartItems[index];
-
-                        const itemSql = `
-                            INSERT INTO order_items
-                            (
-                                order_id,
-                                product_id,
-                                quantity,
-                                price
-                            )
-                            VALUES (?, ?, ?, ?)
-                        `;
-
-                        db.query(
-                            itemSql,
-                            [
-                                orderId,
-                                item.product_id,
-                                item.quantity,
-                                item.price
-                            ],
-                            (err) => {
-
-                                if (err) {
-                                    console.error(
-                                        "建立 order_items 失敗",
-                                        err
-                                    );
-
-                                    return db.rollback(() => {
-                                        res.status(500).json({
-                                            message: "建立訂單商品失敗"
-                                        });
-                                    });
-                                }
-
-                                insertItem(index + 1);
-                            }
-                        );
-                    };
+                    }
 
 
-                    // 6. 扣庫存
-                    const updateStock = (index) => {
+                    // =========================
+                    // 7. 計算總金額
+                    // =========================
 
-                        if (index >= cartItems.length) {
+                    let totalAmount = 0;
 
-                            // 全部庫存扣完
-                            deleteCart();
+                    cartItems.forEach((item) => {
 
-                            return;
-                        }
+                        totalAmount +=
+                            Number(item.price) *
+                            Number(item.quantity);
 
-                        const item = cartItems[index];
-
-                        const stockSql = `
-                            UPDATE products
-                            SET stock = stock - ?
-                            WHERE id = ?
-                        `;
-
-                        db.query(
-                            stockSql,
-                            [
-                                item.quantity,
-                                item.product_id
-                            ],
-                            (err, result) => {
-
-                                if (err) {
-                                    console.error(
-                                        "扣庫存失敗",
-                                        err
-                                    );
-
-                                    return db.rollback(() => {
-                                        res.status(500).json({
-                                            message: "扣庫存失敗"
-                                        });
-                                    });
-                                }
-
-                                updateStock(index + 1);
-                            }
-                        );
-                    };
+                    });
 
 
-                    // 7. 清空購物車
-                    const deleteCart = () => {
+                    // =========================
+                    // 8. 建立 orders
+                    // =========================
 
-                        const deleteSql = `
-                            DELETE FROM cart_item
-                            WHERE user_id = ?
-                        `;
-
-                        db.query(
-                            deleteSql,
-                            [user_id],
-                            (err) => {
-
-                                if (err) {
-                                    console.error(
-                                        "清空購物車失敗",
-                                        err
-                                    );
-
-                                    return db.rollback(() => {
-                                        res.status(500).json({
-                                            message: "清空購物車失敗"
-                                        });
-                                    });
-                                }
+                    const orderSql = `
+                        INSERT INTO orders
+                        (
+                            user_id,
+                            receiver_name,
+                            receiver_phone,
+                            receiver_email,
+                            receiver_address,
+                            total_amount,
+                            order_status,
+                            payment_status
+                        )
+                        VALUES (?, ?, ?, ?, ?, ?, '待付款', '未付款')
+                    `;
 
 
-                                // 8. 全部成功
-                                db.commit((err) => {
+                    connection.query(
+                        orderSql,
+                        [
+                            user_id,
+                            receiver_name,
+                            receiver_phone,
+                            receiver_email,
+                            receiver_address,
+                            totalAmount
+                        ],
+                        (err, orderResult) => {
 
-                                    if (err) {
+                            if (err) {
 
-                                        console.error(
-                                            "Transaction commit 失敗",
-                                            err
-                                        );
+                                console.error(
+                                    "建立 orders 失敗",
+                                    err
+                                );
 
-                                        return db.rollback(() => {
-                                            res.status(500).json({
-                                                message: "訂單建立失敗"
-                                            });
-                                        });
+                                return connection.rollback(() => {
 
-                                    }
+                                    connection.release();
 
-
-                                    // 成功
-                                    res.status(201).json({
-                                        message: "訂單建立成功",
-                                        order_id: orderId,
-                                        total_amount: totalAmount
+                                    res.status(500).json({
+                                        message: "建立訂單失敗"
                                     });
 
                                 });
 
                             }
-                        );
-
-                    };
 
 
-                    // 開始建立 order_items
-                    insertItem(0);
+                            const orderId =
+                                orderResult.insertId;
+
+
+                            // =========================
+                            // 9. 建立 order_items
+                            // =========================
+
+                            const insertItem = (index) => {
+
+                                // 所有商品都建立完成
+                                if (
+                                    index >=
+                                    cartItems.length
+                                ) {
+
+                                    updateStock(0);
+
+                                    return;
+                                }
+
+
+                                const item =
+                                    cartItems[index];
+
+
+                                const itemSql = `
+                                    INSERT INTO order_items
+                                    (
+                                        order_id,
+                                        product_id,
+                                        quantity,
+                                        price
+                                    )
+                                    VALUES (?, ?, ?, ?)
+                                `;
+
+
+                                connection.query(
+                                    itemSql,
+                                    [
+                                        orderId,
+                                        item.product_id,
+                                        item.quantity,
+                                        item.price
+                                    ],
+                                    (err) => {
+
+                                        if (err) {
+
+                                            console.error(
+                                                "建立 order_items 失敗",
+                                                err
+                                            );
+
+                                            return connection.rollback(() => {
+
+                                                connection.release();
+
+                                                res.status(500).json({
+                                                    message:
+                                                        "建立訂單商品失敗"
+                                                });
+
+                                            });
+
+                                        }
+
+
+                                        insertItem(
+                                            index + 1
+                                        );
+
+                                    }
+                                );
+
+                            };
+
+
+                            // =========================
+                            // 10. 扣除商品庫存
+                            // =========================
+
+                            const updateStock = (index) => {
+
+                                // 所有庫存都扣完
+                                if (
+                                    index >=
+                                    cartItems.length
+                                ) {
+
+                                    deleteCart();
+
+                                    return;
+                                }
+
+
+                                const item =
+                                    cartItems[index];
+
+                                const stockSql = `
+                                    UPDATE products
+                                    SET stock = stock - ?
+                                    WHERE id = ?
+                                    AND stock >= ?
+                                `;
+
+
+                                connection.query(
+                                    stockSql,
+                                    [
+                                        item.quantity,
+                                        item.product_id,
+                                        item.quantity
+                                    ],
+                                    (err, result) => {
+
+                                        if (err) {
+
+                                            console.error(
+                                                "扣庫存失敗",
+                                                err
+                                            );
+
+                                            return connection.rollback(() => {
+
+                                                connection.release();
+
+                                                res.status(500).json({
+                                                    message:
+                                                        "扣庫存失敗"
+                                                });
+
+                                            });
+
+                                        }
+
+
+                                        // =========================
+                                        // 庫存不足
+                                        // =========================
+
+                                        if (
+                                            result.affectedRows === 0
+                                        ) {
+
+                                            return connection.rollback(() => {
+
+                                                connection.release();
+
+                                                res.status(400).json({
+                                                    message:
+                                                        `${item.name} 庫存不足`
+                                                });
+
+                                            });
+
+                                        }
+
+
+                                        updateStock(
+                                            index + 1
+                                        );
+
+                                    }
+                                );
+
+                            };
+
+
+                            // =========================
+                            // 11. 清空購物車
+                            // =========================
+
+                            const deleteCart = () => {
+
+                                const deleteSql = `
+                                    DELETE FROM cart_item
+                                    WHERE user_id = ?
+                                `;
+
+
+                                connection.query(
+                                    deleteSql,
+                                    [user_id],
+                                    (err) => {
+
+                                        if (err) {
+
+                                            console.error(
+                                                "清空購物車失敗",
+                                                err
+                                            );
+
+                                            return connection.rollback(() => {
+
+                                                connection.release();
+
+                                                res.status(500).json({
+                                                    message:
+                                                        "清空購物車失敗"
+                                                });
+
+                                            });
+
+                                        }
+
+
+                                        // =========================
+                                        // 12. Commit
+                                        // =========================
+
+                                        connection.commit(
+                                            (err) => {
+
+                                                if (err) {
+
+                                                    console.error(
+                                                        "Transaction commit 失敗",
+                                                        err
+                                                    );
+
+                                                    return connection.rollback(
+                                                        () => {
+
+                                                            connection.release();
+
+                                                            res.status(500).json({
+                                                                message:
+                                                                    "訂單建立失敗"
+                                                            });
+
+                                                        }
+                                                    );
+
+                                                }
+
+
+                                                // =========================
+                                                // 13. 成功
+                                                // =========================
+
+                                                connection.release();
+
+
+                                                res.status(201).json({
+                                                    message:
+                                                        "訂單建立成功",
+                                                    order_id:
+                                                        orderId,
+                                                    total_amount:
+                                                        totalAmount
+                                                });
+
+                                            }
+                                        );
+
+                                    }
+                                );
+
+                            };
+
+
+                            // =========================
+                            // 開始建立 order_items
+                            // =========================
+
+                            insertItem(0);
+
+                        }
+                    );
 
                 }
             );
@@ -310,6 +506,7 @@ router.post('/', (req, res) => {
     });
 
 });
+
 // ==============================
 // 我的訂單
 // GET /api/orders/my

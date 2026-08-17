@@ -1,258 +1,557 @@
 :host {
-  --header-height: 70px;
-  --header-bg: #9fb8a3;
-  --text-color: #404040;
-  --accent-color: #6b8f71;
-  --surface-color: #fff;
-  --header-padding: clamp(16px, 3vw, 32px);
+    --header-height: 68px;
+    --header-bg: #f7f7f2;
+    --surface-color: #f7f7f2;
 
-  display: block;
+    --text-color: #3f463f;
+    --text-light: #777d77;
+
+    --accent-color: #657464;
+    --border-color: rgba(63, 70, 63, 0.16);
+
+    --hover-bg: #eeeeea;
+
+    --header-padding: clamp(24px, 5vw, 72px);
+
+    display: block;
 }
 
-/* Header layout */
+
+/* =========================================================
+   Header
+========================================================= */
+
 .header {
-  position: fixed;
-  inset: 0 0 auto;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: var(--header-height);
-  padding-inline: var(--header-padding);
-  background: var(--header-bg);
-  color: var(--text-color);
+    position: fixed;
+    inset: 0 0 auto;
+
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    height: var(--header-height);
+
+    padding-inline: var(--header-padding);
+
+    background: var(--header-bg);
+    color: var(--text-color);
+
+    box-sizing: border-box;
+
+    border-bottom: 1px solid rgba(63, 70, 63, 0.05);
 }
+
+
+/* =========================================================
+   Logo
+========================================================= */
 
 .logo {
-  display: flex;
-  flex: 1 1 0;
-  align-items: center;
-  min-width: 0;
+    display: flex;
+    align-items: center;
+
+    flex: 0 0 auto;
+
+    min-width: 170px;
 }
 
-.home-link,
-.home-svg,
-.cart-link,
-.login-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 44px;
-  min-height: 44px;
-  color: inherit;
-  text-decoration: none;
+.home-link {
+    display: inline-flex;
+    align-items: center;
+
+    min-height: 44px;
+
+    color: inherit;
+    text-decoration: none;
 }
 
 .logo-image {
-  display: block;
-  width: 48px;
-  height: auto;
-  object-fit: contain;
+    display: block;
+    object-fit: contain;
 }
 
-.home-svg {
-  margin-left: clamp(16px, 3vw, 50px);
+.logo-symbol {
+    width: 38px;
+    height: auto;
 }
 
-.cart-link {
-  position: relative;
+.logo-text {
+    width: 80px;
+    height: auto;
+
+    margin-left: 5px;
 }
 
-.cart-link svg {
-  width: 24px;
-  height: 24px;
-  fill: currentColor;
-}
 
-.badge {
-  position: absolute;
-  top: 3px;
-  right: 1px;
-  display: grid;
-  min-width: 18px;
-  height: 18px;
-  padding-inline: 3px;
-  place-items: center;
-  border-radius: 999px;
-  background: #c22121;
-  color: #fff;
-  font-size: 11px;
-  font-weight: 700;
-  line-height: 1;
-}
+/* =========================================================
+   Main Menu
+========================================================= */
 
-/* Main navigation */
 .menu {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(18px, 3vw, 36px);
-  margin-inline: auto;
+    display: flex;
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: clamp(24px, 3vw, 48px);
+
+    flex: 1;
+
+    margin-left: auto;
 }
 
 .menu-item {
-  position: relative;
+    position: relative;
+
+    display: flex;
+    align-items: center;
 }
+
+
+/* Main menu links */
 
 .menu > a,
 .menu-item > a {
-  position: relative;
-  display: block;
-  padding: 12px 0;
-  color: inherit;
-  font-size: 18px;
-  font-weight: 700;
-  text-decoration: none;
-  white-space: nowrap;
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+
+    height: var(--header-height);
+
+    padding: 0;
+
+    color: var(--text-color);
+
+    font-family:
+        "Helvetica Neue",
+        "Noto Sans TC",
+        Arial,
+        sans-serif;
+
+    font-size: 14px;
+    font-weight: 400;
+
+    letter-spacing: 0.08em;
+
+    text-decoration: none;
+    white-space: nowrap;
+
+    transition:
+        color 180ms ease,
+        opacity 180ms ease;
 }
+
+
+/* Main menu underline */
 
 .menu > a::after,
 .menu-item > a::after {
-  position: absolute;
-  right: 0;
-  bottom: 5px;
-  left: 0;
-  height: 2px;
-  background: var(--accent-color);
-  content: '';
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 180ms ease;
+    position: absolute;
+
+    right: 0;
+    bottom: 20px;
+    left: 0;
+
+    height: 1px;
+
+    background: var(--text-color);
+
+    content: "";
+
+    transform: scaleX(0);
+    transform-origin: center;
+
+    transition: transform 220ms ease;
 }
 
 .menu > a:hover::after,
 .menu > a:focus-visible::after,
 .menu-item:hover > a::after,
 .menu-item:focus-within > a::after {
-  transform: scaleX(1);
+    transform: scaleX(1);
 }
+
+
+/* =========================================================
+   Arrow
+========================================================= */
 
 .arrow-btn {
-  display: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 24px;
+    height: 30px;
+
+    padding: 0;
+
+    border: 0;
+
+    background: transparent;
+    color: var(--text-light);
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    transition:
+        transform 180ms ease,
+        color 180ms ease;
 }
 
-/* Dropdowns */
+
+/* =========================================================
+   Desktop Submenu
+========================================================= */
+
 .submenu {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 50%;
-  display: none;
-  flex-direction: column;
-  min-width: 180px;
-  overflow: hidden;
-  border: 1px solid rgba(64, 64, 64, 0.08);
-  border-radius: 10px;
-  background: var(--surface-color);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
-  transform: translateX(-50%);
+    position: absolute;
+
+    /*
+     * 不要用 calc(100% - 10px)
+     * 讓 submenu 緊貼 menu-item
+     */
+    top: calc(100% - 1px);
+    left: 50%;
+
+    z-index: 1100;
+
+    display: none;
+    flex-direction: column;
+
+    width: 180px;
+
+    padding: 8px 0;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 0 0 10px 10px;
+
+    background: #fafaf6;
+
+    box-shadow:
+        0 12px 30px rgba(40, 45, 40, 0.08);
+
+    transform: translateX(-50%);
 }
 
-.menu-item:hover .submenu,
-.menu-item:focus-within .submenu {
-  display: flex;
+
+/*
+ * 用 pseudo element 補掉 submenu 和 menu
+ * 中間的空隙，避免滑鼠移過去時消失
+ */
+.submenu::before {
+    position: absolute;
+
+    top: -12px;
+    left: 0;
+
+    width: 100%;
+    height: 12px;
+
+    content: "";
 }
+
+
+/* Desktop hover */
+
+.menu-item:hover > .submenu,
+.menu-item:focus-within > .submenu {
+    display: flex;
+
+    animation: dropdownFade 180ms ease;
+}
+
+
+@keyframes dropdownFade {
+
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+}
+
+
+/* Submenu links */
 
 .submenu a {
-  padding: 13px 18px;
-  color: var(--text-color);
-  font-size: 16px;
-  text-decoration: none;
-  white-space: nowrap;
+    display: block;
+
+    padding: 12px 20px;
+
+    color: var(--text-color);
+
+    font-size: 13px;
+    font-weight: 400;
+
+    letter-spacing: 0.05em;
+
+    text-decoration: none;
+    white-space: nowrap;
+
+    transition:
+        background 150ms ease,
+        padding-left 150ms ease;
 }
 
 .submenu a:hover,
 .submenu a:focus-visible {
-  background: #f3f6f3;
+    background: var(--hover-bg);
+
+    padding-left: 24px;
 }
 
-/* User and cart controls */
+
+/* =========================================================
+   Top Right
+========================================================= */
+
 .top-right {
-  display: flex;
-  flex: 1 1 0;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    flex: 0 0 auto;
+
+    gap: 18px;
+
+    margin-left: 36px;
+
+    min-width: 0;
 }
+
+
+/* =========================================================
+   Login
+========================================================= */
 
 .login-link {
-  width: auto;
-  padding-inline: 8px;
-  font-size: 18px;
-  font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 44px;
+
+    padding: 0;
+
+    color: var(--text-color);
+
+    font-size: 14px;
+    font-weight: 400;
+
+    letter-spacing: 0.08em;
+
+    text-decoration: none;
+
+    transition: opacity 180ms ease;
 }
 
+.login-link:hover {
+    opacity: 0.55;
+}
+
+
+/* =========================================================
+   Member
+========================================================= */
+
 .member-menu {
-  position: relative;
+    position: relative;
 }
 
 .member-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 44px;
-  max-width: 160px;
-  padding: 8px;
-  overflow: hidden;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
-  font: inherit;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+
+    gap: 7px;
+
+    min-height: 44px;
+    max-width: 170px;
+
+    padding: 5px 0;
+
+    border: 0;
+
+    background: transparent;
+    color: var(--text-color);
+
+    cursor: pointer;
+
+    font-family: inherit;
+
+    font-size: 14px;
+    font-weight: 400;
+
+    letter-spacing: 0.04em;
+
+    white-space: nowrap;
 }
 
 .member-btn svg {
-  flex: 0 0 auto;
+    width: 19px;
+    height: 19px;
+
+    fill: currentColor;
+
+    flex: 0 0 auto;
 }
 
+.member-btn span {
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.member-btn .member-arrow {
+    color: var(--text-light);
+
+    font-size: 11px;
+
+    overflow: visible;
+}
+
+
+/* Member dropdown */
+
 .member-dropdown {
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
-  z-index: 1001;
-  width: 160px;
-  padding-block: 6px;
-  overflow: hidden;
-  border: 1px solid rgba(64, 64, 64, 0.08);
-  border-radius: 8px;
-  background: var(--surface-color);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    position: absolute;
+
+    top: calc(100% - 1px);
+    right: 0;
+
+    z-index: 1100;
+
+    width: 165px;
+
+    padding: 8px 0;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 0 0 10px 10px;
+
+    background: #fafaf6;
+
+    box-shadow:
+        0 12px 30px rgba(40, 45, 40, 0.08);
 }
 
 .member-dropdown a,
 .member-dropdown .logout {
-  display: block;
-  width: 100%;
-  padding: 11px 16px;
-  border: 0;
-  background: transparent;
-  color: #333;
-  cursor: pointer;
-  font: inherit;
-  font-size: 15px;
-  text-align: left;
-  text-decoration: none;
+    display: block;
+
+    width: 100%;
+
+    padding: 12px 18px;
+
+    border: 0;
+
+    background: transparent;
+
+    color: var(--text-color);
+
+    cursor: pointer;
+
+    font-family: inherit;
+
+    font-size: 13px;
+    font-weight: 400;
+
+    letter-spacing: 0.04em;
+
+    text-align: left;
+    text-decoration: none;
+
+    box-sizing: border-box;
+
+    transition: background 150ms ease;
 }
 
 .member-dropdown a:hover,
 .member-dropdown a:focus-visible,
 .member-dropdown .logout:hover,
 .member-dropdown .logout:focus-visible {
-  background: #f3f6f3;
+    background: var(--hover-bg);
 }
 
-.home-link:hover,
-.home-svg:hover,
-.cart-link:hover,
-.login-link:hover,
-.member-btn:hover {
-  opacity: 0.72;
+
+/* =========================================================
+   Cart
+========================================================= */
+
+.cart-link {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 40px;
+    height: 44px;
+
+    color: var(--text-color);
+
+    text-decoration: none;
+
+    transition: opacity 180ms ease;
 }
+
+.cart-link svg {
+    width: 20px;
+    height: 20px;
+
+    fill: currentColor;
+}
+
+.cart-link:hover {
+    opacity: 0.55;
+}
+
+.badge {
+    position: absolute;
+
+    top: 5px;
+    right: -2px;
+
+    display: grid;
+
+    min-width: 16px;
+    height: 16px;
+
+    padding-inline: 3px;
+
+    place-items: center;
+
+    border-radius: 50%;
+
+    background: #657464;
+    color: #fff;
+
+    font-size: 9px;
+    font-weight: 500;
+
+    line-height: 1;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   Focus
+========================================================= */
 
 .home-link:focus-visible,
-.home-svg:focus-visible,
 .cart-link:focus-visible,
 .login-link:focus-visible,
 .member-btn:focus-visible,
@@ -261,241 +560,461 @@
 .submenu a:focus-visible,
 .member-dropdown a:focus-visible,
 .member-dropdown .logout:focus-visible {
-  outline: 2px solid #fff;
-  outline-offset: 2px;
+
+    outline: 1px solid var(--accent-color);
+    outline-offset: 4px;
 }
 
-/* Mobile drawer trigger */
+
+/* =========================================================
+   Hamburger
+========================================================= */
+
 .menu-toggle {
-  display: none;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
+    display: none;
+
+    width: 44px;
+    height: 44px;
+
+    padding: 0;
+
+    border: 0;
+
+    background: transparent;
+    color: var(--text-color);
+
+    cursor: pointer;
 }
 
 .menu-toggle span {
-  display: block;
-  width: 24px;
-  height: 2px;
-  margin: 5px auto;
-  border-radius: 2px;
-  background: currentColor;
-  transition: transform 200ms ease, opacity 200ms ease;
+    display: block;
+
+    width: 22px;
+    height: 1px;
+
+    margin: 5px auto;
+
+    background: currentColor;
+
+    transition:
+        transform 200ms ease,
+        opacity 200ms ease;
 }
 
 .menu-toggle.open span:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
+    transform: translateY(6px) rotate(45deg);
 }
 
 .menu-toggle.open span:nth-child(2) {
-  opacity: 0;
+    opacity: 0;
 }
 
 .menu-toggle.open span:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
+    transform: translateY(-6px) rotate(-45deg);
 }
+
+
+/* =========================================================
+   Backdrop
+========================================================= */
 
 .menu-backdrop {
-  position: fixed;
-  inset: var(--header-height) 0 0;
-  z-index: 998;
-  background: rgba(0, 0, 0, 0.35);
-}
-
-/* Tablet: retain horizontal navigation with compact spacing. */
-@media (max-width: 1024px) {
-  .menu > a,
-  .menu-item > a,
-  .login-link {
-    font-size: 16px;
-  }
-
-  .member-btn {
-    max-width: 120px;
-  }
-}
-
-/* Phone and small tablet: switch to a full-height drawer. */
-@media (max-width: 768px) {
-  .header {
-    padding-inline: 14px;
-  }
-
-  .logo,
-  .top-right {
-    flex: 0 1 auto;
-  }
-
-  .logo-image {
-    width: 38px;
-  }
-
-  .home-link .logo-image:last-child {
-    width: 58px !important;
-  }
-
-  .home-svg {
-    margin-left: 8px;
-  }
-
-  .menu-toggle {
-    display: block;
-    order: 2;
-    margin-left: auto;
-  }
-
-  .top-right {
-    order: 3;
-    gap: 2px;
-    margin-left: 2px;
-  }
-
-  .login-link {
-    min-width: 40px;
-    padding-inline: 4px;
-    font-size: 16px;
-  }
-
-  .member-btn {
-    max-width: 44px;
-    padding: 8px;
-  }
-
-  .member-btn span{
-    display: none;
-  }
-
-  .menu {
     position: fixed;
-    top: var(--header-height);
-    left: 0;
-    z-index: 999;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
-    gap: 0;
-    width: min(86vw, 360px);
-    height: calc(100dvh - var(--header-height));
-    margin: 0;
-    overflow-y: auto;
-    background: var(--surface-color);
-    box-shadow: 8px 0 24px rgba(0, 0, 0, 0.12);
-    transform: translateX(-105%);
-    transition: transform 250ms ease;
-  }
 
-  .menu.open {
-    transform: translateX(0);
-  }
+    inset: var(--header-height) 0 0;
 
-  .menu > a,
-  .menu-item > a {
-    width: 100%;
-    padding: 17px 52px 17px 24px;
-    border-bottom: 1px solid #e8e8e8;
-    font-size: 17px;
-  }
+    z-index: 998;
 
-  .menu > a::after,
-  .menu-item > a::after {
-    display: none;
-  }
+    background: rgba(40, 45, 40, 0.25);
 
-  .submenu,
-  .menu-item:hover .submenu,
-  .menu-item:focus-within .submenu {
-    position: static;
-    display: none;
-    width: 100%;
-    min-width: 0;
-    border: 0;
-    border-radius: 0;
-    background: #f6f8f6;
-    box-shadow: none;
-    transform: none;
-  }
-
-  .menu-item .submenu.mobile-open {
-    display: flex;
-  }
-
-  .submenu a {
-    padding: 14px 24px 14px 42px;
-    border-bottom: 1px solid #e8e8e8;
-    font-size: 15px;
-    white-space: normal;
-  }
-
-  .arrow-btn {
-    position: absolute;
-    top: 7px;
-    right: 12px;
-    display: grid;
-    width: 44px;
-    height: 44px;
-    padding: 0;
-    place-items: center;
-    border: 0;
-    background: transparent;
-    color: var(--text-color);
-    cursor: pointer;
-    font-size: 18px;
-    transition: transform 200ms ease;
-  }
-
-  .menu-item:has(.submenu.mobile-open) .arrow-btn {
-    transform: rotate(180deg);
-  }
-
-  .member-dropdown {
-    top: calc(100% + 8px);
-    right: -2px;
-  }
+    backdrop-filter: blur(2px);
 }
 
-/* Small phones: preserve tap targets without header overflow. */
+
+/* =========================================================
+   Tablet
+========================================================= */
+
+@media (max-width: 1024px) {
+
+    :host {
+        --header-padding: 28px;
+    }
+
+    .logo {
+        min-width: 145px;
+    }
+
+    .logo-symbol {
+        width: 34px;
+    }
+
+    .logo-text {
+        width: 70px;
+    }
+
+    .menu {
+        gap: 22px;
+    }
+
+    .menu > a,
+    .menu-item > a,
+    .login-link {
+        font-size: 13px;
+    }
+
+    .top-right {
+        margin-left: 20px;
+        gap: 10px;
+    }
+}
+
+
+/* =========================================================
+   Mobile
+========================================================= */
+
+@media (max-width: 768px) {
+
+    :host {
+        --header-height: 72px;
+        --header-padding: 16px;
+    }
+
+
+    /* Header */
+
+    .header {
+        padding-inline: 16px;
+
+        border-bottom: 1px solid rgba(63, 70, 63, 0.08);
+    }
+
+
+    /* Logo */
+
+    .logo {
+        min-width: 0;
+
+        flex: 1;
+    }
+
+    .logo-symbol {
+        width: 30px;
+    }
+
+    .logo-text {
+        width: 70px;
+    }
+
+
+    /* Hamburger */
+
+    .menu-toggle {
+        display: block;
+
+        order: 2;
+
+        margin-left: auto;
+    }
+
+
+    /* Right controls */
+
+    .top-right {
+        order: 3;
+
+        margin-left: 2px;
+
+        gap: 4px;
+    }
+
+    .login-link {
+        min-width: 40px;
+
+        font-size: 13px;
+    }
+
+    .member-btn {
+        width: 42px;
+        max-width: 42px;
+
+        padding: 8px;
+    }
+
+    .member-btn span {
+        display: none;
+    }
+
+    .member-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+
+    /* =====================================================
+       Mobile menu
+    ===================================================== */
+
+    .menu {
+
+        position: fixed;
+
+        top: var(--header-height);
+        left: 0;
+
+        z-index: 999;
+
+        display: flex;
+
+        flex-direction: column;
+
+        align-items: stretch;
+        justify-content: flex-start;
+
+        gap: 0;
+
+        width: min(88vw, 360px);
+
+        height: calc(100dvh - var(--header-height));
+
+        margin: 0;
+
+        overflow-x: hidden;
+        overflow-y: auto;
+
+        background: #f7f7f2;
+
+        box-shadow:
+            8px 0 30px rgba(40, 45, 40, 0.08);
+
+        transform: translateX(-105%);
+
+        transition: transform 250ms ease;
+    }
+
+    .menu.open {
+        transform: translateX(0);
+    }
+
+
+    /* =====================================================
+       Mobile menu items
+    ===================================================== */
+
+    .menu > a,
+    .menu-item > a {
+
+        width: 100%;
+
+        height: auto;
+
+        min-height: 58px;
+
+        padding: 18px 52px 18px 24px;
+
+        border-bottom: 1px solid rgba(63, 70, 63, 0.10);
+
+        font-size: 14px;
+
+        letter-spacing: 0.08em;
+
+        box-sizing: border-box;
+    }
+
+
+    .menu > a::after,
+    .menu-item > a::after {
+        display: none;
+    }
+
+
+    /* =====================================================
+       Mobile menu item
+    ===================================================== */
+
+    .menu-item {
+        display: flex;
+
+        flex-direction: column;
+        align-items: stretch;
+
+        width: 100%;
+    }
+
+
+    /* =====================================================
+       Mobile dropdown
+    ===================================================== */
+
+    .submenu,
+    .menu-item:hover .submenu,
+    .menu-item:focus-within .submenu {
+
+        position: static;
+
+        display: none;
+
+        width: 100%;
+        min-width: 0;
+
+        margin: 0;
+
+        padding: 0;
+
+        border: 0;
+
+        border-radius: 0;
+
+        background: #eeeeea;
+
+        box-shadow: none;
+
+        transform: none;
+
+        animation: none;
+    }
+
+
+    /* 開啟 */
+
+    .menu-item .submenu.mobile-open {
+        display: flex;
+    }
+
+
+    /* 不需要桌面的 pseudo spacing */
+
+    .submenu::before {
+        display: none;
+    }
+
+
+    /* Submenu links */
+
+    .submenu a {
+
+        display: block;
+
+        width: 100%;
+
+        padding: 15px 24px 15px 40px;
+
+        border-bottom: 1px solid rgba(63, 70, 63, 0.08);
+
+        color: var(--text-color);
+
+        font-size: 13px;
+
+        box-sizing: border-box;
+    }
+
+    .submenu a:hover,
+    .submenu a:focus-visible {
+        padding-left: 44px;
+
+        background: #e6e6e1;
+    }
+
+
+    /* =====================================================
+       Mobile arrow
+    ===================================================== */
+
+    .arrow-btn {
+
+        position: absolute;
+
+        top: 7px;
+        right: 8px;
+
+        z-index: 2;
+
+        display: grid;
+
+        width: 44px;
+        height: 44px;
+
+        padding: 0;
+
+        place-items: center;
+
+        border: 0;
+
+        background: transparent;
+
+        color: var(--text-color);
+
+        cursor: pointer;
+
+        font-size: 16px;
+
+        transition:
+            transform 200ms ease,
+            color 200ms ease;
+    }
+
+
+    /* 展開後箭頭旋轉 */
+
+    .menu-item:has(.submenu.mobile-open) .arrow-btn {
+        transform: rotate(180deg);
+    }
+
+
+    /* Member dropdown */
+
+    .member-dropdown {
+        top: calc(100% + 4px);
+
+        right: -2px;
+    }
+}
+
+
+/* =========================================================
+   Small phone
+========================================================= */
+
 @media (max-width: 420px) {
-  :host {
-    --header-padding: 8px;
-  }
 
-  .logo-image {
-    width: 32px;
-  }
+    :host {
+        --header-padding: 10px;
+    }
 
-  .home-link .logo-image:last-child {
-    width: 50px !important;
-  }
+    .logo-symbol {
+        width: 27px;
+    }
 
-  .home-svg {
-    min-width: 36px;
-    margin-left: 2px;
-  }
+    .logo-text {
+        width: 72px;
+    }
 
-  .menu-toggle,
-  .cart-link,
-  .member-btn {
-    width: 40px;
-    min-width: 40px;
-  }
+    .menu-toggle,
+    .cart-link,
+    .member-btn {
+        width: 40px;
 
-  .login-link {
-    min-width: 36px;
-    font-size: 15px;
-  }
-  
+        min-width: 40px;
+    }
+
+    .login-link {
+        min-width: 35px;
+
+        font-size: 12px;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
-  }
+
+    *,
+    *::before,
+    *::after {
+
+        scroll-behavior: auto !important;
+
+        transition-duration: 0.01ms !important;
+
+        animation-duration: 0.01ms !important;
+    }
 }

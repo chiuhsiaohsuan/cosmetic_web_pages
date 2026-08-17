@@ -16,6 +16,7 @@ export class Login {
   email = '';
   password = '';
   rememberMe = false;
+  showPassword = false;
 
   constructor(
     private api: ApiService,

@@ -1,24 +1,91 @@
 <section class="products">
 
-    <h1>商品專區</h1>
+    <div class="product-heading">
 
-    <p class="subtitle">
-        找到最適合你的選擇
-    </p>
+        <p class="eyebrow">
+            Our Products
+        </p>
 
+        <h1>
+            商品
+        </h1>
 
-    <!-- 商品分類 -->
-    <div class="category">
+    </div>
 
-        @for(category of categories; track category.value){
+    <div class="product-toolbar">
+
+        <div class="category-wrapper">
 
             <button
-                [class.active]="selectedCategory() === category.value"
-                (click)="changeCategory(category.value)">
-                {{ category.name }}
+                class="category-arrow left"
+                type="button"
+                (click)="scrollCategory('left')"
+                aria-label="上一個分類"
+            >
+                ‹
             </button>
 
-        }
+            <div class="category" #categoryScroll>
+
+                @for(category of categories; track category.value) {
+
+                    <button
+                        [class.active]="selectedCategory() === category.value"
+                        (click)="changeCategory(category.value)"
+                    >
+                        {{ category.name }}
+                    </button>
+
+                }
+
+            </div>
+
+            <button
+                class="category-arrow right"
+                type="button"
+                (click)="scrollCategory('right')"
+                aria-label="下一個分類"
+            >
+                ›
+            </button>
+
+        </div>
+
+
+        <!-- Sort -->
+        <div class="sort-control">
+
+            <label for="price-sort">
+                排序:
+            </label>
+
+            <select
+                id="price-sort"
+                [value]="selectedSort()"
+                (change)="changeSort($any($event.target).value)"
+            >
+
+                <option value="default">
+                    預設排序
+                </option>
+
+                <option value="price-asc">
+                    價格由低到高
+                </option>
+
+                <option value="price-desc">
+                    價格由高到低
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+    <div class="product-count">
+
+        Showing {{ pagedProducts().length }} products
 
     </div>
 
@@ -26,35 +93,75 @@
 
         @for (item of pagedProducts(); track item.id) {
 
-            <div class="card" (click)="goDetail(item.id)">
+            <article
+                class="card"
+                (click)="goDetail(item.id)"
+            >
 
-                <img [src]="productService.getImageUrl(item.image)" [alt]="item.name">
+                <div class="image-wrapper">
 
-                <h3>{{ item.name }}</h3>
+                    <img
+                        [src]="productService.getImageUrl(item.image)"
+                        [alt]="item.name"
+                    >
+
+                    @if (item.stock === 0) {
+
+                        <span class="sold-out">
+                            售罄
+                        </span>
+
+                    }
+                    @if (item.stock !== 0) {
+
+                        <button
+                            class="view-product"
+                            type="button"
+                            (click)="$event.stopPropagation(); goDetail(item.id)"
+                        >
+                            View Product
+                        </button>
+
+                    }
+
+                </div>
 
 
-                <span>
-                    NT$ {{ item.price }}
-                </span>
+                <div class="product-info">
 
-                <button>
-                    查看商品
-                </button>
+                    <h3>
+                        {{ item.name }}
+                    </h3>
 
-            </div>
+
+                    <div class="product-bottom">
+
+                        <div class="price">
+
+                            NT$ {{ item.price }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </article>
 
         }
 
     </div>
-    <!-- 分頁 -->
+
+    <!-- Pagination -->
     <div class="pagination">
 
-        @for(page of pages(); track page){
+        @for(page of pages(); track page) {
 
             <button
                 [class.active]="currentPage() === page"
-                (click)="changePage(page)">
-                
+                (click)="changePage(page)"
+            >
+
                 {{ page }}
 
             </button>
@@ -62,4 +169,5 @@
         }
 
     </div>
+
 </section>

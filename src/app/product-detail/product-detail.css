@@ -97,8 +97,11 @@
   transition: 0.3s;
 }
 
-
-.info button:hover {
+.info button:disabled {
+    cursor: not-allowed;
+    background: #aaa;
+}
+.info button:not(:disabled):hover {
   background-color: #6B8F71;
 }
 

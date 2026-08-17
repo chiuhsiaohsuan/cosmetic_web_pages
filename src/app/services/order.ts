@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../enviroments/enviroment';
 
 export interface OrderItem {
@@ -32,7 +32,6 @@ export interface Order {
   items: OrderItem[];
 }
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -42,29 +41,26 @@ export class OrderService {
 
   private apiUrl = `${environment.apiUrl}/orders`;
 
-
+  // 取得我的訂單
   getMyOrders() {
-
-    const token = localStorage.getItem('token');
-
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
-
     return this.http.get<Order[]>(
       `${this.apiUrl}/my`,
-      { headers }
+      {
+        withCredentials: true
+      }
     );
   }
 
+  // 更新訂單狀態
   updateStatus(id: number, orderStatus: string) {
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
-
-    return this.http.put(`${this.apiUrl}/${id}/status`, {
-      order_status: orderStatus
-    }, { headers });
+    return this.http.put(
+      `${this.apiUrl}/${id}/status`,
+      {
+        order_status: orderStatus
+      },
+      {
+        withCredentials: true
+      }
+    );
   }
 }

@@ -1,4 +1,5 @@
 <div class="location-page">
+
   <h1>地理位置</h1>
 
   <div class="map-container">
@@ -7,9 +8,89 @@
       width="100%"
       height="450"
       style="border:0;"
-      allowfullscreen=""
+      allowfullscreen
       loading="lazy"
       referrerpolicy="no-referrer-when-downgrade">
     </iframe>
   </div>
+
+  <section class="transport">
+    <h2>交通方式</h2>
+
+    <div class="transport-item">
+      <span>輕軌</span>
+      <p>C7 軟體園區站下車，步行約 1 分鐘</p>
+    </div>
+
+    <div class="transport-item">
+      <span>捷運</span>
+      <p>紅線 → R7 獅甲站 4 號出口 → 步行約 15 分鐘</p>
+    </div>
+  </section>
+
+<section class="surroundings">
+  <h2>周圍環境</h2>
+
+  <div class="surroundings-grid">
+    @for (image of surroundingsImages; track image; let i = $index) {
+      <img
+        [src]="image"
+        [alt]="'周圍環境照片 ' + (i + 1)"
+        (click)="openImage(i)"
+      >
+    }
+  </div>
+</section>
+
+  @if (selectedImageIndex !== null) {
+    <div
+      class="lightbox"
+      (click)="closeImage()"
+    >
+
+      <button
+        class="lightbox-close"
+        type="button"
+        aria-label="關閉"
+        (click)="closeImage(); $event.stopPropagation()"
+      >
+        ×
+      </button>
+
+      <button
+        class="lightbox-prev"
+        type="button"
+        aria-label="上一張"
+        (click)="prevImage(); $event.stopPropagation()"
+      >
+        ‹
+      </button>
+
+      <div
+        class="lightbox-content"
+        (click)="$event.stopPropagation()"
+      >
+        <img
+          [src]="surroundingsImages[selectedImageIndex]"
+          [alt]="'周圍環境照片 ' + (selectedImageIndex + 1)"
+          class="lightbox-image"
+        >
+
+        <div class="lightbox-counter">
+          {{ selectedImageIndex + 1 }} / {{ surroundingsImages.length }}
+        </div>
+      </div>
+
+      <button
+        class="lightbox-next"
+        type="button"
+        aria-label="下一張"
+        (click)="nextImage(); $event.stopPropagation()"
+      >
+        ›
+      </button>
+
+    </div>
+  }
+
 </div>

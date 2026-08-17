@@ -26,7 +26,7 @@ export class Home implements OnInit, OnDestroy {
 
   return this.products()
     .filter(product => product.isHot == 1)
-    .slice(0,3);
+    .slice(0,4);
 
   });
   constructor(

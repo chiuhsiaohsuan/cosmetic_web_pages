@@ -1,14 +1,65 @@
-<section class="carousel" aria-label="Image carousel">
-    <div class="carousel-track" [style.transform]="'translateX(-' + currentSlide() * 100 + '%)'">
+<!-- =========================================================
+     Hero Carousel
+========================================================= -->
+
+<section
+    class="hero-carousel"
+    aria-label="首頁主視覺">
+
+    <div
+        class="carousel-track"
+        [style.transform]="'translateX(-' + currentSlide() * 100 + '%)'">
+
         @for (slide of slides; track slide.src) {
+
             <div class="carousel-slide">
-                <img [src]="slide.src" [alt]="slide.alt">
+
+                <img
+                    [src]="slide.src"
+                    [alt]="slide.alt">
+
+                <div class="hero-overlay">
+
+                    <p class="hero-eyebrow">
+                        承檍 Chengyi
+                    </p>
+
+                    <h1>
+                        Elegance<br>
+                        Awaits You
+                    </h1>
+
+                    <p class="hero-description">
+                        Discover the beauty of simple,
+                        thoughtful skincare.
+                    </p>
+
+                    <a
+                        class="hero-button"
+                        routerLink="/product">
+
+                        Explore Collection
+
+                    </a>
+
+                </div>
+
             </div>
+
         }
+
     </div>
 
-    <div class="carousel-dots" aria-label="Carousel pages">
-        @for (slide of slides; track slide.src; let index = $index) {
+    <div
+        class="carousel-dots"
+        aria-label="Carousel pages">
+
+        @for (
+            slide of slides;
+            track slide.src;
+            let index = $index
+        ) {
+
             <button
                 type="button"
                 class="carousel-dot"
@@ -16,58 +67,168 @@
                 [attr.aria-label]="'Go to image ' + (index + 1)"
                 (click)="goToSlide(index)">
             </button>
+
         }
+
     </div>
+
 </section>
 
 <section class="hot-products">
-    <div class="section-header">
-        <h2>熱銷商品</h2>
-    </div>
-    <div class="product-grid">
-        @for(product of hotProducts(); track product.id) {
-            <article class="product-card" [routerLink]="['/product', product.id]">
-            <div class="product-image">
-                <img [src]="productService.getImageUrl(product.image)" [alt]="product.name">
-            </div>
 
-            <div class="product-info">
-                <h3>{{ product.name }}</h3>
-                <p>{{ product.description }}</p>
-                <strong class="product-price">
-                NT$ {{ product.price }}
-                </strong>
-            </div>
+    <div class="section-intro">
+
+        <p class="eyebrow">
+            Our Selection
+        </p>
+
+        <h2>
+           熱銷商品
+        </h2>
+
+        <p class="section-description">
+            Discover the products our customers love most.
+        </p>
+
+    </div>
+
+
+    <div class="product-grid">
+
+        @for(product of hotProducts(); track product.id) {
+
+            <article
+                class="product-card"
+                [routerLink]="['/product', product.id]">
+
+                <div class="product-image">
+
+                    <img
+                        [src]="productService.getImageUrl(product.image)"
+                        [alt]="product.name">
+
+                    <span class="product-view">
+                        View Product
+                    </span>
+
+                </div>
+
+
+                <div class="product-info">
+
+                    <h3>
+                        {{ product.name }}
+                    </h3>
+
+                    <div class="product-bottom">
+
+                        <strong class="product-price">
+                            NT$ {{ product.price }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
             </article>
+
         }
+
     </div>
+
+
     <div class="more">
-      <button type="button" routerLink="/product" [queryParams]="{category: 'hot'}">
-        查看全部熱銷商品
-    </button>
+
+        <a
+            routerLink="/product"
+            [queryParams]="{category: 'hot'}">
+
+            查看全部
+            <span>→</span>
+
+        </a>
+
     </div>
+
 </section>
 
 <section class="news">
-    <div class="news-header">
-        <h2>最新消息</h2>
+
+    <div class="news-heading">
+
+        <div>
+
+            <h2>
+                最新消息
+            </h2>
+
+        </div>
+
+        <a
+            routerLink="/news"
+            class="news-more">
+
+            更多
+            <span>→</span>
+
+        </a>
+
     </div>
 
+
     <div class="news-list">
+
         <article class="news-item">
-            <time datetime="2026-07-08">2026.07.08</time>
-            <h3>新商品上市，限時優惠中</h3>
+
+            <time datetime="2026-07-08">
+                2026.07.08
+            </time>
+
+            <div class="news-content">
+
+                <h3>
+                    新商品上市，限時優惠中
+                </h3>
+
+            </div>
+
         </article>
+
+
         <article class="news-item">
-            <time datetime="2026-07-01">2026.07.01</time>
-            <h3>夏季保養系列正式發售</h3>
+
+            <time datetime="2026-07-01">
+                2026.07.01
+            </time>
+
+            <div class="news-content">
+
+                <h3>
+                    夏季保養系列正式發售
+                </h3>
+
+            </div>
+
+
         </article>
+
+
         <article class="news-item">
-            <time datetime="2026-06-20">2026.06.20</time>
-            <h3>新商品上市，限時優惠中</h3>
+
+            <time datetime="2026-06-20">
+                2026.06.20
+            </time>
+
+            <div class="news-content">
+
+                <h3>
+                    新商品上市，限時優惠中
+                </h3>
+
+            </div>
+
         </article>
+
     </div>
-    <div class="more">
-        <button type="button" routerLink="/news">了解更多</button>
-    </div>
+
 </section>

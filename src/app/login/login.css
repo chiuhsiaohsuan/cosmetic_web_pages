@@ -1,120 +1,351 @@
-
-/* 登入卡片 */
 .login-container {
     width: 100%;
     min-height: 100vh;
+
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0px 20px 50px;
+
+    padding: 30px 24px 50px;
     box-sizing: border-box;
+
+    background: #f7f6f1;
 }
 
 .login-form {
     width: 100%;
-    max-width: 400px;
-    background: #fff;
-    padding: 40px 35px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    max-width: 420px;
+
+    padding: 48px 44px;
+
+    background: #fcfcf9;
+
+    border: 1px solid #e8e8df;
+    border-radius: 6px;
+
+    box-shadow: 0 12px 35px rgba(61, 67, 58, 0.05);
+
     text-align: center;
+    box-sizing: border-box;
 }
 
-/* Logo */
-.logo {
-    width: 100px;
-    margin-bottom: 20px;
-}
 
-/* 標題 */
 .login-form h2 {
-    margin-bottom: 30px;
-    color: #404040;
-    font-size: 30px;
+    margin: 0 0 38px;
+
+    color: #3f443d;
+
+    font-size: 28px;
+    font-weight: 500;
+    letter-spacing: 3px;
+
+    line-height: 1.5;
 }
 
-/* 輸入區 */
 .input-group {
     text-align: left;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .input-group label {
     display: block;
-    margin-bottom: 8px;
-    color: #555;
-    font-weight: 500;
+
+    margin-bottom: 9px;
+
+    color: #62665e;
+
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.8px;
 }
+
 
 .input-group input {
     width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #D9DED8;
-    border-radius: 10px;
-    font-size: 16px;
+
+    height: 48px;
+
+    padding: 0 14px;
+
     box-sizing: border-box;
-    transition: all 0.3s;
+
+    border: 1px solid #dedfd7;
+    border-radius: 4px;
+
+    background: #ffffff;
+
+    color: #3f443d;
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
 }
+
+
+.input-group input::placeholder {
+    color: #b2b4ad;
+}
+
+
+.input-group input:hover {
+    border-color: #c8cbc1;
+}
+
 
 .input-group input:focus {
-    border-color: #D9DED8;
-    outline: none;
-    box-shadow: 0 0 8px #daf3df;
+    border-color: #9eab9d;
+
+    background: #fff;
+
+    box-shadow: 0 0 0 3px rgba(158, 171, 157, 0.10);
 }
 
-/* 登入按鈕 */
-.login-form button {
+.password-wrapper {
+    position: relative;
     width: 100%;
-    padding: 14px;
-    background: #78907A;
-    color: #fff;
+}
+
+
+.password-wrapper input {
+    padding-right: 48px;
+}
+
+
+.password-wrapper .toggle-password {
+    position: absolute;
+
+    right: 10px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 32px;
+    height: 32px;
+
+    margin: 0;
+    padding: 6px;
+
     border: none;
-    border-radius: 10px;
-    font-size: 18px;
+    border-radius: 50%;
+
+    background: transparent;
+
+    color: #8d9389;
+
     cursor: pointer;
-    transition: 0.3s;
-    margin-top: 10px;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease;
 }
 
-.login-form button:hover {
-    background: #6B8F71;
-    transform: translateY(-2px);
+
+.password-wrapper .toggle-password:hover {
+    transform: translateY(-50%);
+
+    background: #f1f2ed;
+
+    color: #596158;
+
+    opacity: 1;
 }
 
-/* 註冊文字 */
-.register {
-    margin-top: 20px;
-    color: #666;
+
+.password-wrapper .toggle-password svg {
+    display: block;
+
+    width: 18px;
+    height: 18px;
+
+    fill: currentColor;
 }
-.register a, .forgot-password-link {
-    color: #9FB8A3;
-    text-decoration: none;
-    font-weight: bold;
-}
-.forgot-password{
+.forgot-password {
+    margin-top: 11px;
+
     text-align: right;
-    margin-top: 10px;
 }
-.remember-me{
+
+
+.forgot-password-link {
+    color: #8b9488;
+
+    font-size: 13px;
+    font-weight: 400;
+
+    letter-spacing: 0.3px;
+
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+}
+
+
+.forgot-password-link:hover {
+    color: #596158;
+
+    text-decoration: none;
+}
+
+.remember-me {
+    margin: 20px 0 26px;
+
     text-align: left;
-    margin: 3px;
 }
 
-.register a:hover, .forgot-password-link:hover {
-    text-decoration: underline;
+
+.remember-me label {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: #73776f;
+
+    font-size: 13px;
+
+    cursor: pointer;
 }
 
-/* 手機版 */
+
+.remember-me input {
+    width: 15px;
+    height: 15px;
+
+    margin: 0;
+
+    accent-color: #7f8f80;
+
+    cursor: pointer;
+}
+
+.login-form button[type="submit"] {
+    width: 100%;
+
+    height: 50px;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 4px;
+
+    background: #778878;
+
+    color: #ffffff;
+
+    font-size: 15px;
+    font-weight: 400;
+
+    letter-spacing: 2px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.login-form button[type="submit"]:hover {
+    background: #687969;
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 6px 15px rgba(84, 101, 85, 0.12);
+}
+
+
+.login-form button[type="submit"]:active {
+    transform: translateY(0);
+}
+
+.register {
+    margin: 26px 0 0;
+
+    color: #999c94;
+
+    font-size: 13px;
+
+    letter-spacing: 0.3px;
+}
+
+
+.register a {
+    color: #778878;
+
+    font-weight: 500;
+
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+}
+
+
+.register a:hover {
+    color: #596b5b;
+
+    text-decoration: none;
+}
+
 @media (max-width: 768px) {
-    .login-form {
-        padding: 30px 25px;
+
+    .login-container {
+        min-height: 100svh;
+
+        padding: 40px 20px;
     }
+
+
+    .login-form {
+        max-width: 390px;
+
+        padding: 40px 28px;
+
+        border-radius: 5px;
+    }
+
 
     .login-form h2 {
-        font-size: 26px;
+        margin-bottom: 32px;
+
+        font-size: 25px;
+        letter-spacing: 2.5px;
     }
 
-    .logo {
-        width: 80px;
+
+    .input-group {
+        margin-bottom: 21px;
+    }
+
+
+    .input-group input {
+        height: 47px;
+    }
+}
+
+@media (max-width: 400px) {
+
+    .login-container {
+        padding: 30px 16px;
+    }
+
+
+    .login-form {
+        padding: 36px 22px;
+    }
+
+
+    .login-form h2 {
+        font-size: 23px;
     }
 }

@@ -31,11 +31,12 @@
 
         </div>
 
-
-        <button (click)="addCart()">
-        加入購物車
+        <button
+            [disabled]="product().stock === 0"
+            (click)="addCart()"
+            >
+            {{ product().stock === 0 ? '缺貨' : '加入購物車' }}
         </button>
-
 
     </div>
 

@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../services/product';
 import { environment } from '../../enviroments/enviroment';
@@ -10,7 +10,22 @@ import { environment } from '../../enviroments/enviroment';
 })
 
 export class Product {
-  environment = environment;
+  @ViewChild('categoryScroll')
+  categoryScroll!: ElementRef<HTMLDivElement>;
+
+  scrollCategory(direction: 'left' | 'right') {
+      const element = this.categoryScroll.nativeElement;
+
+      const scrollAmount = 250;
+
+      element.scrollBy({
+          left: direction === 'left'
+              ? -scrollAmount
+              : scrollAmount,
+          behavior: 'smooth'
+      });
+  }
+    environment = environment;
  constructor(
   private route: ActivatedRoute,
   private router: Router,
@@ -32,6 +47,7 @@ export class Product {
   ];
 
   selectedCategory = signal('all');
+  selectedSort = signal<'default' | 'price-asc' | 'price-desc'>('default');
   ngOnInit() {
     this.productService.getProducts()
       .subscribe(data=>{
@@ -43,6 +59,10 @@ export class Product {
 
       this.selectedCategory.set(
         params['category'] ?? 'all'
+      );
+      const sort = params['sort'];
+      this.selectedSort.set(
+        sort === 'price-asc' || sort === 'price-desc' ? sort : 'default'
       );
       const page = Number(params['page']) || 1;
 
@@ -68,9 +88,23 @@ export class Product {
     );
   });
 
+  sortedProducts = computed(() => {
+    const products = [...this.filterProducts()];
+
+    if (this.selectedSort() === 'price-asc') {
+      return products.sort((a, b) => Number(a.price) - Number(b.price));
+    }
+
+    if (this.selectedSort() === 'price-desc') {
+      return products.sort((a, b) => Number(b.price) - Number(a.price));
+    }
+
+    return products;
+  });
+
 
 // 每頁數量
-  pageSize = 6;
+  pageSize = 8;
 
 
   //目前頁
@@ -82,7 +116,7 @@ export class Product {
 
 
     const total = Math.ceil(
-      this.filterProducts().length / this.pageSize
+      this.sortedProducts().length / this.pageSize
     );
 
 
@@ -103,7 +137,7 @@ export class Product {
       (this.currentPage()-1) * this.pageSize;
 
 
-    return this.filterProducts()
+    return this.sortedProducts()
       .slice(
         start,
         start + this.pageSize
@@ -146,5 +180,21 @@ export class Product {
       }
     });
 
+  }
+
+  changeSort(sort: string) {
+    const selectedSort = sort === 'price-asc' || sort === 'price-desc' ? sort : 'default';
+
+    this.selectedSort.set(selectedSort);
+    this.currentPage.set(1);
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        sort: selectedSort === 'default' ? null : selectedSort,
+        page: null
+      },
+      queryParamsHandling: 'merge'
+    });
   }
 }
