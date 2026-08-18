@@ -16,11 +16,6 @@
     display: block;
 }
 
-
-/* =========================================================
-   Header
-========================================================= */
-
 .header {
     position: fixed;
     inset: 0 0 auto;
@@ -42,11 +37,6 @@
 
     border-bottom: 1px solid rgba(63, 70, 63, 0.05);
 }
-
-
-/* =========================================================
-   Logo
-========================================================= */
 
 .logo {
     display: flex;
@@ -84,11 +74,6 @@
     margin-left: 5px;
 }
 
-
-/* =========================================================
-   Main Menu
-========================================================= */
-
 .menu {
     display: flex;
     align-items: center;
@@ -108,9 +93,6 @@
     display: flex;
     align-items: center;
 }
-
-
-/* Main menu links */
 
 .menu > a,
 .menu-item > a {
@@ -174,11 +156,6 @@
     transform: scaleX(1);
 }
 
-
-/* =========================================================
-   Arrow
-========================================================= */
-
 .arrow-btn {
     display: inline-flex;
     align-items: center;
@@ -203,18 +180,9 @@
         color 180ms ease;
 }
 
-
-/* =========================================================
-   Desktop Submenu
-========================================================= */
-
 .submenu {
     position: absolute;
 
-    /*
-     * 不要用 calc(100% - 10px)
-     * 讓 submenu 緊貼 menu-item
-     */
     top: calc(100% - 1px);
     left: 50%;
 
@@ -239,11 +207,6 @@
     transform: translateX(-50%);
 }
 
-
-/*
- * 用 pseudo element 補掉 submenu 和 menu
- * 中間的空隙，避免滑鼠移過去時消失
- */
 .submenu::before {
     position: absolute;
 
@@ -256,8 +219,6 @@
     content: "";
 }
 
-
-/* Desktop hover */
 
 .menu-item:hover > .submenu,
 .menu-item:focus-within > .submenu {
@@ -281,8 +242,6 @@
 
 }
 
-
-/* Submenu links */
 
 .submenu a {
     display: block;
@@ -311,11 +270,6 @@
     padding-left: 24px;
 }
 
-
-/* =========================================================
-   Top Right
-========================================================= */
-
 .top-right {
     display: flex;
     align-items: center;
@@ -329,11 +283,6 @@
 
     min-width: 0;
 }
-
-
-/* =========================================================
-   Login
-========================================================= */
 
 .login-link {
     display: inline-flex;
@@ -359,11 +308,6 @@
 .login-link:hover {
     opacity: 0.55;
 }
-
-
-/* =========================================================
-   Member
-========================================================= */
 
 .member-menu {
     position: relative;
@@ -485,11 +429,6 @@
     background: var(--hover-bg);
 }
 
-
-/* =========================================================
-   Cart
-========================================================= */
-
 .cart-link {
     position: relative;
 
@@ -521,8 +460,8 @@
 .badge {
     position: absolute;
 
-    top: 5px;
-    right: -2px;
+    top: 1px;
+    right: -1px;
 
     display: grid;
 

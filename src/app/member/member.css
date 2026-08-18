@@ -1,88 +1,293 @@
+/* ========================================
+   Member Center
+   Natural Skincare / Minimal Luxury
+======================================== */
+
+:host {
+    display: block;
+
+    min-height: 100vh;
+
+    background: #f7f6f1;
+
+    color: #3f443d;
+}
+
+
+/* ========================================
+   Container
+======================================== */
+
 .member-container {
-    width: 100%;
-    max-width: 500px;
-    margin: 40px auto;
-    padding: 30px;
+    width: min(90%, 560px);
 
-    background-color: #ffffff;
-    border-radius: 12px;
+    margin: 0 auto;
 
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    padding: 70px 0 100px;
 
     box-sizing: border-box;
 }
 
+
+/* ========================================
+   Section Title
+======================================== */
+
 .member-container h2 {
-    margin-bottom: 25px;
-    color: #333;
-    font-size: 24px;
+    position: relative;
+
+    width: fit-content;
+
+    margin: 0 auto 35px;
+
+    padding-bottom: 15px;
+
+    color: #4a514a;
+
+    font-size: 25px;
+
+    font-weight: 500;
+
+    letter-spacing: 2px;
+
+    text-align: center;
 }
+
+
+.member-container h2::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 0;
+
+    width: 28px;
+    height: 1px;
+
+    transform: translateX(-50%);
+
+    background: #9eab9d;
+}
+
+
+/* ========================================
+   Form
+======================================== */
 
 .form-group {
     display: flex;
+
     flex-direction: column;
-    margin-bottom: 20px;
+
+    margin-bottom: 22px;
 }
+
 
 .form-group label {
-    margin-bottom: 8px;
-    font-size: 16px;
-    font-weight: bold;
-    color: #444;
+    margin-bottom: 9px;
+
+    color: #626a62;
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+    letter-spacing: 0.8px;
 }
+
 
 .form-group input {
-    padding: 10px 12px;
-
-    border: 1px solid #ccc;
-    border-radius: 6px;
-
-    font-size: 16px;
-
-    outline: none;
-    box-sizing: border-box;
-
-    transition: border-color 0.2s;
-}
-
-.form-group input:focus {
-    border-color: #D9DED8;
-    box-shadow: 0 0 8px rgba(63, 155, 75, 0.25);
-}
-
-button {
     width: 100%;
 
-    padding: 12px;
+    padding: 13px 15px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #d9ded8;
+
+    border-radius: 3px;
+
+    background: #fcfcf9;
+
+    color: #4b514b;
+
+    font-family: inherit;
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+
+.form-group input:hover {
+    border-color: #c5ccc4;
+}
+
+
+.form-group input:focus {
+    border-color: #9eab9d;
+
+    background: #ffffff;
+
+    box-shadow: 0 0 0 3px rgba(158, 171, 157, 0.12);
+}
+
+
+/* ========================================
+   Buttons
+======================================== */
+
+.member-container > button {
+    width: 100%;
+
+    padding: 13px 20px;
 
     border: none;
-    border-radius: 6px;
 
-    background-color: #78907A;
-    color: white;
+    border-radius: 3px;
 
-    font-size: 16px;
+    background: #778878;
+
+    color: #ffffff;
+
+    font-family: inherit;
+
+    font-size: 15px;
+
+    font-weight: 500;
+
+    letter-spacing: 1px;
+
     cursor: pointer;
 
-    transition: background-color 0.2s;
+    transition:
+        background 0.25s ease,
+        transform 0.25s ease;
 }
 
-button:hover {
-    background-color: #6B8F71;
+
+.member-container > button:hover {
+    background: #687968;
+
+    transform: translateY(-2px);
 }
 
-hr {
-    margin: 35px 0;
+
+.member-container > button:active {
+    transform: translateY(0);
+}
+
+
+/* ========================================
+   Divider
+======================================== */
+
+.member-container hr {
+    margin: 55px 0;
 
     border: none;
-    border-top: 1px solid #ddd;
+
+    border-top: 1px solid #dedfd9;
 }
 
+
+/* ========================================
+   Password Error
+======================================== */
+
 .error {
-    margin-top: -10px;
-    margin-bottom: 15px;
+    margin: -10px 0 16px;
 
-    color: #d93025;
+    color: #a56b67;
 
-    font-size: 14px;
+    font-size: 13px;
+
+    line-height: 1.6;
+}
+
+
+/* ========================================
+   Password Section
+======================================== */
+
+/* 第二個標題 */
+.member-container hr + h2 {
+    margin-bottom: 35px;
+}
+
+
+/* ========================================
+   Tablet
+======================================== */
+
+@media (max-width: 768px) {
+
+    .member-container {
+        width: calc(100% - 50px);
+
+        padding: 60px 0 80px;
+    }
+
+
+    .member-container h2 {
+        font-size: 23px;
+    }
+}
+
+
+/* ========================================
+   Mobile
+======================================== */
+
+@media (max-width: 480px) {
+
+    .member-container {
+        width: calc(100% - 36px);
+
+        padding: 45px 0 65px;
+    }
+
+
+    .member-container h2 {
+        margin-bottom: 30px;
+
+        font-size: 21px;
+
+        letter-spacing: 1.5px;
+    }
+
+
+    .form-group {
+        margin-bottom: 19px;
+    }
+
+
+    .form-group label {
+        font-size: 12px;
+    }
+
+
+    .form-group input {
+        padding: 12px 13px;
+
+        font-size: 14px;
+    }
+
+
+    .member-container > button {
+        padding: 12px;
+
+        font-size: 14px;
+    }
+
+
+    .member-container hr {
+        margin: 45px 0;
+    }
 }

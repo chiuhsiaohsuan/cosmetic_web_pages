@@ -1,0 +1,371 @@
+.skin-test {
+    width: min(100%, 900px);
+    margin: 0 auto;
+    padding: 70px 24px 100px;
+    box-sizing: border-box;
+
+    color: #3f4540;
+}
+
+
+/* =========================
+   Header
+========================= */
+
+.skin-test-header {
+    text-align: center;
+    margin-bottom: 55px;
+}
+
+.skin-test-header span {
+    display: block;
+
+    margin-bottom: 12px;
+
+    color: #78907a;
+
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+}
+
+.skin-test-header h1 {
+    margin: 0 0 16px;
+
+    color: #3f4540;
+
+    font-size: 38px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+}
+
+.skin-test-header p {
+    margin: 0;
+
+    color: #7a817b;
+
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+
+/* =========================
+   Progress
+========================= */
+
+.progress-area {
+    width: 100%;
+    margin-bottom: 35px;
+}
+
+.progress-text {
+    display: flex;
+    justify-content: space-between;
+
+    margin-bottom: 10px;
+
+    color: #78907a;
+
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 3px;
+
+    overflow: hidden;
+
+    background: #e8ece8;
+}
+
+.progress-value {
+    height: 100%;
+
+    background: #78907a;
+
+    transition: width 0.4s ease;
+}
+
+
+/* =========================
+   Question Card
+========================= */
+
+.question-card {
+    padding: 45px 50px;
+
+    background: #fff;
+
+    border: 1px solid #e4e9e4;
+    border-radius: 18px;
+
+    box-shadow: 0 15px 40px rgba(70, 85, 72, 0.06);
+}
+
+.question-number {
+    margin-bottom: 15px;
+
+    color: #78907a;
+
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+}
+
+.question-card h2 {
+    margin: 0 0 12px;
+
+    color: #3f4540;
+
+    font-size: 25px;
+    font-weight: 500;
+    line-height: 1.6;
+}
+
+.question-description {
+    margin: 0 0 30px;
+
+    color: #8a918b;
+
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+
+/* =========================
+   Options
+========================= */
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+
+    min-height: 65px;
+
+    padding: 13px 18px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #e2e7e2;
+    border-radius: 12px;
+
+    background: #fff;
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.2s ease;
+}
+
+.option:hover {
+    border-color: #b8c9ba;
+
+    background: #fafcf9;
+
+    transform: translateY(-1px);
+}
+
+.option.selected {
+    border-color: #78907a;
+
+    background: #eef4ef;
+}
+
+
+/* 隱藏原本 input */
+
+.option input {
+    position: absolute;
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+
+/* =========================
+   Letter
+========================= */
+
+.option-letter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    width: 34px;
+    height: 34px;
+
+    margin-right: 15px;
+
+    border: 1px solid #d6ddd6;
+    border-radius: 50%;
+
+    color: #69746b;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    transition: all 0.25s ease;
+}
+
+.option.selected .option-letter {
+    border-color: #78907a;
+
+    background: #78907a;
+
+    color: #fff;
+}
+
+
+/* =========================
+   Text
+========================= */
+
+.option-text {
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+
+    color: #4e5650;
+
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.option.selected .option-text {
+    color: #4d6651;
+    font-weight: 500;
+}
+
+.option-text small {
+    color: #8a918b;
+
+    font-size: 13px;
+    font-weight: 400;
+}
+
+
+/* =========================
+   Buttons
+========================= */
+
+.question-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-top: 30px;
+}
+
+.question-actions button {
+    min-width: 130px;
+
+    padding: 13px 25px;
+
+    border-radius: 30px;
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+}
+
+
+/* 上一題 */
+
+.prev-btn {
+    border: 1px solid #d9ded8;
+
+    background: #fff;
+
+    color: #687169;
+}
+
+.prev-btn:hover {
+    border-color: #78907a;
+
+    color: #78907a;
+}
+
+
+/* 下一題 */
+
+.next-btn {
+    margin-left: auto;
+
+    border: none;
+
+    background: #78907a;
+
+    color: #fff;
+}
+
+.next-btn:hover {
+    background: #6b8f71;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================
+   Mobile
+========================= */
+
+@media (max-width: 768px) {
+
+    .skin-test {
+        padding: 45px 18px 70px;
+    }
+
+    .skin-test-header {
+        margin-bottom: 40px;
+    }
+
+    .skin-test-header h1 {
+        font-size: 30px;
+    }
+
+    .question-card {
+        padding: 30px 20px;
+    }
+
+    .question-card h2 {
+        font-size: 21px;
+    }
+
+    .option {
+        align-items: flex-start;
+
+        padding: 15px;
+    }
+
+    .option-letter {
+        margin-top: 2px;
+    }
+
+    .option-text {
+        font-size: 14px;
+    }
+
+    .option-text small {
+        font-size: 12px;
+    }
+
+    .question-actions button {
+        min-width: 110px;
+    }
+}

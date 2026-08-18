@@ -54,7 +54,7 @@
 
           @if (order.payment_status === '未付款') {
             <a class="payment-status unpaid" [routerLink]="['/payment', order.id]">
-              付款狀態：未付款
+              付款狀態：未付款(點我去付款)
             </a>
           } @else {
             <span class="payment-status">付款狀態：{{ order.payment_status }}</span>

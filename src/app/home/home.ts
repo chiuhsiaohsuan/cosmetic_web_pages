@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, signal, computed  } from '@angular/core';
 import { RouterLink } from "@angular/router";
 import { ProductService } from '../services/product';
+import { NewsService, News } from '../services/news';
 import { environment } from '../../enviroments/enviroment';
 
 @Component({
@@ -22,6 +23,7 @@ export class Home implements OnInit, OnDestroy {
   ];
   environment = environment;
   products = signal<any[]>([]);
+  latestNews = signal<News[]>([]);
   hotProducts = computed(()=>{
 
   return this.products()
@@ -30,7 +32,8 @@ export class Home implements OnInit, OnDestroy {
 
   });
   constructor(
-    public productService:ProductService
+    public productService: ProductService,
+    private newsService: NewsService
   ){}
 
   currentSlide = signal(0);
@@ -44,6 +47,11 @@ export class Home implements OnInit, OnDestroy {
       this.products.set(products);
 
         
+    });
+
+    this.newsService.getNews().subscribe({
+      next: (news) => this.latestNews.set(news.slice(0, 3)),
+      error: (error) => console.error('Failed to load news:', error)
     });
 
   }

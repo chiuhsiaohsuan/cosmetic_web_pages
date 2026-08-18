@@ -1,204 +1,451 @@
+:host {
+    display: block;
+
+    min-height: 100vh;
+
+    background: #f7f6f1;
+
+    color: #3f443d;
+}
+
 .intro {
-    width: 100%;
-    max-width: 1200px;
+    width: min(90%, 1100px);
+
     margin: 0 auto;
-    padding: 80px 20px;
+
+    padding: 100px 0 40px;
 }
 
 .origin,
 .destiny,
 .future {
     display: flex;
+
     align-items: center;
-    gap: 60px;
-    margin-bottom: 100px;
+
+    gap: 80px;
+
+    margin-bottom: 110px;
 }
 
-/* 圖片 */
 .origin img,
 .destiny img,
 .future img {
     width: 50%;
-    height: 400px;
+
+    height: 420px;
+
     object-fit: cover;
-    border-radius: 20px;
+
+    border-radius: 2px;
+
+    display: block;
 }
 
-
-/* 文字區 */
 .origin > div,
 .destiny > div,
 .future > div {
     flex: 1;
+
+    padding: 10px 5px;
 }
 
 
-h2 {
-    font-size: 36px;
-    margin-bottom: 20px;
-    color: #404040;
+.origin h2,
+.destiny h2,
+.future h2 {
+    position: relative;
+
+    margin: 0 0 28px;
+
+    padding-bottom: 18px;
+
+    color: #3f443d;
+
+    font-size: 28px;
+    font-weight: 500;
+
+    letter-spacing: 2px;
+
+    line-height: 1.5;
+}
+
+.origin h2::after,
+.destiny h2::after,
+.future h2::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    bottom: 0;
+
+    width: 32px;
+    height: 1px;
+
+    background: #9eab9d;
 }
 
 
-p {
-    font-size: 18px;
-    line-height: 2;
-    color: #666;
+.origin p,
+.destiny p,
+.future p {
+    margin: 0;
+
+    color: #777b73;
+
+    font-size: 14px;
+    font-weight: 400;
+
+    line-height: 2.1;
+
+    letter-spacing: 0.5px;
 }
-/* 初始狀態 */
+
 .fade-section {
     opacity: 0;
-    transition: all 0.8s ease;
+
+    transition:
+        opacity 0.9s ease,
+        transform 0.9s ease;
 }
 
-/* 從左滑入 */
+
 .left {
-    transform: translateX(-100px);
+    transform: translateX(-60px);
 }
 
-/* 從右滑入 */
+
 .right {
-    transform: translateX(100px);
+    transform: translateX(60px);
 }
 
-/* 顯示 */
+
 .fade-section.show {
     opacity: 1;
+
     transform: translateX(0);
 }
-/* Team */
+
 .team-section {
-    background-color: #EEF3EF;
-    padding: 80px 0;
+    width: 100%;
+
+    padding: 100px 0 110px;
+
+    background: #eef1eb;
+
+    border-top: 1px solid #e1e3dc;
 }
+
+
 .team {
-    width: 90%;
-    max-width: 1200px;
+    width: min(90%, 1100px);
+
     margin: 0 auto;
+
     text-align: center;
 }
 
+.team-title {
+    margin-bottom: 55px;
+}
+
+
 .team-title h2 {
-    font-size: 36px;
-    color: #404040;
-    margin-bottom: 15px;
+    position: relative;
+
+    display: inline-block;
+
+    margin: 0 0 22px;
+
+    padding-bottom: 17px;
+
+    color: #3f443d;
+
+    font-size: 30px;
+    font-weight: 500;
+
+    letter-spacing: 3px;
+}
+
+
+.team-title h2::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 0;
+
+    width: 32px;
+    height: 1px;
+
+    transform: translateX(-50%);
+
+    background: #9eab9d;
 }
 
 .team-title p {
-    font-size: 18px;
-    color: #666;
-    margin-bottom: 50px;
-    line-height: 1.8;
+    max-width: 650px;
+
+    margin: 0 auto;
+
+    color: #777b73;
+
+    font-size: 14px;
+    font-weight: 400;
+
+    line-height: 2;
+
+    letter-spacing: 0.5px;
 }
 
-/* 卡片排列 */
 .team-list {
-    display: flex;
-    justify-content: center;
-    gap: 55px;
-    flex-wrap: wrap;
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 24px;
 }
 
-/* 卡片 */
 .team-card {
-    width: 320px;
-    background: #fff;
-    border-radius: 15px;
+    width: auto;
+
+    background: #fcfcf9;
+
+    border: 1px solid #e2e4dc;
+
+    border-radius: 4px;
+
     overflow: hidden;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    transition: 0.3s;
+
+    box-shadow: 0 8px 25px rgba(61, 67, 58, 0.035);
+
+    transition:
+        transform 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
 }
+
 
 .team-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+
+    border-color: #cdd2c9;
+
+    box-shadow: 0 14px 30px rgba(61, 67, 58, 0.07);
 }
 
 .team-card img {
     width: 100%;
-    height: 280px;
+
+    height: 270px;
+
+    display: block;
+
     object-fit: cover;
 }
 
 .team-card h3 {
-    font-size: 24px;
-    color: #404040;
-    margin: 20px 0 10px;
+    margin: 24px 25px 12px;
+
+    color: #596259;
+
+    font-size: 19px;
+    font-weight: 500;
+
+    letter-spacing: 1.5px;
 }
 
 .team-card p {
-    color: #666;
-    font-size: 16px;
-    line-height: 1.8;
-    padding: 0 20px 25px;
+    margin: 0;
+
+    padding: 0 25px 28px;
+
+    color: #858981;
+
+    font-size: 13px;
+    font-weight: 400;
+
+    line-height: 1.9;
+
+    letter-spacing: 0.3px;
 }
-/* 手機版 */
+
+@media (max-width: 900px) {
+
+    .intro {
+        width: calc(100% - 60px);
+
+        padding-top: 75px;
+    }
+
+
+    .origin,
+    .destiny,
+    .future {
+        gap: 45px;
+
+        margin-bottom: 80px;
+    }
+
+
+    .origin img,
+    .destiny img,
+    .future img {
+        height: 350px;
+    }
+
+
+    .team-list {
+        grid-template-columns: 1fr;
+
+        max-width: 500px;
+
+        margin: 0 auto;
+    }
+}
+
 @media (max-width: 768px) {
 
     .intro {
-        padding: 40px 20px;
+        width: calc(100% - 40px);
+
+        padding: 60px 0 20px;
     }
+
 
     .origin,
     .destiny,
     .future {
         flex-direction: column;
-        gap: 30px;
-        margin-bottom: 60px;
+
+        gap: 28px;
+
+        margin-bottom: 70px;
+
+        align-items: stretch;
     }
 
     .destiny {
         flex-direction: column-reverse;
     }
 
+
     .origin img,
     .destiny img,
     .future img {
         width: 100%;
+
         height: 280px;
+
+        border-radius: 2px;
     }
 
 
-    h2 {
-        font-size: 28px;
+    .origin > div,
+    .destiny > div,
+    .future > div {
+        padding: 0;
     }
 
 
-    p {
-        font-size: 16px;
+    .origin h2,
+    .destiny h2,
+    .future h2 {
+        margin-bottom: 22px;
+
+        font-size: 24px;
+
+        letter-spacing: 1.5px;
     }
-}
-@media (max-width: 768px) {
+
+
+    .origin p,
+    .destiny p,
+    .future p {
+        font-size: 14px;
+
+        line-height: 2;
+    }
+
+
+    /* Team */
+
     .team-section {
-        width: 100%;
-        background: #F3F8F4;
-        padding: 80px 0;
+        padding: 70px 0 80px;
     }
+
+
     .team {
-        width: 95%;
-        margin: 0 auto;
+        width: calc(100% - 40px);
     }
+
+
+    .team-title {
+        margin-bottom: 40px;
+    }
+
 
     .team-title h2 {
-        font-size: 30px;
+        font-size: 25px;
+
+        letter-spacing: 2.5px;
     }
+
 
     .team-title p {
-        font-size: 16px;
-        margin-bottom: 35px;
+        font-size: 13px;
+
+        line-height: 1.9;
     }
 
+
     .team-list {
+        display: flex;
+
         flex-direction: column;
+
         align-items: center;
+
+        gap: 18px;
     }
+
 
     .team-card {
         width: 100%;
-        max-width: 360px;
+
+        max-width: 380px;
     }
+
 
     .team-card img {
         height: 240px;
+    }
+
+
+    .team-card h3 {
+        margin-top: 21px;
+
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 400px) {
+
+    .intro {
+        width: calc(100% - 32px);
+    }
+
+
+    .origin img,
+    .destiny img,
+    .future img {
+        height: 240px;
+    }
+
+
+    .team {
+        width: calc(100% - 32px);
     }
 }

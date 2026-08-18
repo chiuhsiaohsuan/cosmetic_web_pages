@@ -178,56 +178,25 @@
 
     <div class="news-list">
 
-        <article class="news-item">
+        @for (item of latestNews(); track item.id) {
 
-            <time datetime="2026-07-08">
-                2026.07.08
-            </time>
+            <article class="news-item">
 
-            <div class="news-content">
+                <time [attr.datetime]="item.date">
+                    {{ item.date.replaceAll('-', '.') }}
+                </time>
 
-                <h3>
-                    新商品上市，限時優惠中
-                </h3>
+                <div class="news-content">
 
-            </div>
+                    <h3>
+                        {{ item.title }}
+                    </h3>
 
-        </article>
+                </div>
 
+            </article>
 
-        <article class="news-item">
-
-            <time datetime="2026-07-01">
-                2026.07.01
-            </time>
-
-            <div class="news-content">
-
-                <h3>
-                    夏季保養系列正式發售
-                </h3>
-
-            </div>
-
-
-        </article>
-
-
-        <article class="news-item">
-
-            <time datetime="2026-06-20">
-                2026.06.20
-            </time>
-
-            <div class="news-content">
-
-                <h3>
-                    新商品上市，限時優惠中
-                </h3>
-
-            </div>
-
-        </article>
+        }
 
     </div>
 

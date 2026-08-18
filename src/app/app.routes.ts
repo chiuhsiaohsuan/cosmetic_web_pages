@@ -25,7 +25,8 @@ export const routes: Routes = [
       { path: 'checkout', loadComponent: () => import('./checkout/checkout').then((m) => m.Checkout) },
       { path: 'payment/:orderId', loadComponent: () => import('./payment/payment').then((m) => m.Payment) },
       { path: 'orders', loadComponent: () => import('./orders/orders').then((m) => m.Orders) },
-      { path: 'reset-password', loadComponent: () => import('./reset-password/reset-password').then((m) => m.ResetPasswordComponent) }
+      { path: 'reset-password', loadComponent: () => import('./reset-password/reset-password').then((m) => m.ResetPasswordComponent) },
+      { path: 'analysis', loadComponent: () => import('./analysis/analysis').then((m) => m.Analysis) },
     ]
   },
   {

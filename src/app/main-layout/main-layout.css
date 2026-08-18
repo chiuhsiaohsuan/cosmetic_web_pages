@@ -10,9 +10,8 @@
 
 
 .frontend-content {
-
-  flex: 1;
-
-  padding-top: 70px;
-
+    padding-top: 70px;
+    background: #f7f6f1;
+    min-height: 100vh;
+    box-sizing: border-box;
 }

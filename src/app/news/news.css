@@ -1,76 +1,336 @@
-.news {
-    width: min(90%, 1200px);
-    margin: 60px auto 64px;
+/* ========================================
+   News
+   Natural Skincare / Minimal Luxury
+======================================== */
+
+:host {
+    display: block;
+    min-height: 100vh;
+    background: #f7f6f1;
 }
 
-.news-header {
-    margin-bottom: 18px;
+
+/* ========================================
+   News Container
+======================================== */
+
+.news {
+    width: min(90%, 1100px);
+
+    margin: 70px auto 90px;
 }
+
+
+/* ========================================
+   Header
+======================================== */
+
+.news-header {
+    margin-bottom: 35px;
+
+    padding-bottom: 18px;
+
+    border-bottom: 1px solid #dedfd7;
+}
+
 
 .news-header h2 {
     margin: 0;
-    color: #222222;
+
+    color: #3f443d;
+
     font-size: 28px;
-    font-weight: 700;
+    font-weight: 500;
+
+    letter-spacing: 3px;
 }
 
+
+/* ========================================
+   News List
+======================================== */
+
 .news-list {
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #dedfd7;
 }
+
 
 .news-item {
     display: grid;
-    grid-template-columns: 140px 1fr;
-    gap: 20px;
+
+    grid-template-columns: 150px 1fr;
+
     align-items: center;
-    padding: 18px 0;
-    border-bottom: 1px solid #e5e5e5;
+
+    min-height: 72px;
+
+    padding: 0 10px;
+
+    border-bottom: 1px solid #dedfd7;
+
+    transition:
+        background 0.25s ease,
+        padding 0.25s ease;
 }
 
-.news-item time {
-    color: #589c63;
-    font-size: 16px;
-    font-weight: 700;
-    margin-left: 20px;
+
+/* Hover */
+
+.news-item:hover {
+    background: rgba(255, 255, 255, 0.55);
+
+    padding-left: 18px;
+    padding-right: 18px;
 }
+
+
+/* ========================================
+   Date
+======================================== */
+
+.news-item time {
+    color: #8b9488;
+
+    font-size: 13px;
+    font-weight: 400;
+
+    letter-spacing: 1px;
+}
+
+
+/* ========================================
+   Title
+======================================== */
 
 .news-item h3 {
     margin: 0;
-    color: #222222;
-    font-size: 18px;
-    font-weight: 600;
-    margin-left: 100px;
+
+    color: #4a4e48;
+
+    font-size: 15px;
+    font-weight: 400;
+
+    line-height: 1.7;
+
+    letter-spacing: 0.5px;
+
+    transition: color 0.25s ease;
 }
+
+
+.news-item:hover h3 {
+    color: #687969;
+}
+
+
+/* ========================================
+   Pagination
+======================================== */
+
 .pagination {
     display: flex;
+
     justify-content: center;
     align-items: center;
-    gap: 10px;
-    margin-top: 30px;
+
+    gap: 6px;
+
+    margin-top: 42px;
 }
+
+
+/* 所有按鈕 */
 
 .pagination button {
-    min-width: 40px;
-    height: 40px;
-    padding: 0 12px;
-    border: 1px solid #D9DED8;
-    background: #fff;
+    min-width: 38px;
+    height: 38px;
+
+    padding: 0 11px;
+
+    border: 1px solid #dedfd7;
+    border-radius: 3px;
+
+    background: #fcfcf9;
+
+    color: #7b8179;
+
+    font-size: 13px;
+    font-weight: 400;
+
     cursor: pointer;
-    border-radius: 10px;
+
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease;
 }
+
+
+/* Hover */
 
 .pagination button:hover:not(:disabled) {
-    background: #78907A;
-    color: #fff;
+    border-color: #9eab9d;
+
+    background: #eef0e9;
+
+    color: #59685b;
 }
+
+
+/* Active */
 
 .pagination button.active {
-    background: #78907A;
-    color: #fff;
-    border-color: #78907A;
+    border-color: #778878;
+
+    background: #778878;
+
+    color: #ffffff;
+
+    font-weight: 500;
 }
 
+
+/* Disabled */
+
 .pagination button:disabled {
-    opacity: .5;
+    border-color: #e5e5df;
+
+    background: #f3f3ee;
+
+    color: #b5b7b0;
+
+    opacity: 1;
+
     cursor: not-allowed;
+}
+
+
+/* ========================================
+   Tablet
+======================================== */
+
+@media (max-width: 768px) {
+
+    .news {
+        width: calc(100% - 40px);
+
+        margin: 50px auto 70px;
+    }
+
+
+    .news-header {
+        margin-bottom: 25px;
+    }
+
+
+    .news-header h2 {
+        font-size: 25px;
+
+        letter-spacing: 2.5px;
+    }
+
+
+    .news-item {
+        grid-template-columns: 110px 1fr;
+
+        min-height: 68px;
+
+        padding: 0 5px;
+    }
+
+
+    .news-item:hover {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+
+    .news-item time {
+        font-size: 12px;
+    }
+
+
+    .news-item h3 {
+        font-size: 14px;
+    }
+
+
+    .pagination {
+        margin-top: 35px;
+
+        gap: 5px;
+    }
+
+
+    .pagination button {
+        min-width: 36px;
+        height: 36px;
+
+        padding: 0 8px;
+
+        font-size: 12px;
+    }
+}
+
+
+/* ========================================
+   Small Mobile
+======================================== */
+
+@media (max-width: 480px) {
+
+    .news {
+        width: calc(100% - 32px);
+
+        margin-top: 40px;
+    }
+
+
+    .news-header h2 {
+        font-size: 23px;
+    }
+
+
+    .news-item {
+        display: block;
+
+        padding: 16px 4px;
+    }
+
+
+    .news-item:hover {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+
+    .news-item time {
+        display: block;
+
+        margin-bottom: 5px;
+
+        font-size: 11px;
+
+        letter-spacing: 0.8px;
+    }
+
+
+    .news-item h3 {
+        font-size: 14px;
+
+        line-height: 1.6;
+    }
+
+
+    .pagination {
+        flex-wrap: wrap;
+
+        margin-top: 30px;
+    }
+
+
+    .pagination button {
+        min-width: 34px;
+        height: 34px;
+    }
 }

@@ -5,7 +5,7 @@
     margin: 0 auto;
 
     padding:
-        150px
+        110px
         clamp(24px, 5vw, 72px)
         100px;
 

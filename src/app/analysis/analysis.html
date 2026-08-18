@@ -1,0 +1,488 @@
+<section class="skin-test">
+
+    <!-- 標題 -->
+    <header class="skin-test-header">
+        <span>SKIN ANALYSIS</span>
+        <h1>肌膚檢測</h1>
+        <p>花一點時間了解自己，找到更適合你的保養方式。</p>
+    </header>
+
+
+    <!-- 進度 -->
+    <div class="progress-area">
+
+        <div class="progress-text">
+            <span>STEP {{ currentQuestion() }}</span>
+            <span>4 / 4</span>
+        </div>
+
+        <div class="progress-bar">
+            <div
+                class="progress-value"
+                [style.width.%]="currentQuestion() / 4 * 100">
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         Q1
+    ========================== -->
+    @if (currentQuestion() === 1) {
+
+        <div class="question-card">
+
+            <div class="question-number">
+                QUESTION 01
+            </div>
+
+            <h2>
+                請問您的年齡區間？
+            </h2>
+
+            <p class="question-description">
+                年齡不同，肌膚所需要的保養重點也有所不同。
+            </p>
+
+
+            <div class="options">
+
+                <label
+                    class="option"
+                    [class.selected]="answers.age === 'A'"
+                >
+                    <input
+                        type="radio"
+                        name="age"
+                        value="A"
+                        [(ngModel)]="answers.age"
+                    >
+
+                    <span class="option-letter">A</span>
+
+                    <span class="option-text">
+                        25 歲以下
+                        <small>基礎清潔、水油平衡、防曬</small>
+                    </span>
+                </label>
+
+
+                <label
+                    class="option"
+                    [class.selected]="answers.age === 'B'"
+                >
+                    <input
+                        type="radio"
+                        name="age"
+                        value="B"
+                        [(ngModel)]="answers.age"
+                    >
+
+                    <span class="option-letter">B</span>
+
+                    <span class="option-text">
+                        26 - 35 歲
+                        <small>初老預防、暗沉提亮、長效保濕</small>
+                    </span>
+                </label>
+
+
+                <label
+                    class="option"
+                    [class.selected]="answers.age === 'C'"
+                >
+                    <input
+                        type="radio"
+                        name="age"
+                        value="C"
+                        [(ngModel)]="answers.age"
+                    >
+
+                    <span class="option-letter">C</span>
+
+                    <span class="option-text">
+                        36 - 45 歲
+                        <small>緊緻撫紋、深層修護、抗氧化</small>
+                    </span>
+                </label>
+
+
+                <label
+                    class="option"
+                    [class.selected]="answers.age === 'D'"
+                >
+                    <input
+                        type="radio"
+                        name="age"
+                        value="D"
+                        [(ngModel)]="answers.age"
+                    >
+
+                    <span class="option-letter">D</span>
+
+                    <span class="option-text">
+                        46 歲以上
+                        <small>全效抗老、豐潤滋養、屏障強化</small>
+                    </span>
+                </label>
+
+            </div>
+
+        </div>
+    }
+
+
+    <!-- =========================
+         Q2
+    ========================== -->
+    @if (currentQuestion() === 2) {
+
+        <div class="question-card">
+
+            <div class="question-number">
+                QUESTION 02
+            </div>
+
+            <h2>
+                洗完臉未擦保養品時，您的臉部感受是？
+            </h2>
+
+            <p class="question-description">
+                透過肌膚洗臉後的狀態，了解您的肌膚傾向。
+            </p>
+
+
+            <div class="options">
+
+                <label
+                    class="option"
+                    [class.selected]="answers.feel === 'A'"
+                >
+                    <input
+                        type="radio"
+                        name="feel"
+                        value="A"
+                        [(ngModel)]="answers.feel"
+                    >
+
+                    <span class="option-letter">A</span>
+
+                    <span class="option-text">
+                        全臉緊繃乾裂
+                        <small>甚至容易脫屑</small>
+                    </span>
+                </label>
+
+
+                <label
+                    class="option"
+                    [class.selected]="answers.feel === 'B'"
+                >
+                    <input
+                        type="radio"
+                        name="feel"
+                        value="B"
+                        [(ngModel)]="answers.feel"
+                    >
+
+                    <span class="option-letter">B</span>
+
+                    <span class="option-text">
+                        T 字容易出油
+                        <small>兩頰偏乾或正常</small>
+                    </span>
+                </label>
+
+
+                <label
+                    class="option"
+                    [class.selected]="answers.feel === 'C'"
+                >
+                    <input
+                        type="radio"
+                        name="feel"
+                        value="C"
+                        [(ngModel)]="answers.feel"
+                    >
+
+                    <span class="option-letter">C</span>
+
+                    <span class="option-text">
+                        全臉容易泛油
+                        <small>毛孔較為明顯</small>
+                    </span>
+                </label>
+
+
+                <label
+                    class="option"
+                    [class.selected]="answers.feel === 'D'"
+                >
+                    <input
+                        type="radio"
+                        name="feel"
+                        value="D"
+                        [(ngModel)]="answers.feel"
+                    >
+
+                    <span class="option-letter">D</span>
+
+                    <span class="option-text">
+                        容易泛紅、刺痛
+                        <small>對環境變化較敏感</small>
+                    </span>
+                </label>
+
+            </div>
+
+        </div>
+    }
+
+
+    <!-- =========================
+         Q3
+    ========================== -->
+    @if (currentQuestion() === 3) {
+
+        <div class="question-card">
+
+            <div class="question-number">
+                QUESTION 03
+            </div>
+
+            <h2>
+                您目前最想改善的肌膚問題？
+            </h2>
+
+            <p class="question-description">
+                可複選，選擇最符合目前肌膚狀態的項目。
+            </p>
+
+
+            <div class="options">
+
+                <label class="option"
+                    [class.selected]="answers.problem.includes('A')">
+
+                    <input
+                        type="checkbox"
+                        value="A"
+                        (change)="toggleProblem('A')"
+                        [checked]="answers.problem.includes('A')"
+                    >
+
+                    <span class="option-letter">A</span>
+
+                    <span class="option-text">
+                        敏感泛紅 / 屏障受損
+                        <small>換季不適、乾癢、需要鎮定舒緩</small>
+                    </span>
+
+                </label>
+
+
+                <label class="option"
+                    [class.selected]="answers.problem.includes('B')">
+
+                    <input
+                        type="checkbox"
+                        value="B"
+                        (change)="toggleProblem('B')"
+                        [checked]="answers.problem.includes('B')"
+                    >
+
+                    <span class="option-letter">B</span>
+
+                    <span class="option-text">
+                        鬆弛細紋 / 老化下垂
+                        <small>缺乏彈性、輪廓線模糊</small>
+                    </span>
+
+                </label>
+
+
+                <label class="option"
+                    [class.selected]="answers.problem.includes('C')">
+
+                    <input
+                        type="checkbox"
+                        value="C"
+                        (change)="toggleProblem('C')"
+                        [checked]="answers.problem.includes('C')"
+                    >
+
+                    <span class="option-letter">C</span>
+
+                    <span class="option-text">
+                        暗沉斑點 / 膚色不均
+                        <small>初老黃氣、欠缺透亮光澤</small>
+                    </span>
+
+                </label>
+
+
+                <label class="option"
+                    [class.selected]="answers.problem.includes('D')">
+
+                    <input
+                        type="checkbox"
+                        value="D"
+                        (change)="toggleProblem('D')"
+                        [checked]="answers.problem.includes('D')"
+                    >
+
+                    <span class="option-letter">D</span>
+
+                    <span class="option-text">
+                        毛孔粗大 / 粉刺油光
+                        <small>角質過厚、油脂分泌旺盛</small>
+                    </span>
+
+                </label>
+
+
+                <label class="option"
+                    [class.selected]="answers.problem.includes('E')">
+
+                    <input
+                        type="checkbox"
+                        value="E"
+                        (change)="toggleProblem('E')"
+                        [checked]="answers.problem.includes('E')"
+                    >
+
+                    <span class="option-letter">E</span>
+
+                    <span class="option-text">
+                        乾燥缺水 / 粗糙無光
+                        <small>保濕度維持不久、容易脫皮</small>
+                    </span>
+
+                </label>
+
+            </div>
+
+        </div>
+    }
+
+
+    <!-- =========================
+         Q4
+    ========================== -->
+    @if (currentQuestion() === 4) {
+
+        <div class="question-card">
+
+            <div class="question-number">
+                QUESTION 04
+            </div>
+
+            <h2>
+                您平常偏好的保養習慣與步調？
+            </h2>
+
+            <p class="question-description">
+                了解您的保養習慣，為您推薦更適合的產品組合。
+            </p>
+
+
+            <div class="options">
+
+                <label
+                    class="option"
+                    [class.selected]="answers.routine === 'A'"
+                >
+
+                    <input
+                        type="radio"
+                        name="routine"
+                        value="A"
+                        [(ngModel)]="answers.routine"
+                    >
+
+                    <span class="option-letter">A</span>
+
+                    <span class="option-text">
+                        極簡高效
+                        <small>
+                            2-3 步驟快速完成，偏好全效合一產品
+                        </small>
+                    </span>
+
+                </label>
+
+
+                <label
+                    class="option"
+                    [class.selected]="answers.routine === 'B'"
+                >
+
+                    <input
+                        type="radio"
+                        name="routine"
+                        value="B"
+                        [(ngModel)]="answers.routine"
+                    >
+
+                    <span class="option-letter">B</span>
+
+                    <span class="option-text">
+                        精準修護
+                        <small>
+                            願意循序漸進，搭配精華液與面膜
+                        </small>
+                    </span>
+
+                </label>
+
+            </div>
+
+        </div>
+    }
+
+
+    <!-- =========================
+         操作按鈕
+    ========================== -->
+
+    <div class="question-actions">
+
+        @if (currentQuestion() > 1) {
+
+            <button
+                type="button"
+                class="prev-btn"
+                (click)="previousQuestion()"
+            >
+                ← 上一題
+            </button>
+
+        }
+
+
+        @if (currentQuestion() < 4) {
+
+            <button
+                type="button"
+                class="next-btn"
+                (click)="nextQuestion()"
+            >
+                下一題 →
+            </button>
+
+        } @else {
+
+            <button
+                type="button"
+                class="next-btn"
+                (click)="submitTest()"
+            >
+                查看我的肌膚分析
+            </button>
+
+        }
+
+    </div>
+
+</section>
