@@ -68,8 +68,9 @@ export class OrderService {
       }
     );
   }
-  cancelOrder(orderId: number, reason: string) {
 
+  // 取消訂單
+  cancelOrder(orderId: number, reason: string) {
     return this.http.put(
       `${this.apiUrl}/${orderId}/status`,
       {
@@ -80,6 +81,5 @@ export class OrderService {
         withCredentials: true
       }
     );
-
   }
 }
