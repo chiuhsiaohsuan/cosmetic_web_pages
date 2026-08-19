@@ -156,113 +156,193 @@ router.get(
 );
 
 // 更新訂單狀態
-router.put(
-  "/:id/status",
-  verifyToken,
-  verifyAdmin,
-  (req, res) => {
+router.put("/:id/status", verifyToken, verifyAdmin, (req, res) => {
     const orderId = req.params.id;
     const { order_status, payment_status } = req.body;
 
     if (!order_status && !payment_status) {
-      return res.status(400).json({
-        message: "需要 order_status 或 payment_status"
-      });
+        return res.status(400).json({
+            message: "需要 order_status 或 payment_status"
+        });
     }
 
     const fields = [];
     const values = [];
 
     if (order_status) {
-      fields.push("order_status = ?");
-      values.push(order_status);
+        fields.push("order_status = ?");
+        values.push(order_status);
     }
+
     if (payment_status) {
-      fields.push("payment_status = ?");
-      values.push(payment_status);
+        fields.push("payment_status = ?");
+        values.push(payment_status);
     }
-    if (payment_status === '已付款') {
-      fields.push("paid_at = NOW()");
+
+    // 付款完成時間
+    if (payment_status === "已付款") {
+        fields.push("paid_at = NOW()");
+    }
+
+    // 出貨時間
+    if (order_status === "已出貨") {
+        fields.push("shipped_at = NOW()");
+    }
+
+    // 完成時間
+    if (order_status === "已完成") {
+        fields.push("completed_at = NOW()");
     }
 
     const sql = `
-      UPDATE orders
-      SET ${fields.join(", ")}
-      WHERE id = ?
+        UPDATE orders
+        SET ${fields.join(", ")}
+        WHERE id = ?
     `;
 
     values.push(orderId);
 
     const completeUpdate = () => {
-      res.json({
-        message: "訂單狀態已更新"
-      });
+        return res.json({
+            message: "訂單狀態已更新"
+        });
     };
 
-    if (payment_status === '已付款') {
-      db.beginTransaction((err) => {
-        if (err) {
-          console.error("Transaction 開始失敗", err);
-          return res.status(500).json({
-            message: "更新訂單失敗"
-          });
-        }
+    if (payment_status === "已付款") {
 
-        db.query(sql, values, (err, result) => {
-          if (err) {
-            return db.rollback(() => {
-              console.error("更新訂單狀態失敗", err);
-              res.status(500).json({
-                message: "更新訂單失敗"
-              });
-            });
-          }
+        db.getConnection((err, connection) => {
 
-          const paymentSql = `
-            UPDATE payments
-            SET status = '已確認', confirmed_at = NOW()
-            WHERE order_id = ? AND status != '已確認'
-          `;
-
-          db.query(paymentSql, [orderId], (err) => {
             if (err) {
-              return db.rollback(() => {
-                console.error("更新付款狀態失敗", err);
-                res.status(500).json({
-                  message: "更新付款失敗"
+                console.error("取得資料庫連線失敗:", err);
+
+                return res.status(500).json({
+                    message: "更新訂單失敗"
                 });
-              });
             }
 
-            db.commit((err) => {
-              if (err) {
-                return db.rollback(() => {
-                  console.error("Transaction commit 失敗", err);
-                  res.status(500).json({
-                    message: "更新訂單失敗"
-                  });
+            connection.beginTransaction((err) => {
+
+                if (err) {
+                    connection.release();
+
+                    console.error("Transaction 開始失敗:", err);
+
+                    return res.status(500).json({
+                        message: "更新訂單失敗"
+                    });
+                }
+
+                // ========================================
+                // 1. 更新 orders
+                // ========================================
+                connection.query(sql, values, (err, result) => {
+
+                    if (err) {
+
+                        return connection.rollback(() => {
+
+                            connection.release();
+
+                            console.error("更新訂單狀態失敗:", err);
+
+                            return res.status(500).json({
+                                message: "更新訂單失敗"
+                            });
+                        });
+                    }
+
+                    // ========================================
+                    // 2. 更新 payments
+                    // ========================================
+                    const paymentSql = `
+                        UPDATE payments
+                        SET
+                            status = '已確認',
+                            confirmed_at = NOW()
+                        WHERE order_id = ?
+                        AND status != '已確認'
+                    `;
+
+                    connection.query(
+                        paymentSql,
+                        [orderId],
+                        (err, paymentResult) => {
+
+                            if (err) {
+
+                                return connection.rollback(() => {
+
+                                    connection.release();
+
+                                    console.error(
+                                        "更新付款狀態失敗:",
+                                        err
+                                    );
+
+                                    return res.status(500).json({
+                                        message: "更新付款失敗"
+                                    });
+                                });
+                            }
+
+                            // ========================================
+                            // 3. Commit
+                            // ========================================
+                            connection.commit((err) => {
+
+                                if (err) {
+
+                                    return connection.rollback(() => {
+
+                                        connection.release();
+
+                                        console.error(
+                                            "Transaction commit 失敗:",
+                                            err
+                                        );
+
+                                        return res.status(500).json({
+                                            message: "更新訂單失敗"
+                                        });
+                                    });
+                                }
+
+                                // ========================================
+                                // 4. 釋放 connection
+                                // ========================================
+                                connection.release();
+
+                                completeUpdate();
+                            });
+                        }
+                    );
                 });
-              }
-
-              completeUpdate();
             });
-          });
         });
-      });
-    } else {
-      db.query(sql, values, (err, result) => {
-        if (err) {
-          console.error("更新訂單狀態失敗", err);
-          return res.status(500).json({
-            message: "更新訂單失敗"
-          });
-        }
 
-        completeUpdate();
-      });
     }
-  }
-);
+
+    // ========================================
+    // 一般狀態更新
+    // 不需要 transaction
+    // ========================================
+    else {
+
+        db.query(sql, values, (err, result) => {
+
+            if (err) {
+
+                console.error("更新訂單狀態失敗:", err);
+
+                return res.status(500).json({
+                    message: "更新訂單失敗"
+                });
+            }
+
+            completeUpdate();
+        });
+    }
+});
 
 router.post(
   '/',

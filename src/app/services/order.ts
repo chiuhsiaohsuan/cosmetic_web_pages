@@ -7,7 +7,6 @@ export interface OrderItem {
   product_name: string;
   quantity: number;
   price: number;
-  submitted_at: string | null;
   subtotal: number;
 }
 
@@ -28,6 +27,12 @@ export interface Order {
 
   created_at: string;
   paid_at: string | null;
+
+  shipped_at: string | null;
+  completed_at: string | null;
+
+  cancel_reason: string | null;
+  cancelled_at: string | null;
 
   items: OrderItem[];
 }
@@ -62,5 +67,19 @@ export class OrderService {
         withCredentials: true
       }
     );
+  }
+  cancelOrder(orderId: number, reason: string) {
+
+    return this.http.put(
+      `${this.apiUrl}/${orderId}/status`,
+      {
+        order_status: '已取消',
+        cancel_reason: reason
+      },
+      {
+        withCredentials: true
+      }
+    );
+
   }
 }

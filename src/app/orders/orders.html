@@ -40,29 +40,58 @@
 
     <div class="order-card">
 
-      <!-- 訂單標題 -->
       <div class="order-header">
-        <div>
+
+        <div class="order-info">
           <h2>訂單 #{{ order.id }}</h2>
-          <p class="date">{{ order.created_at | date:'yyyy/MM/dd HH:mm' }}</p>
+          <p class="date">
+            {{ order.created_at | date:'yyyy/MM/dd HH:mm' }}
+          </p>
         </div>
 
-        <div class="status-area">
-          <span class="order-status status-link" (click)="openStatusModal(order)">
-            查看訂單狀態
-          </span>
+        <div class="order-actions">
 
-          @if (order.payment_status === '未付款') {
-            <a class="payment-status unpaid" [routerLink]="['/payment', order.id]">
-              付款狀態：未付款(點我去付款)
-            </a>
-          } @else {
-            <span class="payment-status">付款狀態：{{ order.payment_status }}</span>
+          <div class="status-area">
+
+            <span
+              class="order-status status-link"
+              (click)="openStatusModal(order)"
+            >
+              查看訂單狀態
+            </span>
+
+            @if (order.payment_status === '未付款') {
+
+              <a
+                class="payment-status unpaid"
+                [routerLink]="['/payment', order.id]"
+              >
+                付款狀態：未付款(點我去付款)
+              </a>
+
+            } @else {
+
+              <span class="payment-status">
+                付款狀態：{{ order.payment_status }}
+              </span>
+
+            }
+
+          </div>
+
+          @if (order.order_status === '已出貨') {
+
+            <button
+              class="complete-order-btn"
+              (click)="completeOrder(order)"
+            >
+              確認收貨
+            </button>
+
           }
+
         </div>
-        @if (order.order_status === '已出貨') {
-          <button class="complete-order-btn" (click)="completeOrder(order)">確認收貨</button>
-        }
+
       </div>
 
       <!-- 收件資訊 -->
@@ -87,10 +116,30 @@
         }
       </div>
 
-      <!-- 總金額 -->
       <div class="order-footer">
-        <span>訂單金額</span>
-        <strong>${{ order.total_amount }}</strong>
+
+        @if (order.order_status === '待付款' || order.order_status === '已成立') {
+
+          <button
+            class="cancel-order-btn"
+            (click)="openCancelModal(order)"
+          >
+            取消訂單
+          </button>
+
+        }
+
+        @if (order.order_status === '已取消') {
+          <span class="cancelled-text">
+            訂單已取消
+          </span>
+        }
+
+        <div class="total-price">
+          <span>訂單金額</span>
+          <strong>${{ order.total_amount }}</strong>
+        </div>
+
       </div>
     </div>
   }
@@ -133,5 +182,111 @@
         </div>
       </div>
     </div>
+  }
+  @if (showCancelModal()) {
+
+    <div
+      class="modal-backdrop"
+      (click)="closeCancelModal()"
+    ></div>
+
+
+    <div class="cancel-modal">
+
+      <div class="modal-header">
+
+        <h2>
+          取消訂單 #{{ selectedCancelOrder()?.id }}
+        </h2>
+
+        <button
+          class="close-btn"
+          (click)="closeCancelModal()"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <div class="modal-body">
+
+        <p class="cancel-message">
+          確定要取消這筆訂單嗎？
+        </p>
+
+
+        <label class="cancel-label">
+          請選擇取消原因
+        </label>
+
+
+        <select
+          class="cancel-select"
+          [(ngModel)]="cancelReason"
+        >
+
+          <option value="">
+            請選擇原因
+          </option>
+
+          <option value="不想要了">
+            不想要了
+          </option>
+
+          <option value="買錯商品">
+            買錯商品
+          </option>
+
+          <option value="找到更便宜的商品">
+            找到更便宜的商品
+          </option>
+
+          <option value="等待時間太久">
+            等待時間太久
+          </option>
+
+          <option value="其他">
+            其他
+          </option>
+
+        </select>
+
+
+        @if (cancelReason === '其他') {
+
+          <textarea
+            class="cancel-textarea"
+            [(ngModel)]="otherReason"
+            placeholder="請輸入取消原因"
+          ></textarea>
+
+        }
+
+
+        <div class="cancel-actions">
+
+          <button
+            class="cancel-back-btn"
+            (click)="closeCancelModal()"
+          >
+            返回
+          </button>
+
+
+          <button
+            class="cancel-confirm-btn"
+            [disabled]="!cancelReason"
+            (click)="confirmCancel()"
+          >
+            確定取消
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
   }
 </div>
