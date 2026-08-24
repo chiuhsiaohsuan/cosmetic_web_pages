@@ -157,8 +157,15 @@ router.get(
 
 // 更新訂單狀態
 router.put("/:id/status", verifyToken, verifyAdmin, (req, res) => {
+
     const orderId = req.params.id;
-    const { order_status, payment_status } = req.body;
+
+    const {
+        order_status,
+        payment_status,
+        cancel_reason
+    } = req.body;
+
 
     if (!order_status && !payment_status) {
         return res.status(400).json({
@@ -166,34 +173,60 @@ router.put("/:id/status", verifyToken, verifyAdmin, (req, res) => {
         });
     }
 
+    if (order_status === "已取消") {
+
+        if (!cancel_reason || !cancel_reason.trim()) {
+            return res.status(400).json({
+                message: "取消訂單時必須提供取消原因"
+            });
+        }
+
+    }
+
+
     const fields = [];
     const values = [];
 
     if (order_status) {
+
         fields.push("order_status = ?");
         values.push(order_status);
+
     }
 
     if (payment_status) {
+
         fields.push("payment_status = ?");
         values.push(payment_status);
+
     }
 
-    // 付款完成時間
     if (payment_status === "已付款") {
+
         fields.push("paid_at = NOW()");
+
     }
 
-    // 出貨時間
     if (order_status === "已出貨") {
+
         fields.push("shipped_at = NOW()");
+
     }
 
-    // 完成時間
     if (order_status === "已完成") {
+
         fields.push("completed_at = NOW()");
+
     }
 
+    if (order_status === "已取消") {
+
+        fields.push("cancel_reason = ?");
+        values.push(cancel_reason.trim());
+
+        fields.push("cancelled_at = NOW()");
+
+    }
     const sql = `
         UPDATE orders
         SET ${fields.join(", ")}
@@ -202,10 +235,13 @@ router.put("/:id/status", verifyToken, verifyAdmin, (req, res) => {
 
     values.push(orderId);
 
+
     const completeUpdate = () => {
+
         return res.json({
             message: "訂單狀態已更新"
         });
+
     };
 
     if (payment_status === "已付款") {
@@ -213,82 +249,84 @@ router.put("/:id/status", verifyToken, verifyAdmin, (req, res) => {
         db.getConnection((err, connection) => {
 
             if (err) {
-                console.error("取得資料庫連線失敗:", err);
+
+                console.error(
+                    "取得資料庫連線失敗:",
+                    err
+                );
 
                 return res.status(500).json({
                     message: "更新訂單失敗"
                 });
+
             }
+
 
             connection.beginTransaction((err) => {
 
                 if (err) {
+
                     connection.release();
 
-                    console.error("Transaction 開始失敗:", err);
+                    console.error(
+                        "Transaction 開始失敗:",
+                        err
+                    );
 
                     return res.status(500).json({
                         message: "更新訂單失敗"
                     });
+
                 }
+
 
                 // ========================================
                 // 1. 更新 orders
                 // ========================================
-                connection.query(sql, values, (err, result) => {
 
-                    if (err) {
+                connection.query(
+                    sql,
+                    values,
+                    (err, result) => {
 
-                        return connection.rollback(() => {
+                        if (err) {
 
-                            connection.release();
+                            return connection.rollback(() => {
 
-                            console.error("更新訂單狀態失敗:", err);
+                                connection.release();
 
-                            return res.status(500).json({
-                                message: "更新訂單失敗"
-                            });
-                        });
-                    }
+                                console.error(
+                                    "更新訂單狀態失敗:",
+                                    err
+                                );
 
-                    // ========================================
-                    // 2. 更新 payments
-                    // ========================================
-                    const paymentSql = `
-                        UPDATE payments
-                        SET
-                            status = '已確認',
-                            confirmed_at = NOW()
-                        WHERE order_id = ?
-                        AND status != '已確認'
-                    `;
-
-                    connection.query(
-                        paymentSql,
-                        [orderId],
-                        (err, paymentResult) => {
-
-                            if (err) {
-
-                                return connection.rollback(() => {
-
-                                    connection.release();
-
-                                    console.error(
-                                        "更新付款狀態失敗:",
-                                        err
-                                    );
-
-                                    return res.status(500).json({
-                                        message: "更新付款失敗"
-                                    });
+                                return res.status(500).json({
+                                    message: "更新訂單失敗"
                                 });
-                            }
 
-                            // ========================================
-                            // 3. Commit
-                            // ========================================
-                            connection.commit((err) => {
+                            });
+
+                        }
+
+
+                        // ========================================
+                        // 2. 更新 payments
+                        // ========================================
+
+                        const paymentSql = `
+                            UPDATE payments
+                            SET
+                                status = '已確認',
+                                confirmed_at = NOW()
+                            WHERE order_id = ?
+                            AND status != '已確認'
+                        `;
+
+
+                        connection.query(
+                            paymentSql,
+                            [orderId],
+                            (err, paymentResult) => {
 
                                 if (err) {
 
@@ -297,174 +335,408 @@ router.put("/:id/status", verifyToken, verifyAdmin, (req, res) => {
                                         connection.release();
 
                                         console.error(
-                                            "Transaction commit 失敗:",
+                                            "更新付款狀態失敗:",
                                             err
                                         );
 
                                         return res.status(500).json({
-                                            message: "更新訂單失敗"
+                                            message: "更新付款失敗"
                                         });
+
                                     });
+
                                 }
 
-                                // ========================================
-                                // 4. 釋放 connection
-                                // ========================================
-                                connection.release();
 
-                                completeUpdate();
-                            });
-                        }
-                    );
-                });
+                                // ========================================
+                                // 3. Commit
+                                // ========================================
+
+                                connection.commit((err) => {
+
+                                    if (err) {
+
+                                        return connection.rollback(() => {
+
+                                            connection.release();
+
+                                            console.error(
+                                                "Transaction commit 失敗:",
+                                                err
+                                            );
+
+                                            return res.status(500).json({
+                                                message: "更新訂單失敗"
+                                            });
+
+                                        });
+
+                                    }
+
+
+                                    // ========================================
+                                    // 4. 釋放 connection
+                                    // ========================================
+
+                                    connection.release();
+
+                                    completeUpdate();
+
+                                });
+
+                            }
+                        );
+
+                    }
+                );
+
             });
+
         });
 
     }
 
-    // ========================================
-    // 一般狀態更新
-    // 不需要 transaction
-    // ========================================
     else {
 
-        db.query(sql, values, (err, result) => {
+        db.query(
+            sql,
+            values,
+            (err, result) => {
 
-            if (err) {
+                if (err) {
 
-                console.error("更新訂單狀態失敗:", err);
+                    console.error(
+                        "更新訂單狀態失敗:",
+                        err
+                    );
 
-                return res.status(500).json({
-                    message: "更新訂單失敗"
-                });
+                    return res.status(500).json({
+                        message: "更新訂單失敗"
+                    });
+
+                }
+
+                completeUpdate();
+
             }
+        );
 
-            completeUpdate();
-        });
     }
+
 });
 
-router.post(
-  '/',
-  verifyToken,
-  verifyAdmin,
-  (req, res) => {
-    const { user_id, receiver_name, receiver_phone, receiver_email, receiver_address, items } = req.body;
+router.post("/", verifyToken, verifyAdmin, (req, res) => {
+
+    const {
+        user_id,
+        receiver_name,
+        receiver_phone,
+        receiver_email,
+        receiver_address,
+        items
+    } = req.body;
 
     if (!receiver_name || !receiver_phone || !receiver_address) {
-      return res.status(400).json({ message: '缺少收件人資料' });
+        return res.status(400).json({
+            message: "缺少收件人資料"
+        });
     }
 
     if (!items || !Array.isArray(items) || items.length === 0) {
-      return res.status(400).json({ message: '缺少商品資料' });
+        return res.status(400).json({
+            message: "缺少商品資料"
+        });
     }
 
-    db.beginTransaction((err) => {
-      if (err) {
-        console.error('Transaction 開始失敗', err);
-        return res.status(500).json({ message: '建立訂單失敗' });
-      }
+    db.getConnection((err, connection) => {
 
-      const productIds = items.map((it) => it.product_id);
-      const placeholders = productIds.map(() => '?').join(',');
-
-      const sql = `SELECT id, price, stock, name FROM products WHERE id IN (${placeholders})`;
-
-      db.query(sql, productIds, (err, products) => {
         if (err) {
-          console.error('查詢商品失敗', err);
-          return db.rollback(() => res.status(500).json({ message: '查詢商品失敗' }));
+            console.error("取得資料庫連線失敗", err);
+
+            return res.status(500).json({
+                message: "建立訂單失敗"
+            });
         }
 
-        // Map products by id
-        const prodMap = new Map();
-        products.forEach((p) => prodMap.set(p.id, p));
+        connection.beginTransaction((err) => {
 
-        // 檢查庫存並計算總金額
-        let totalAmount = 0;
-        for (const it of items) {
-          const p = prodMap.get(it.product_id);
-          if (!p) {
-            return db.rollback(() => res.status(400).json({ message: `商品 ${it.product_id} 不存在` }));
-          }
-          if (it.quantity > p.stock) {
-            return db.rollback(() => res.status(400).json({ message: `${p.name} 庫存不足` }));
-          }
-          totalAmount += p.price * it.quantity;
-        }
-
-        const insertOrderSql = `
-          INSERT INTO orders
-              (user_id, receiver_name, receiver_phone, receiver_email, receiver_address, total_amount, order_status, payment_status)
-            VALUES (?, ?, ?, ?, ?, ?, '待付款', '未付款')
-        `;
-
-        const userIdVal = user_id ? user_id : null;
-
-        db.query(
-          insertOrderSql,
-          [userIdVal, receiver_name, receiver_phone, receiver_email, receiver_address, totalAmount],
-          (err, orderResult) => {
             if (err) {
-              console.error('建立 orders 失敗', err);
-              return db.rollback(() => res.status(500).json({ message: '建立訂單失敗' }));
+                connection.release();
+
+                console.error("Transaction 開始失敗", err);
+
+                return res.status(500).json({
+                    message: "建立訂單失敗"
+                });
             }
 
-            const orderId = orderResult.insertId;
+            const productIds = items.map(it => it.product_id);
 
-            const insertItem = (index) => {
-              if (index >= items.length) {
-                // update stock
-                const updateStock = (i) => {
-                  if (i >= items.length) {
-                    // delete nothing; commit
-                    db.commit((err) => {
-                      if (err) {
-                        return db.rollback(() => res.status(500).json({ message: '建立訂單失敗' }));
-                      }
+            const placeholders = productIds
+                .map(() => "?")
+                .join(",");
 
-                      return res.status(201).json({ message: '訂單建立成功', order_id: orderId, total_amount: totalAmount });
-                    });
-                    return;
-                  }
+            const sql = `
+                SELECT id, price, stock, name
+                FROM products
+                WHERE id IN (${placeholders})
+            `;
 
-                  const it = items[i];
-                  const stockSql = `UPDATE products SET stock = stock - ? WHERE id = ?`;
-                  db.query(stockSql, [it.quantity, it.product_id], (err) => {
+            connection.query(
+                sql,
+                productIds,
+                (err, products) => {
+
                     if (err) {
-                      console.error('扣庫存失敗', err);
-                      return db.rollback(() => res.status(500).json({ message: '扣庫存失敗' }));
+
+                        console.error("查詢商品失敗", err);
+
+                        return connection.rollback(() => {
+                            connection.release();
+
+                            res.status(500).json({
+                                message: "查詢商品失敗"
+                            });
+                        });
                     }
-                    updateStock(i + 1);
-                  });
-                };
 
-                updateStock(0);
-                return;
-              }
+                    const prodMap = new Map();
 
-              const it = items[index];
-              const itemSql = `
-                INSERT INTO order_items (order_id, product_id, quantity, price)
-                VALUES (?, ?, ?, ?)
-              `;
+                    products.forEach(product => {
+                        prodMap.set(product.id, product);
+                    });
 
-              const product = prodMap.get(it.product_id);
+                    let totalAmount = 0;
 
-              db.query(itemSql, [orderId, it.product_id, it.quantity, product.price], (err) => {
-                if (err) {
-                  console.error('建立 order_items 失敗', err);
-                  return db.rollback(() => res.status(500).json({ message: '建立訂單商品失敗' }));
+                    for (const it of items) {
+
+                        const product = prodMap.get(it.product_id);
+
+                        if (!product) {
+
+                            return connection.rollback(() => {
+                                connection.release();
+
+                                res.status(400).json({
+                                    message: `商品 ${it.product_id} 不存在`
+                                });
+                            });
+                        }
+
+                        if (it.quantity <= 0) {
+
+                            return connection.rollback(() => {
+                                connection.release();
+
+                                res.status(400).json({
+                                    message: `${product.name} 商品數量不正確`
+                                });
+                            });
+                        }
+
+                        if (it.quantity > product.stock) {
+
+                            return connection.rollback(() => {
+                                connection.release();
+
+                                res.status(400).json({
+                                    message: `${product.name} 庫存不足`
+                                });
+                            });
+                        }
+
+                        totalAmount += product.price * it.quantity;
+                    }
+
+                    const insertOrderSql = `
+                        INSERT INTO orders (
+                            user_id,
+                            receiver_name,
+                            receiver_phone,
+                            receiver_email,
+                            receiver_address,
+                            total_amount,
+                            order_status,
+                            payment_status
+                        )
+                        VALUES (
+                            ?, ?, ?, ?, ?, ?,
+                            '待付款',
+                            '未付款'
+                        )
+                    `;
+
+                    const userIdVal = user_id ? user_id : null;
+
+                    connection.query(
+                        insertOrderSql,
+                        [
+                            userIdVal,
+                            receiver_name,
+                            receiver_phone,
+                            receiver_email,
+                            receiver_address,
+                            totalAmount
+                        ],
+                        (err, orderResult) => {
+
+                            if (err) {
+
+                                console.error(
+                                    "建立 orders 失敗",
+                                    err
+                                );
+
+                                return connection.rollback(() => {
+                                    connection.release();
+
+                                    res.status(500).json({
+                                        message: "建立訂單失敗"
+                                    });
+                                });
+                            }
+
+                            const orderId = orderResult.insertId;
+
+                            // 建立訂單商品
+                            const insertItem = (index) => {
+
+                                if (index >= items.length) {
+
+                                    // 所有 order_items 建立完成
+                                    // 開始扣庫存
+                                    updateStock(0);
+
+                                    return;
+                                }
+
+                                const it = items[index];
+
+                                const product =
+                                    prodMap.get(it.product_id);
+
+                                const itemSql = `
+                                    INSERT INTO order_items (
+                                        order_id,
+                                        product_id,
+                                        quantity,
+                                        price
+                                    )
+                                    VALUES (?, ?, ?, ?)
+                                `;
+
+                                connection.query(
+                                    itemSql,
+                                    [
+                                        orderId,
+                                        it.product_id,
+                                        it.quantity,
+                                        product.price
+                                    ],
+                                    (err) => {
+
+                                        if (err) {
+
+                                            console.error(
+                                                "建立 order_items 失敗",
+                                                err
+                                            );
+
+                                            return connection.rollback(() => {
+                                                connection.release();
+
+                                                res.status(500).json({
+                                                    message:
+                                                        "建立訂單商品失敗"
+                                                });
+                                            });
+                                        }
+
+                                        insertItem(index + 1);
+                                    }
+                                );
+                            };
+
+                            // 扣庫存
+                            const updateStock = (index) => {
+
+                                if (index >= items.length) {
+
+                                    connection.commit((err) => {
+
+                                        if (err) {
+
+                                            console.error(
+                                                "Transaction commit 失敗",
+                                                err
+                                            );
+
+                                            return connection.rollback(() => {
+                                                connection.release();
+
+                                                res.status(500).json({
+                                                    message:
+                                                        "建立訂單失敗"
+                                                });
+                                            });
+                                        }
+
+                                        connection.release();
+
+                                        return res.status(201).json({
+                                            message: "訂單建立成功",
+                                            order_id: orderId,
+                                            total_amount: totalAmount
+                                        });
+                                    });
+
+                                    return;
+                                }
+
+                                const it = items[index];
+
+                                const stockSql = `
+                                    UPDATE products
+                                    SET stock = stock - ?
+                                    WHERE id = ?
+                                    AND stock >= ?
+                                `;
+
+                              connection.query(
+                                  stockSql,
+                                  [
+                                      it.quantity,
+                                      it.product_id,
+                                      it.quantity
+                                  ],
+                                  (err, result) => {
+
+                                      if (err) {
+                                          // rollback
+                                      }
+
+                                      if (result.affectedRows === 0) {
+                                          // 庫存不足
+                                          return connection.rollback(() => {
+                                              connection.release();
+
+                                              res.status(400).json({
+                                                  message: "商品庫存不足"
+                                              });
+                                          });
+                                      }
+
+                                      updateStock(index + 1);
+                                  }
+                              );
+                            };
+
+                            insertItem(0);
+                        }
+                    );
                 }
-                insertItem(index + 1);
-              });
-            };
-
-            insertItem(0);
-          }
-        );
-      });
+            );
+        });
     });
-  }
-);
+});
 module.exports = router;

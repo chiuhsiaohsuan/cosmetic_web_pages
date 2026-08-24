@@ -63,19 +63,6 @@ button:disabled {
   cursor: not-allowed;
 }
 
-button:first-child {
-  background: #3498db;
-  color: white;
-}
-
-button:first-child:hover:not(:disabled) {
-  background: #4aa7e8;
-}
-
-button:last-child {
-  color: black;
-}
-
 .action-cell {
   display: flex;
   flex-direction: column;
@@ -262,4 +249,149 @@ button:last-child {
 
 .items-table td {
   background: #fff;
+}
+
+.cancel-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: min(90vw, 480px);
+  background: #fff;
+
+  border-radius: 18px;
+
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.2);
+
+  z-index: 1000;
+
+  padding: 24px;
+}
+
+.cancel-modal .modal-header {
+  margin-bottom: 20px;
+}
+
+.cancel-modal .modal-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #222;
+}
+
+.cancel-order-info {
+  padding: 14px 16px;
+  margin-bottom: 20px;
+
+  background: #f7f7f7;
+
+  border-radius: 10px;
+}
+
+.cancel-order-info p {
+  margin: 6px 0;
+
+  color: #555;
+  font-size: 14px;
+}
+
+.cancel-order-info strong {
+  color: #222;
+}
+
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-group textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 12px;
+
+  border: 1px solid #ddd;
+  border-radius: 10px;
+
+  font-family: inherit;
+  font-size: 14px;
+
+  resize: vertical;
+
+  min-height: 110px;
+
+  outline: none;
+
+  transition: border-color 0.2s ease,
+              box-shadow 0.2s ease;
+}
+
+.form-group textarea:focus {
+  border-color: #3498db;
+
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.12);
+}
+
+.form-group textarea::placeholder {
+  color: #aaa;
+}
+
+.error-message {
+  margin: 0;
+
+  color: #c0392b;
+
+  font-size: 13px;
+}
+.modal-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 24px;
+}
+
+.modal-actions button {
+  border: none;
+
+  padding: 9px 18px;
+
+  border-radius: 8px;
+
+  font-size: 14px;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease,
+              opacity 0.2s ease;
+}
+
+.modal-actions .cancel-btn {
+  background: #eee;
+
+  color: #333;
+}
+
+.modal-actions .cancel-btn:hover {
+  background: #ddd;
+}
+
+.modal-actions .confirm-cancel-btn {
+  background: #d9534f;
+
+  color: white;
+}
+
+.modal-actions .confirm-cancel-btn:hover {
+  background: #c9302c;
 }

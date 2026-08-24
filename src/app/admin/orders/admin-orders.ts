@@ -1,7 +1,7 @@
 import { Component, signal, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
-import { AdminOrderService } from '../../services/admin-order';
+import { AdminOrderService, OrderStatus } from '../../services/admin-order';
 import { Order } from '../../services/order';
 
 @Component({
@@ -23,6 +23,10 @@ export class AdminOrders {
   detailLoading = signal(false);
   detailError = signal('');
   showDetailModal = signal(false);
+  showCancelModal = signal(false);
+  selectedCancelOrder = signal<Order | null>(null);
+  cancelReason = signal('');
+  cancelReasonError = signal('');
 
   ngOnInit() {
     this.loadOrders();
@@ -60,7 +64,7 @@ export class AdminOrders {
     }
   }
 
-  updateStatus(order: Order, status: string) {
+  updateStatus(order: Order, status: OrderStatus) {
     if (order.order_status === status) {
       return;
     }
@@ -69,7 +73,9 @@ export class AdminOrders {
       next: () => {
         this.orders.update((orders) =>
           orders.map((item) =>
-            item.id === order.id ? { ...item, order_status: status } : item
+            item.id === order.id
+              ? { ...item, order_status: status }
+              : item
           )
         );
       }
@@ -91,7 +97,68 @@ export class AdminOrders {
       }
     });
   }
+  openCancelModal(order: Order) {
 
+    this.selectedCancelOrder.set(order);
+
+    this.cancelReason.set('');
+
+    this.cancelReasonError.set('');
+
+    this.showCancelModal.set(true);
+  }
+  closeCancelModal() {
+
+    this.showCancelModal.set(false);
+
+    this.selectedCancelOrder.set(null);
+
+    this.cancelReason.set('');
+
+    this.cancelReasonError.set('');
+  }
+  confirmCancelOrder() {
+
+    const order = this.selectedCancelOrder();
+    const reason = this.cancelReason().trim();
+
+    if (!order) {
+      return;
+    }
+
+    if (!reason) {
+
+      this.cancelReasonError.set(
+        '請輸入取消原因'
+      );
+
+      return;
+    }
+
+    this.orderService
+      .updateStatus(
+        order.id,
+        '已取消',
+        reason
+      )
+      .subscribe({
+
+        next: () => {
+
+          this.closeCancelModal();
+
+          this.loadOrders();
+
+        },
+
+        error: (err) => {
+
+          console.error('取消訂單失敗', err);
+
+        }
+
+      });
+  }
   showOrderDetail(order: Order) {
     this.selectedOrder.set(null);
     this.detailError.set('');

@@ -72,7 +72,7 @@
                   </button>
 
                   <button
-                    (click)="updateStatus(order, '已取消')"
+                    (click)="openCancelModal(order)"
                     [disabled]="order.order_status === '已取消'"
                   >
                     已取消
@@ -131,7 +131,6 @@
       </button>
     </div>
   }
-
   <!-- 訂單詳細資料 Modal -->
   @if (showDetailModal()) {
 
@@ -311,6 +310,100 @@
           }
         }
       }
+
+    </div>
+  }
+  @if (showCancelModal()) {
+
+    <div
+      class="modal-backdrop"
+      (click)="closeCancelModal()"
+    ></div>
+
+    <div class="cancel-modal">
+
+      <div class="modal-header">
+
+        <h2>取消訂單</h2>
+
+        <button
+          class="close-btn"
+          type="button"
+          (click)="closeCancelModal()"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <div class="modal-body">
+
+        <div class="cancel-order-info">
+
+          <p>
+            訂單編號：
+            <strong>
+              #{{ selectedCancelOrder()?.id }}
+            </strong>
+          </p>
+
+          <p>
+            目前狀態：
+            <strong>
+              {{ selectedCancelOrder()?.order_status }}
+            </strong>
+          </p>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="cancelReason">
+            取消原因
+          </label>
+
+          <textarea
+            id="cancelReason"
+            [value]="cancelReason()"
+            (input)="cancelReason.set($any($event.target).value)"
+            placeholder="請輸入取消原因..."
+            rows="4"
+          ></textarea>
+
+          @if (cancelReasonError()) {
+
+            <p class="error-message">
+              {{ cancelReasonError() }}
+            </p>
+
+          }
+
+        </div>
+
+
+        <div class="modal-actions">
+
+          <button
+            type="button"
+            class="cancel-btn"
+            (click)="closeCancelModal()"
+          >
+            返回
+          </button>
+
+          <button
+            type="button"
+            class="confirm-cancel-btn"
+            (click)="confirmCancelOrder()"
+          >
+            確認取消
+          </button>
+
+        </div>
+
+      </div>
 
     </div>
   }

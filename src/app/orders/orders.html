@@ -36,7 +36,7 @@
   }
 
 
-  @for (order of orders(); track order.id) {
+  @for (order of activeOrders(); track order.id) {
 
     <div class="order-card">
 
@@ -85,7 +85,7 @@
               class="complete-order-btn"
               (click)="completeOrder(order)"
             >
-              確認收貨
+              訂單完成
             </button>
 
           }
@@ -105,15 +105,50 @@
 
       <!-- 商品 -->
       <div class="items">
-        <h3>商品明細</h3>
-        @for (item of order.items; track item.product_id) {
-          <div class="item">
-            <div class="item-name">{{ item.product_name }}</div>
-            <div class="item-quantity">x {{ item.quantity }}</div>
-            <div class="item-price">${{ item.price }}</div>
-            <div class="item-subtotal">${{ item.subtotal }}</div>
+
+        <div
+          class="items-header"
+          (click)="toggleItems(order.id)"
+        >
+          <h3>商品明細</h3>
+
+          <span class="items-toggle">
+            {{ isItemsExpanded(order.id) ? '收合 ▲' : '查看商品 ▼' }}
+          </span>
+        </div>
+
+        @if (isItemsExpanded(order.id)) {
+
+          <div class="items-list">
+
+            @for (item of order.items; track item.product_id) {
+
+              <div class="item">
+
+                <div class="item-name">
+                  {{ item.product_name }}
+                </div>
+
+                <div class="item-quantity">
+                  x {{ item.quantity }}
+                </div>
+
+                <div class="item-price">
+                  ${{ item.price }}
+                </div>
+
+                <div class="item-subtotal">
+                  ${{ item.subtotal }}
+                </div>
+
+              </div>
+
+            }
+
           </div>
+
         }
+
       </div>
 
       <div class="order-footer">
@@ -143,7 +178,173 @@
       </div>
     </div>
   }
+    @if (historyOrders().length > 0) {
 
+    <div class="history-section">
+
+      <div class="history-header">
+
+        <div>
+          <h2>歷史訂單</h2>
+
+          <p>
+            已完成 {{ completedOrders().length }} 筆
+            ・
+            已取消 {{ cancelledOrders().length }} 筆
+          </p>
+        </div>
+
+        <button
+          class="history-toggle-btn"
+          (click)="showHistory.set(!showHistory())"
+        >
+          {{ showHistory() ? '收合歷史訂單 ▲' : '查看歷史訂單 ▼' }}
+        </button>
+
+      </div>
+
+
+      @if (showHistory()) {
+
+        @for (order of historyOrders(); track order.id) {
+
+          <div class="order-card history-order-card">
+
+            <div class="order-header">
+
+              <div class="order-info">
+
+                <h2>
+                  訂單 #{{ order.id }}
+
+                  @if (order.order_status === '已完成') {
+
+                    <span class="history-status completed">
+                      已完成
+                    </span>
+
+                  } @else {
+
+                    <span class="history-status cancelled">
+                      已取消
+                    </span>
+
+                  }
+
+                </h2>
+
+                <p class="date">
+                  {{ order.created_at | date:'yyyy/MM/dd HH:mm' }}
+                </p>
+
+              </div>
+
+
+              <div class="order-actions">
+
+                <div class="status-area">
+
+                  <span
+                    class="order-status status-link"
+                    (click)="openStatusModal(order)"
+                  >
+                    查看訂單狀態
+                  </span>
+
+                  <span class="payment-status">
+                    付款狀態：{{ order.payment_status }}
+                  </span>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- 商品 -->
+            <div class="items">
+
+              <div
+                class="items-header"
+                (click)="toggleItems(order.id)"
+              >
+
+                <h3>商品明細</h3>
+
+                <span class="items-toggle">
+                  {{ isItemsExpanded(order.id) ? '收合 ▲' : '查看商品 ▼' }}
+                </span>
+
+              </div>
+
+
+              @if (isItemsExpanded(order.id)) {
+
+                <div class="items-list">
+
+                  @for (item of order.items; track item.product_id) {
+
+                    <div class="item">
+
+                      <div class="item-name">
+                        {{ item.product_name }}
+                      </div>
+
+                      <div class="item-quantity">
+                        x {{ item.quantity }}
+                      </div>
+
+                      <div class="item-price">
+                        ${{ item.price }}
+                      </div>
+
+                      <div class="item-subtotal">
+                        ${{ item.subtotal }}
+                      </div>
+
+                    </div>
+
+                  }
+
+                </div>
+
+              }
+
+            </div>
+
+
+            <div class="order-footer">
+
+              @if (order.order_status === '已取消') {
+
+                <span class="cancelled-text">
+                  訂單已取消
+                </span>
+
+              }
+
+              <div class="total-price">
+
+                <span>訂單金額</span>
+
+                <strong>
+                  ${{ order.total_amount }}
+                </strong>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        }
+
+      }
+
+    </div>
+
+  }
   @if (showStatusModal()) {
     <div class="modal-backdrop" (click)="closeStatusModal()"></div>
     <div class="status-modal">

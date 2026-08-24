@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -34,8 +34,31 @@ export class Orders {
 
   statusTimeline = signal<{ title: string; description: string; time: string | null; active: boolean }[]>([]);
 
+  activeOrders = computed(() =>
+    this.orders().filter(order =>
+      !['已完成', '已取消'].includes(order.order_status)
+    )
+  );
 
-  ngOnInit() {
+  historyOrders = computed(() =>
+    this.orders().filter(order =>
+      ['已完成', '已取消'].includes(order.order_status)
+    )
+  );
+
+  showHistory = signal(false);
+  completedOrders = computed(() =>
+    this.orders().filter(order =>
+      order.order_status === '已完成'
+    )
+  );
+
+  cancelledOrders = computed(() =>
+    this.orders().filter(order =>
+      order.order_status === '已取消'
+    )
+  );
+    ngOnInit() {
 
     this.loadOrders();
 
@@ -69,7 +92,25 @@ export class Orders {
     });
 
   }
+  expandedOrders = signal<Set<number>>(new Set());
 
+  toggleItems(orderId: number) {
+    this.expandedOrders.update(set => {
+      const newSet = new Set(set);
+
+      if (newSet.has(orderId)) {
+        newSet.delete(orderId);
+      } else {
+        newSet.add(orderId);
+      }
+
+      return newSet;
+    });
+  }
+
+  isItemsExpanded(orderId: number): boolean {
+    return this.expandedOrders().has(orderId);
+  }
   completeOrder(order: Order) {
 
       if (order.order_status !== '已出貨') {
@@ -195,7 +236,8 @@ export class Orders {
       order.payment_status === '已付款';
 
     const isShipped =
-      order.order_status === '已出貨';
+      order.order_status === '已出貨' ||
+      order.order_status === '已完成';
 
     const isCompleted =
       order.order_status === '已完成';
@@ -207,19 +249,14 @@ export class Orders {
     const timeline = [
 
       {
-        title: '訂單成立',
-
+        title: '訂單建立',
         description: '已建立訂單',
-
         time: order.created_at,
-
         active: true
       },
 
-
       {
         title: '付款完成',
-
         description:
           isPaid
             ? '付款已完成'
@@ -233,27 +270,23 @@ export class Orders {
         active: isPaid
       },
 
-
       {
         title: '出貨處理',
 
         description:
           isCancelled
             ? '未進入出貨流程'
-            : isShipped || isCompleted
+            : isShipped
               ? '商品已出貨'
               : '等待出貨',
 
         time:
-          isShipped || isCompleted
+          isShipped
             ? order.shipped_at
             : null,
 
-        active:
-          isShipped ||
-          isCompleted
+        active: isShipped
       },
-
 
       {
         title:
@@ -266,9 +299,7 @@ export class Orders {
             ? `取消原因：${order.cancel_reason ?? '未提供'}`
             : isCompleted
               ? '訂單已完成'
-              : isShipped
-                ? '等待確認收貨'
-                : '等待完成',
+              : '等待完成',
 
         time:
           isCancelled
@@ -286,7 +317,6 @@ export class Orders {
 
 
     this.statusTimeline.set(timeline);
-
     this.showStatusModal.set(true);
   }
 
