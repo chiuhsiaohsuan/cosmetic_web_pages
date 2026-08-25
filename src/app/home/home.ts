@@ -13,12 +13,20 @@ import { environment } from '../../enviroments/enviroment';
 export class Home implements OnInit, OnDestroy {
   slides = [
     {
-      src: 'example.jpg',
+      src: '2026海報(1).png',
       alt: 'Banner image 1',
     },
     {
-      src: 'pic.jpg',
+      src: '2026海報(2).png',
       alt: 'Banner image 2',
+    },
+    {
+      src: '2026海報(3).png',
+      alt: 'Banner image 3',
+    },
+    {
+      src: '海鑽石KV.jpg',
+      alt: 'Banner image 5',
     },
   ];
   environment = environment;

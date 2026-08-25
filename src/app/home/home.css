@@ -19,7 +19,7 @@
 
     width: 100%;
 
-    height: min(720px, calc(100vh - 86px));
+    height: auto;
 
     min-height: 560px;
 
@@ -716,7 +716,7 @@
 
     .hero-carousel {
 
-        height: 620px;
+        height: auto;
 
         min-height: 0;
     }
@@ -773,7 +773,7 @@
 
     .hero-carousel {
 
-        height: 650px;
+        height: auto;
     }
 
 
@@ -926,7 +926,7 @@
 
     .hero-carousel {
 
-        height: 580px;
+        height: auto;
     }
 
 
