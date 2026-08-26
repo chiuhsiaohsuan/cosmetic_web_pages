@@ -89,6 +89,8 @@ router.get(
         o.payment_status,
         o.created_at,
         o.paid_at,
+        o.cancel_reason,
+        o.cancelled_at,
         oi.product_id,
         oi.quantity,
         oi.price,
@@ -134,6 +136,8 @@ router.get(
         created_at: results[0].created_at,
         submitted_at: results[0].submitted_at,
         paid_at: results[0].paid_at,
+        cancel_reason: results[0].cancel_reason,
+        cancelled_at: results[0].cancelled_at,
         items: []
       };
 

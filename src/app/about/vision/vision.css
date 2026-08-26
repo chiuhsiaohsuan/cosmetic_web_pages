@@ -134,7 +134,11 @@
 
     letter-spacing: 0.5px;
 }
-
+.img-outter{
+    display: grid;
+    justify-content: center;
+    margin-bottom: 100px;
+}
 @media (max-width: 900px) {
 
     .vision-banner {

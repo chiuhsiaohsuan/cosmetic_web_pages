@@ -32,6 +32,8 @@ export class ProductAdd {
 
     category:[''],
 
+    skin_type:[''],
+
     price:[0],
 
     spec:[''],
@@ -195,6 +197,11 @@ export class ProductAdd {
     formData.append(
       "category",
       this.productForm.value.category ?? ''
+    );
+
+    formData.append(
+      "skin_type",
+      this.productForm.value.skin_type ?? ''
     );
 
     formData.append(

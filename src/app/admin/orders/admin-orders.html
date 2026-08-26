@@ -258,6 +258,14 @@
                   }}
                 </strong>
               </div>
+              @if (selectedOrder()?.order_status === '已取消') {
+                <div class="detail-row">
+                  <span>取消原因</span>
+                  <strong>
+                    {{ selectedOrder()?.cancel_reason || '未提供' }}
+                  </strong>
+                </div>
+              }
 
               <!-- 商品明細 -->
               <div class="items-table">

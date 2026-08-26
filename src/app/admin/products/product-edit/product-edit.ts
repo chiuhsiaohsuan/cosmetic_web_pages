@@ -53,6 +53,8 @@ export class ProductEdit implements OnDestroy{
 
     category:[''],
 
+    skin_type:[''],
+
     price:[0],
 
     image:[''],
@@ -405,6 +407,11 @@ export class ProductEdit implements OnDestroy{
     formData.append(
       "category",
       this.productForm.value.category ?? ""
+    );
+
+    formData.append(
+      "skin_type",
+      this.productForm.value.skin_type ?? ""
     );
 
     formData.append(

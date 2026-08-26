@@ -25,6 +25,10 @@ export class Home implements OnInit, OnDestroy {
       alt: 'Banner image 3',
     },
     {
+      src: '2026海報(4).png',
+      alt: 'Banner image 4',
+    },
+    {
       src: '海鑽石KV.jpg',
       alt: 'Banner image 5',
     },

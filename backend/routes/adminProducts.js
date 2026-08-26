@@ -230,6 +230,7 @@ router.post(
         const {
             name,
             category,
+            skin_type,
             specification,
             storage,
             usage,
@@ -240,7 +241,7 @@ router.post(
         } = req.body;
         const image = req.file ? `/uploads/products/${req.file.filename}`: null;
 
-        const sql = `INSERT INTO products(name, price, image, category, isHot, specification, storage, \`usage\`, notice, stock)VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        const sql = `INSERT INTO products(name, price, image, category, skin_type, isHot, specification, storage, \`usage\`, notice, stock)VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
 
         db.query(
@@ -250,6 +251,7 @@ router.post(
                 price,
                 image,
                 category,
+                skin_type,
                 isHot,
                 specification,
                 storage,
@@ -341,6 +343,7 @@ router.put("/:id", verifyToken, verifyAdmin, upload.single("image"),
             name,
             price,
             category,
+            skin_type,
             isHot,
             specification,
             storage,
@@ -379,7 +382,7 @@ router.put("/:id", verifyToken, verifyAdmin, upload.single("image"),
 
         }
 
-        const sql = `UPDATE products SET name = ?, price = ?, image = ?, category = ?, isHot = ?, specification = ?, storage = ?, \`usage\`=?, notice=?, stock = ? WHERE id = ?`;
+        const sql = `UPDATE products SET name = ?, price = ?, image = ?, category = ?, skin_type = ?, isHot = ?, specification = ?, storage = ?, \`usage\`=?, notice=?, stock = ? WHERE id = ?`;
 
 
         db.query(
@@ -389,6 +392,7 @@ router.put("/:id", verifyToken, verifyAdmin, upload.single("image"),
                 price,
                 image,
                 category,
+                skin_type,
                 isHot,
                 specification,
                 storage,
