@@ -1,556 +1,284 @@
-import { Component, inject, signal, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ProductService } from '../../../services/product';
-import { Location } from '@angular/common';
 import imageCompression from 'browser-image-compression';
+import { ProductService } from '../../../services/product';
 import { environment } from '../../../../enviroments/enviroment';
 
+interface Product {
+  name?: string;
+  category?: string;
+  price?: number;
+  image?: string;
+  specification?: string;
+  storage?: string;
+  usage?: string;
+  notice?: string;
+  stock?: number;
+  isHot?: number | boolean;
+}
+
+interface ProductSkinType {
+  skin_type_id: number | string;
+}
+
+interface DetailImage {
+  image: string;
+}
+
+const MAIN_IMAGE_OPTIONS = { maxSizeMB: 0.5, maxWidthOrHeight: 1200, useWebWorker: true };
+const DETAIL_IMAGE_OPTIONS = {
+  maxSizeMB: 1.5,
+  maxWidthOrHeight: 2500,
+  initialQuality: 0.95,
+  useWebWorker: true,
+};
 
 @Component({
-
-  selector:'app-product-edit',
-
-  imports:[
-    ReactiveFormsModule
-  ],
-
-  templateUrl:'./product-edit.html',
-
-  styleUrl:'./product-edit.css'
-
+  selector: 'app-product-edit',
+  imports: [ReactiveFormsModule],
+  templateUrl: './product-edit.html',
+  styleUrl: './product-edit.css',
 })
-export class ProductEdit implements OnDestroy{
+export class ProductEdit implements OnInit, OnDestroy {
+  private readonly location = inject(Location);
+  private readonly productService = inject(ProductService);
+  private readonly fb = inject(FormBuilder);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
-  constructor(
-  private location: Location
-) {}
+  readonly environment = environment;
+  readonly skinTypes = [
+    { id: 1, name: '乾性' },
+    { id: 2, name: '油性' },
+    { id: 3, name: '敏弱' },
+    { id: 4, name: '中性' },
+    { id: 5, name: '混合' },
+  ];
+  readonly selectedSkinTypes = signal<number[]>([]);
+  readonly loading = signal(true);
+  readonly submitting = signal(false);
+  readonly mainImagePreview = signal<string | null>(null);
+  readonly detailImagePreviews = signal<string[]>([]);
 
-  id!:number;
-  environment = environment;
-
-  loading = signal(true);
-
-  mainImage: File | null = null;
-  detailImages: File[] = [];
- 
-  existingMainImage: string | null = null;
-  existingDetailImages: string[] = [];
-  mainImagePreview = signal<string | null>(null);
-  detailImagePreviews = signal<string[]>([]);
-
-  private productService = inject(ProductService);
-
-  private fb = inject(FormBuilder);
-
-  private router = inject(Router);
-
-  private route = inject(ActivatedRoute);
-
-  productForm = this.fb.group({
-
-    name:[''],
-
-    category:[''],
-
-    skin_type:[''],
-
-    price:[0],
-
-    image:[''],
-
-    specification:[''],
-
-    storage:[''],
-
-    usage:[''],
-
-    notice:[''],
-
-    stock:[0],
-
-    isHot:[0]
-
+  readonly productForm = this.fb.nonNullable.group({
+    name: '',
+    category: '',
+    price: 0,
+    image: '',
+    specification: '',
+    storage: '',
+    usage: '',
+    notice: '',
+    stock: 0,
+    isHot: 0
   });
 
-  async onMainImageSelected(event: any) {
+  id = 0;
+  mainImage: File | null = null;
+  detailImages: File[] = [];
+  existingMainImage: string | null = null;
+  existingDetailImages: string[] = [];
 
-    const file =
-      event.target.files[0];
-
-    if (!file) {
+  ngOnInit(): void {
+    this.id = Number(this.route.snapshot.paramMap.get('id'));
+    if (!Number.isInteger(this.id) || this.id <= 0) {
+      this.loading.set(false);
+      alert('商品編號無效');
+      this.goBack();
       return;
     }
-
-
-    console.log(
-      "主圖原始大小:",
-      (file.size / 1024 / 1024).toFixed(2),
-      "MB"
-    );
-
-
-    // 如果之前已經有新的預覽
-    const oldPreview =
-      this.mainImagePreview();
-
-    if (oldPreview) {
-
-      URL.revokeObjectURL(
-        oldPreview
-      );
-
-    }
-
-
-    const options = {
-
-      maxSizeMB: 0.5,
-
-      maxWidthOrHeight: 1200,
-
-      useWebWorker: true
-
-    };
-
-
-    try {
-
-      const compressedFile =
-        await imageCompression(
-          file,
-          options
-        );
-
-
-      console.log(
-        "主圖壓縮後:",
-        (compressedFile.size / 1024 / 1024).toFixed(2),
-        "MB"
-      );
-
-
-      this.mainImage =
-        compressedFile;
-
-
-      // 建立新圖片預覽
-      const previewUrl =
-        URL.createObjectURL(
-          compressedFile
-        );
-
-
-      this.mainImagePreview.set(
-        previewUrl
-      );
-
-
-    } catch (error) {
-
-      console.log(
-        "圖片壓縮失敗",
-        error
-      );
-
-
-      this.mainImage =
-        file;
-
-
-      // 壓縮失敗也可以預覽原圖
-      const previewUrl =
-        URL.createObjectURL(file);
-
-
-      this.mainImagePreview.set(
-        previewUrl
-      );
-
-    }
-
-  }
-  async onDetailImagesSelected(event: any) {
-
-    const files =
-      Array.from(
-        event.target.files
-      ) as File[];
-
-
-    // 釋放上一批預覽
-    this.detailImagePreviews()
-      .forEach(url => {
-
-        URL.revokeObjectURL(url);
-
-      });
-
-
-    this.detailImages = [];
-
-
-    const previews: string[] = [];
-
-
-    const options = {
-
-      maxSizeMB: 1.5,
-
-      maxWidthOrHeight: 2500,
-
-      initialQuality: 0.95,
-
-      useWebWorker: true
-
-    };
-
-
-    for (const file of files) {
-
-      try {
-
-        const compressedFile =
-          await imageCompression(
-            file,
-            options
-          );
-
-
-        const newFile =
-          new File(
-            [compressedFile],
-            file.name,
-            {
-              type: compressedFile.type
-            }
-          );
-
-
-        console.log(
-          "壓縮後:",
-          newFile.name,
-          newFile.size
-        );
-
-
-        this.detailImages.push(
-          newFile
-        );
-
-
-        // 建立預覽
-        const previewUrl =
-          URL.createObjectURL(
-            newFile
-          );
-
-
-        previews.push(
-          previewUrl
-        );
-
-
-      } catch (error) {
-
-        console.log(
-          "特色圖片壓縮失敗",
-          error
-        );
-
-
-        this.detailImages.push(
-          file
-        );
-
-
-        // 壓縮失敗也預覽原圖
-        const previewUrl =
-          URL.createObjectURL(file);
-
-
-        previews.push(
-          previewUrl
-        );
-
-      }
-
-    }
-
-
-    this.detailImagePreviews.set(
-      previews
-    );
-
-
-    console.log(
-      "特色圖片數量:",
-      this.detailImages.length
-    );
-
-  }
-  goBack(){
-
-  this.location.back();
-
-  }
-  ngOnInit(){
-
-
-    this.id = Number(
-      this.route.snapshot.paramMap.get('id')
-    );
-
-
     this.loadProduct();
-
-
   }
 
-  loadProduct() {
-
-    // 取得商品基本資料
-    this.productService
-      .getProduct(this.id)
-      .subscribe({
-
-        next: (res) => {
-
-          console.log(
-            '商品資料:',
-            res
-          );
-
-
-          // 填入表單
-          this.productForm.patchValue(
-            res
-          );
-
-
-          // 原本商品主圖
-          this.existingMainImage =
-            res.image ?? null;
-
-
-          // 商品基本資料載入完成
-          this.loading.set(false);
-
-
-          // 再取得特色圖片
-          this.productService
-            .getDetailImages(this.id)
-            .subscribe({
-
-              next: (images) => {
-
-                console.log(
-                  '特色圖片:',
-                  images
-                );
-
-
-                this.existingDetailImages =
-                  images.map(
-                    item => item.image
-                  );
-
-              },
-
-
-              error: (err) => {
-
-                console.log(
-                  '取得特色圖片失敗',
-                  err
-                );
-
-              }
-
-            });
-
-        },
-
-
-        error: (err) => {
-
-          console.log(err);
-
-          this.loading.set(false);
-
-        }
-
-      });
-
+  ngOnDestroy(): void {
+    this.revokePreview(this.mainImagePreview());
+    this.revokePreviews(this.detailImagePreviews());
   }
-  submitting = signal(false);
-  updateProduct() {
 
-    if (this.submitting()) {
-      return;
-    }
+  toggleSkinType(id: number): void {
+    this.selectedSkinTypes.update((selected) =>
+      selected.includes(id)
+        ? selected.filter((skinTypeId) => skinTypeId !== id)
+        : [...selected, id],
+    );
+  }
 
+  isSkinTypeSelected(id: number): boolean {
+    return this.selectedSkinTypes().includes(id);
+  }
+
+  async onMainImageSelected(event: Event): Promise<void> {
+    const file = this.getSelectedFiles(event)[0];
+    if (!file) return;
+    this.revokePreview(this.mainImagePreview());
+    this.mainImage = await this.compressImage(file, MAIN_IMAGE_OPTIONS);
+    this.mainImagePreview.set(URL.createObjectURL(this.mainImage));
+  }
+
+  async onDetailImagesSelected(event: Event): Promise<void> {
+    const files = this.getSelectedFiles(event);
+    this.revokePreviews(this.detailImagePreviews());
+    this.detailImages = await Promise.all(
+      files.map((file) => this.compressImage(file, DETAIL_IMAGE_OPTIONS)),
+    );
+    this.detailImagePreviews.set(this.detailImages.map((image) => URL.createObjectURL(image)));
+  }
+
+  goBack(): void {
+    this.location.back();
+  }
+
+  updateProduct(): void {
+    if (this.submitting() || this.productForm.invalid) return;
     this.submitting.set(true);
+    this.productService.updateProduct(this.id, this.createFormData()).subscribe({
+      next: () => this.uploadDetailImages(),
+      error: (error) => this.handleUpdateError(error),
+    });
+  }
 
-    const formData = new FormData();
+  private loadProduct(): void {
+    this.productService.getProduct(this.id).subscribe({
+      next: (product: Product) => {
+        this.productForm.patchValue({
+          name: product.name ?? '',
+          category: product.category ?? '',
+          price: product.price ?? 0,
+          image: product.image ?? '',
+          specification: product.specification ?? '',
+          storage: product.storage ?? '',
+          usage: product.usage ?? '',
+          notice: product.notice ?? '',
+          stock: product.stock ?? 0,
+          isHot: product.isHot ? 1 : 0,
+        });
+        this.existingMainImage = product.image ?? null;
+        this.loading.set(false);
+        this.loadProductSkinTypes();
+        this.loadDetailImages();
+      },
+      error: () => {
+        this.loading.set(false);
+        alert('商品資料載入失敗');
+      },
+    });
+  }
 
-    formData.append(
-      "name",
-      this.productForm.value.name ?? ""
-    );
+  private loadProductSkinTypes(): void {
 
-    formData.append(
-      "price",
-      String(this.productForm.value.price ?? 0)
-    );
+    this.productService.getProductSkinTypes(this.id).subscribe({
 
-    formData.append(
-      "category",
-      this.productForm.value.category ?? ""
-    );
+      next: (skinTypes: ProductSkinType[]) => {
 
-    formData.append(
-      "skin_type",
-      this.productForm.value.skin_type ?? ""
-    );
+        const ids = skinTypes.map(({ skin_type_id }) =>
+          Number(skin_type_id)
+        );
 
-    formData.append(
-      "specification",
-      this.productForm.value.specification ?? ""
-    );
+        this.selectedSkinTypes.set(ids);
 
-    formData.append(
-      "storage",
-      this.productForm.value.storage ?? ""
-    );    
-    formData.append(
-      "usage",
-      this.productForm.value.usage ?? ""
-    );
-    formData.append(
-      "notice",
-      this.productForm.value.notice ?? ""
-    );     
-    formData.append(
-      "stock",
-      String(this.productForm.value.stock ?? 0)
-    );
+        console.log('Signal:', this.selectedSkinTypes());
 
-    formData.append(
-      "isHot",
-      String(this.productForm.value.isHot ?? 0)
-    );
+      },
 
-    // 有選新圖片才傳
-    if (this.mainImage) {
-      formData.append("image", this.mainImage);
-    } else {
-      // 保留舊圖片
-      formData.append(
-        "oldImage",
-        this.productForm.value.image ?? ""
-      );
-    }
+      error: (error) => {
 
-    this.productService
-      .updateProduct(this.id, formData)
-      .subscribe({
+        console.error('膚質載入失敗:', error);
 
-        next: () => {
+        this.selectedSkinTypes.set([]);
 
-          // 如果有新增特色圖片
-            if(this.detailImages.length > 0){
-
-
-                this.productService
-                .uploadDetailImages(
-                    this.id,
-                    this.detailImages
-                )
-                .subscribe({
-
-                    next:()=>{
-
-                        this.submitting.set(false);
-
-                        alert("修改成功");
-
-                        this.router.navigate([
-                            "/admin/products"
-                        ]);
-
-                    },
-
-
-                    error:(err)=>{
-
-                        console.log(
-                            "特色圖片上傳失敗",
-                            err
-                        );
-
-
-                        this.submitting.set(false);
-
-                    }
-
-                });
-
-            }else{
-
-
-                this.submitting.set(false);
-
-                alert("修改成功");
-
-                this.router.navigate([
-                    "/admin/products"
-                ]);
-
-
-            }
-
-
-        },
-
-        error:(err)=>{
-
-
-            this.submitting.set(false);
-
-            console.log(err);
-
-            alert("修改失敗");
-
-
-        }
-
+      },
 
     });
 
   }
-  ngOnDestroy(): void {
 
-    // 釋放主圖預覽
-    const mainPreview =
-      this.mainImagePreview();
+  private loadDetailImages(): void {
+    this.productService.getDetailImages(this.id).subscribe({
+      next: (images: DetailImage[]) => {
+        this.existingDetailImages = images.map(({ image }) => image);
+      },
+      error: () => {
+        this.existingDetailImages = [];
+      },
+    });
+  }
 
-    if (mainPreview) {
+  private createFormData(): FormData {
+    const value = this.productForm.getRawValue();
+    const formData = new FormData();
+    formData.append('name', value.name);
+    formData.append('category', value.category);
+    formData.append('price', String(value.price));
+    formData.append('skin_types', JSON.stringify(this.selectedSkinTypes()));
+    formData.append('specification', value.specification);
+    formData.append('storage', value.storage);
+    formData.append('usage', value.usage);
+    formData.append('notice', value.notice);
+    formData.append('stock', String(value.stock));
+    formData.append('isHot', String(value.isHot ? 1 : 0));
+    if (this.mainImage) formData.append('image', this.mainImage);
+    else formData.append('oldImage', value.image);
+    return formData;
+  }
 
-      URL.revokeObjectURL(
-        mainPreview
-      );
-
+  private uploadDetailImages(): void {
+    if (this.detailImages.length === 0) {
+      this.completeUpdate();
+      return;
     }
+    this.productService.uploadDetailImages(this.id, this.detailImages).subscribe({
+      next: () => this.completeUpdate(),
+      error: () => {
+        this.submitting.set(false);
+        alert('商品已更新，但詳細圖片上傳失敗');
+      },
+    });
+  }
 
+  private completeUpdate(): void {
+    this.submitting.set(false);
+    alert('商品更新成功');
+    this.router.navigate(['/admin/products']);
+  }
 
-    // 釋放特色圖片預覽
-    this.detailImagePreviews()
-      .forEach(url => {
+  private handleUpdateError(error: unknown): void {
+    this.submitting.set(false);
+    const message =
+      typeof error === 'object' &&
+      error !== null &&
+      'error' in error &&
+      typeof error.error === 'object' &&
+      error.error !== null &&
+      'message' in error.error &&
+      typeof error.error.message === 'string'
+        ? error.error.message
+        : '商品更新失敗';
+    alert(message);
+  }
 
-        URL.revokeObjectURL(url);
+  private async compressImage(
+    file: File,
+    options: Parameters<typeof imageCompression>[1],
+  ): Promise<File> {
+    try {
+      const compressed = await imageCompression(file, options);
+      return new File([compressed], file.name, { type: compressed.type });
+    } catch {
+      return file;
+    }
+  }
 
-      });
+  private getSelectedFiles(event: Event): File[] {
+    return Array.from((event.target as HTMLInputElement).files ?? []);
+  }
 
+  private revokePreview(url: string | null): void {
+    if (url) URL.revokeObjectURL(url);
+  }
+
+  private revokePreviews(urls: string[]): void {
+    urls.forEach((url) => URL.revokeObjectURL(url));
   }
 }

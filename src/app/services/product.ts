@@ -33,7 +33,6 @@ export class ProductService {
 
   }
 
-
   // =====================
   // 前台商品
   // =====================
@@ -53,7 +52,18 @@ export class ProductService {
 
   }
 
+  getRecommendedProducts(skinType: string) {
 
+    return this.http.get<any[]>(
+      `${this.apiUrl}/recommend`,
+      {
+        params: {
+          skinType
+        }
+      }
+    );
+
+  }
   // =====================
   // 後台商品管理
   // =====================
@@ -73,7 +83,16 @@ export class ProductService {
     );
 
   }
+  getProductSkinTypes(productId: number) {
 
+    return this.http.get<any[]>(
+      `${this.adminApiUrl}/${productId}/skin-types`,
+      {
+        withCredentials: true
+      }
+    );
+
+  }
 
   getProductCategories() {
 

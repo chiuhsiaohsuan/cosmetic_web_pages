@@ -153,7 +153,29 @@ button:disabled {
   opacity: .5;
   cursor: not-allowed;
 }
+.skin-type-options {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
 
+.skin-type-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.skin-type-option input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #111;
+}
+
+.skin-type-option span {
+  cursor: pointer;
+}
 /* 載入文字 */
 
 p {

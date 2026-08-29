@@ -24,7 +24,36 @@ export class ProductAdd {
   private fb = inject(FormBuilder);
 
   private router = inject(Router);
+  skinTypes = [
+    { id: 1, name: '乾性' },
+    { id: 2, name: '油性' },
+    { id: 3, name: '敏弱' },
+    { id: 4, name: '中性' },
+    { id: 5, name: '混合' }
+  ];
+  onSkinTypeChange(event: Event, skinTypeId: number) {
 
+    const checkbox = event.target as HTMLInputElement;
+
+    if (checkbox.checked) {
+
+      this.selectedSkinTypes.push(skinTypeId);
+
+    } else {
+
+      this.selectedSkinTypes =
+        this.selectedSkinTypes.filter(
+          id => id !== skinTypeId
+        );
+
+    }
+
+    console.log(
+      '目前選擇膚質：',
+      this.selectedSkinTypes
+    );
+  }
+selectedSkinTypes: number[] = [];
 
   productForm = this.fb.group({
 
@@ -32,11 +61,9 @@ export class ProductAdd {
 
     category:[''],
 
-    skin_type:[''],
-
     price:[0],
 
-    spec:[''],
+    specification:[''],
 
     storage:[''],
 
@@ -199,10 +226,14 @@ export class ProductAdd {
       this.productForm.value.category ?? ''
     );
 
-    formData.append(
-      "skin_type",
-      this.productForm.value.skin_type ?? ''
-    );
+    this.selectedSkinTypes.forEach(id => {
+
+      formData.append(
+        "skin_type",
+        String(id)
+      );
+
+    });
 
     formData.append(
       "price",
@@ -210,8 +241,8 @@ export class ProductAdd {
     );
 
     formData.append(
-      "spec",
-      this.productForm.value.spec ?? ''
+      "specification",
+      this.productForm.value.specification ?? ''
     );
 
     formData.append(

@@ -239,10 +239,33 @@ router.post(
             stock,
             isHot
         } = req.body;
-        const image = req.file ? `/uploads/products/${req.file.filename}`: null;
 
-        const sql = `INSERT INTO products(name, price, image, category, skin_type, isHot, specification, storage, \`usage\`, notice, stock)VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        const image = req.file
+            ? `products/${req.file.filename}`
+            : null;
 
+        const skinTypeIds = Array.isArray(skin_type)
+            ? skin_type
+            : skin_type
+                ? [skin_type]
+                : [];
+
+        const sql = `
+            INSERT INTO products
+            (
+                name,
+                price,
+                image,
+                category,
+                isHot,
+                specification,
+                storage,
+                \`usage\`,
+                notice,
+                stock
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
 
         db.query(
             sql,
@@ -251,7 +274,6 @@ router.post(
                 price,
                 image,
                 category,
-                skin_type,
                 isHot,
                 specification,
                 storage,
@@ -259,20 +281,54 @@ router.post(
                 notice,
                 stock
             ],
-            (err, result)=>{
+            (err, result) => {
 
-                if(err){
+                if (err) {
                     return res.status(500).json({
-                        message:"新增商品失敗",
-                        error:err
+                        message: "新增商品失敗",
+                        error: err
                     });
                 }
 
+                const productId = result.insertId;
 
-                res.json({
-                    message:"商品新增成功",
-                    id:result.insertId
-                });
+                // 沒有選膚質
+                if (skinTypeIds.length === 0) {
+                    return res.json({
+                        message: "商品新增成功",
+                        id: productId
+                    });
+                }
+
+                const values = skinTypeIds.map(
+                    skinTypeId => [productId, skinTypeId]
+                );
+
+                const skinSql = `
+                    INSERT INTO product_skin_types
+                    (product_id, skin_type_id)
+                    VALUES ?
+                `;
+
+                db.query(
+                    skinSql,
+                    [values],
+                    (skinErr) => {
+
+                        if (skinErr) {
+                            return res.status(500).json({
+                                message: "商品新增成功，但膚質資料新增失敗",
+                                error: skinErr
+                            });
+                        }
+
+                        res.json({
+                            message: "商品新增成功",
+                            id: productId
+                        });
+
+                    }
+                );
 
             }
         );
@@ -335,15 +391,20 @@ router.post(
     }
 );
 // 修改商品
-router.put("/:id", verifyToken, verifyAdmin, upload.single("image"),
-    (req,res)=>{
+router.put(
+    "/:id",
+    verifyToken,
+    verifyAdmin,
+    upload.single("image"),
+    (req, res) => {
+
         const id = req.params.id;
 
         const {
             name,
             price,
             category,
-            skin_type,
+            skin_types,
             isHot,
             specification,
             storage,
@@ -353,77 +414,478 @@ router.put("/:id", verifyToken, verifyAdmin, upload.single("image"),
             oldImage
         } = req.body;
 
-        let image = oldImage;
 
-        if(req.file){
+        // ========================================
+        // 1. 解析膚質
+        // ========================================
+
+        let skinTypes = [];
+
+        try {
+
+            if (skin_types) {
+
+                skinTypes = JSON.parse(skin_types);
+
+                skinTypes = skinTypes.map(Number);
+
+            }
+
+        } catch (error) {
+
+            console.log("膚質資料解析失敗:", error);
+
+            return res.status(400).json({
+                message: "膚質資料格式錯誤"
+            });
+
+        }
+
+
+        // 確保是陣列
+        if (!Array.isArray(skinTypes)) {
+
+            return res.status(400).json({
+                message: "膚質資料必須是陣列"
+            });
+
+        }
+
+
+        // 去除重複膚質
+        skinTypes = [...new Set(skinTypes)];
+
+
+        // ========================================
+        // 2. 處理圖片
+        // ========================================
+
+        let image = oldImage || null;
+
+
+        if (req.file) {
 
             image = "products/" + req.file.filename;
 
-            if(oldImage){
+        }
 
-                const oldPath = path.join(
-                    __dirname,
-                    "..",
-                    "uploads",
-                    oldImage
-                );
 
-                fs.unlink(oldPath,(err)=>{
+        // ========================================
+        // 3. 取得 connection
+        // ========================================
 
-                    if(err){
-                        console.log("舊圖片刪除失敗:",err);
-                    }else{
-                        console.log("舊圖片刪除成功:",oldPath);
-                    }
+        db.getConnection((err, connection) => {
 
+            if (err) {
+
+                console.log("取得資料庫 connection 失敗:", err);
+
+                return res.status(500).json({
+                    message: "資料庫連線失敗"
                 });
 
             }
 
+
+            // ========================================
+            // 4. 開始 Transaction
+            // ========================================
+
+            connection.beginTransaction((err) => {
+
+                if (err) {
+
+                    console.log(
+                        "Transaction 開始失敗:",
+                        err
+                    );
+
+                    connection.release();
+
+                    return res.status(500).json({
+                        message: "修改商品失敗"
+                    });
+
+                }
+
+
+                // ========================================
+                // 5. 更新 products
+                // ========================================
+
+                const productSql = `
+                    UPDATE products
+                    SET
+                        name = ?,
+                        price = ?,
+                        image = ?,
+                        category = ?,
+                        isHot = ?,
+                        specification = ?,
+                        storage = ?,
+                        \`usage\` = ?,
+                        notice = ?,
+                        stock = ?
+                    WHERE id = ?
+                `;
+
+
+                connection.query(
+                    productSql,
+                    [
+                        name,
+                        price,
+                        image,
+                        category,
+                        isHot,
+                        specification,
+                        storage,
+                        usage,
+                        notice,
+                        stock,
+                        id
+                    ],
+                    (err, result) => {
+
+                        if (err) {
+
+                            console.log(
+                                "更新商品失敗:",
+                                err
+                            );
+
+
+                            return connection.rollback(() => {
+
+                                connection.release();
+
+                                res.status(500).json({
+                                    message: "修改商品失敗"
+                                });
+
+                            });
+
+                        }
+
+
+                        // ========================================
+                        // 商品不存在
+                        // ========================================
+
+                        if (result.affectedRows === 0) {
+
+                            return connection.rollback(() => {
+
+                                connection.release();
+
+                                res.status(404).json({
+                                    message: "找不到商品"
+                                });
+
+                            });
+
+                        }
+
+
+                        // ========================================
+                        // 6. 刪除舊膚質關聯
+                        // ========================================
+
+                        const deleteSkinSql = `
+                            DELETE FROM product_skin_types
+                            WHERE product_id = ?
+                        `;
+
+
+                        connection.query(
+                            deleteSkinSql,
+                            [id],
+                            (err) => {
+
+                                if (err) {
+
+                                    console.log(
+                                        "刪除舊膚質失敗:",
+                                        err
+                                    );
+
+
+                                    return connection.rollback(() => {
+
+                                        connection.release();
+
+                                        res.status(500).json({
+                                            message: "更新商品膚質失敗"
+                                        });
+
+                                    });
+
+                                }
+
+
+                                // ========================================
+                                // 7. 沒有選擇膚質
+                                // ========================================
+
+                                if (skinTypes.length === 0) {
+
+                                    return connection.commit((err) => {
+
+                                        if (err) {
+
+                                            console.log(
+                                                "Commit 失敗:",
+                                                err
+                                            );
+
+
+                                            return connection.rollback(() => {
+
+                                                connection.release();
+
+                                                res.status(500).json({
+                                                    message: "修改商品失敗"
+                                                });
+
+                                            });
+
+                                        }
+
+
+                                        connection.release();
+
+                                        if (req.file && oldImage) {
+
+                                            deleteOldImage(
+                                                oldImage
+                                            );
+
+                                        }
+
+
+                                        res.json({
+
+                                            message: "商品修改成功",
+
+                                            productId: id,
+
+                                            skinTypes: []
+
+                                        });
+
+                                    });
+
+                                }
+
+
+                                // ========================================
+                                // 8. 建立新的膚質關聯
+                                // ========================================
+
+                                const skinValues = skinTypes.map(
+                                    skinTypeId => [
+                                        id,
+                                        skinTypeId
+                                    ]
+                                );
+
+
+                                const insertSkinSql = `
+                                    INSERT INTO product_skin_types
+                                    (
+                                        product_id,
+                                        skin_type_id
+                                    )
+                                    VALUES ?
+                                `;
+
+
+                                connection.query(
+                                    insertSkinSql,
+                                    [skinValues],
+                                    (err) => {
+
+                                        if (err) {
+
+                                            console.log(
+                                                "新增商品膚質失敗:",
+                                                err
+                                            );
+
+
+                                            return connection.rollback(() => {
+
+                                                connection.release();
+
+                                                res.status(500).json({
+                                                    message: "更新商品膚質失敗"
+                                                });
+
+                                            });
+
+                                        }
+
+
+                                        // ========================================
+                                        // 9. Commit
+                                        // ========================================
+
+                                        connection.commit((err) => {
+
+                                            if (err) {
+
+                                                console.log(
+                                                    "Commit 失敗:",
+                                                    err
+                                                );
+
+
+                                                return connection.rollback(() => {
+
+                                                    connection.release();
+
+                                                    res.status(500).json({
+                                                        message: "修改商品失敗"
+                                                    });
+
+                                                });
+
+                                            }
+
+
+                                            // ========================================
+                                            // 10. 釋放 connection
+                                            // ========================================
+
+                                            connection.release();
+
+
+                                            // ========================================
+                                            // 11. 成功後刪除舊圖片
+                                            // ========================================
+
+                                            if (req.file && oldImage) {
+
+                                                deleteOldImage(
+                                                    oldImage
+                                                );
+
+                                            }
+
+
+                                            // ========================================
+                                            // 12. 回傳
+                                            // ========================================
+
+                                            res.json({
+
+                                                message: "商品修改成功",
+
+                                                productId: id,
+
+                                                skinTypes: skinTypes
+
+                                            });
+
+                                        });
+
+                                    }
+
+                                );
+
+                            }
+
+                        );
+
+                    }
+
+                );
+
+            });
+
+        });
+
+
+        // ========================================
+        // 刪除舊圖片
+        // ========================================
+
+        function deleteOldImage(oldImage) {
+
+            const oldPath = path.join(
+                __dirname,
+                "..",
+                "uploads",
+                oldImage
+            );
+
+
+            fs.unlink(
+                oldPath,
+                (err) => {
+
+                    if (err) {
+
+                        console.log(
+                            "舊圖片刪除失敗:",
+                            err
+                        );
+
+                    } else {
+
+                        console.log(
+                            "舊圖片刪除成功:",
+                            oldPath
+                        );
+
+                    }
+
+                }
+            );
+
         }
 
-        const sql = `UPDATE products SET name = ?, price = ?, image = ?, category = ?, skin_type = ?, isHot = ?, specification = ?, storage = ?, \`usage\`=?, notice=?, stock = ? WHERE id = ?`;
+    }
+);
+router.get(
+    "/:id/skin-types",
+    verifyToken,
+    verifyAdmin,
+    (req, res) => {
 
+        const productId = req.params.id;
+
+        const sql = `
+            SELECT
+                st.id,
+                st.name,
+                pst.product_id,
+                pst.skin_type_id
+            FROM product_skin_types pst
+            JOIN skin_types st
+                ON st.id = pst.skin_type_id
+            WHERE pst.product_id = ?
+        `;
 
         db.query(
             sql,
-            [
-                name,
-                price,
-                image,
-                category,
-                skin_type,
-                isHot,
-                specification,
-                storage,
-                usage,
-                notice,
-                stock,
-                id
-            ],
-            (err,result)=>{
+            [productId],
+            (err, results) => {
 
-                if(err){
-                    console.log(err);
+                if (err) {
+
+                    console.log(
+                        "取得商品膚質失敗:",
+                        err
+                    );
 
                     return res.status(500).json({
-                        message:"修改商品失敗"
-                    });
-                }
-
-
-                if(result.affectedRows === 0){
-
-                    return res.status(404).json({
-                        message:"找不到商品"
+                        message: "取得商品膚質失敗"
                     });
 
                 }
 
-
-                res.json({
-                    message:"商品修改成功"
-                });
+                res.json(results);
 
             }
         );

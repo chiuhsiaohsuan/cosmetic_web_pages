@@ -17,8 +17,29 @@
 
 
   <input formControlName="category">
-  <input formControlName="skin_type">
+  <label>適合膚質</label>
 
+  <div class="skin-type-options">
+
+    @for (skinType of skinTypes; track skinType.id) {
+
+      <label class="skin-type-option">
+
+        <input
+          type="checkbox"
+          [checked]="selectedSkinTypes().includes(skinType.id)"
+          (change)="toggleSkinType(skinType.id)"
+        >
+
+        <span>
+          {{ skinType.name }}
+        </span>
+
+      </label>
+
+    }
+
+  </div>
   <label>價格</label>
   <input type="number" formControlName="price">
 

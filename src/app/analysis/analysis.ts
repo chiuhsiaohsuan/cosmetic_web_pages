@@ -1,4 +1,8 @@
 import { Component, computed, signal } from '@angular/core';
+import { ProductService } from '../services/product';
+import { RouterLink } from "@angular/router";
+import { SkinAnalysisService } from '../services/skinAnalysis';
+import { AuthService } from '../services/auth';
 
 type QuestionKey = 'age' | 'feel' | 'problem' | 'routine';
 type AnswerValue = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H';
@@ -10,10 +14,17 @@ interface AnalysisResult { type: string; description: string; suggestions: strin
 
 @Component({
   selector: 'app-analysis',
+  imports: [RouterLink],
   templateUrl: './analysis.html',
   styleUrl: './analysis.css',
 })
+
 export class Analysis {
+  constructor(
+      public productService: ProductService,
+      private skinAnalysisService: SkinAnalysisService,
+      private authService: AuthService
+  ) {}
   readonly questions: Question[] = [
     {
       key: 'age',
@@ -68,7 +79,7 @@ export class Analysis {
       ],
     },
   ];
-
+  readonly recommendedProducts = signal<any[]>([]);
   readonly currentIndex = signal(0);
   readonly answers = signal<Answers>(this.emptyAnswers());
   readonly validationMessage = signal('');
@@ -77,13 +88,16 @@ export class Analysis {
   readonly progress = computed(() => ((this.currentIndex() + 1) / this.questions.length) * 100);
   readonly isFirstQuestion = computed(() => this.currentIndex() === 0);
   readonly isLastQuestion = computed(() => this.currentIndex() === this.questions.length - 1);
+  readonly saving = signal(false);
+  readonly saveMessage = signal('');
+  readonly showLoginNotice = signal(false);
 
   isSelected(question: Question, value: AnswerValue): boolean {
     const answer = this.answers()[question.key];
     return Array.isArray(answer) ? answer.includes(value) : answer === value;
   }
 
-    selectOption(question: Question, value: AnswerValue): void {
+  selectOption(question: Question, value: AnswerValue): void {
     this.validationMessage.set('');
 
     if (question.multiple) {
@@ -120,17 +134,24 @@ export class Analysis {
     if (!this.isFirstQuestion()) this.currentIndex.update((index) => index - 1);
   }
 
-  submitTest(): void {
-    if (!this.validateCurrentQuestion()) return;
-    this.result.set(this.createResult());
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
   restartTest(): void {
-    this.answers.set(this.emptyAnswers());
+
+    this.answers.set(
+      this.emptyAnswers()
+    );
+
     this.currentIndex.set(0);
+
     this.validationMessage.set('');
+
     this.result.set(null);
+
+    this.saving.set(false);
+
+    this.saveMessage.set('');
+
+    this.recommendedProducts.set([]);
+
   }
 
   private validateCurrentQuestion(): boolean {
@@ -156,5 +177,158 @@ export class Analysis {
 
   private emptyAnswers(): Answers {
     return { age: '', feel: '', problem: [],  routine: [], };
+  }
+  private loadRecommendedProducts(skinType: string): void {
+
+      const productSkinType =
+          this.getSkinTypeForProduct(skinType);
+
+      console.log(
+          '查詢商品膚質：',
+          productSkinType
+      );
+
+      this.productService
+          .getRecommendedProducts(productSkinType)
+          .subscribe({
+
+              next: products => {
+
+                this.recommendedProducts.set(products);
+
+              },
+
+              error: error => {
+
+                  console.error(
+                      '取得推薦商品失敗：',
+                      error
+                  );
+
+                  this.recommendedProducts.set([]);
+
+              }
+
+          });
+
+  }
+  submitTest(): void {
+
+    if (!this.validateCurrentQuestion()) {
+      return;
+    }
+
+    const analysis = this.createResult();
+
+    // 顯示結果
+    this.result.set(analysis);
+
+    const currentAnswers = this.answers();
+
+    console.log('使用者問卷答案:', currentAnswers);
+    console.log('分析結果:', analysis);
+
+    // 先載入推薦商品
+    this.loadRecommendedProducts(analysis.type);
+
+    // =========================
+    // 判斷是否登入
+    // =========================
+    if (!this.authService.isLogin()) {
+
+      // 顯示未登入提示視窗
+      this.showLoginNotice.set(true);
+
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+
+      return;
+    }
+
+    // =========================
+    // 已登入才儲存問卷
+    // =========================
+
+    const data = {
+
+      age: currentAnswers.age,
+
+      feel: currentAnswers.feel,
+
+      problem: currentAnswers.problem,
+
+      routine: currentAnswers.routine,
+
+      skinType: analysis.type
+
+    };
+
+    this.saving.set(true);
+    this.saveMessage.set('');
+
+    this.skinAnalysisService
+      .saveAnalysis(data)
+      .subscribe({
+
+        next: response => {
+
+          console.log(
+            '問卷儲存成功:',
+            response
+          );
+
+          this.saving.set(false);
+
+          this.saveMessage.set(
+            '肌膚分析結果已儲存'
+          );
+
+        },
+
+        error: error => {
+
+          console.error(
+            '問卷儲存失敗:',
+            error
+          );
+
+          this.saving.set(false);
+
+          this.saveMessage.set(
+            '分析結果顯示成功，但問卷資料儲存失敗'
+          );
+
+        }
+
+      });
+
+    window.scrollTo({
+
+      top: 0,
+
+      behavior: 'smooth'
+
+    });
+
+  }
+  private getSkinTypeForProduct(type: string): string {
+
+    const map: Record<string, string> = {
+
+      '敏弱型肌膚': '敏弱',
+
+      '乾性型肌膚': '乾性',
+
+      '油性肌膚': '油性',
+
+      '混合型肌膚': '混合',
+
+      '中性肌膚': '中性'
+
+    };
+
+    return map[type] ?? type;
   }
 }

@@ -105,20 +105,166 @@
         <div class="modal">
 
             <h3>
-            會員詳細資料
+                會員詳細資料
             </h3>
 
-            <p>ID：{{selectedUser().id}}</p>
+            <div class="member-info">
 
-            <p>姓名：{{selectedUser().name}}</p>
+                <p>
+                    ID：
+                    {{ selectedUser().id }}
+                </p>
 
-            <p>電話：{{selectedUser().phone}}</p>
+                <p>
+                    姓名：
+                    {{ selectedUser().name }}
+                </p>
 
-            <p>Email：{{selectedUser().email}}</p>
+                <p>
+                    電話：
+                    {{ selectedUser().phone }}
+                </p>
 
-            <p>生日：{{selectedUser().birthday}}</p>
+                <p>
+                    Email：
+                    {{ selectedUser().email }}
+                </p>
 
-            <button (click)="closeDetail()">關閉</button>
+                <p>
+                    生日：
+                    {{ selectedUser().birthday }}
+                </p>
+
+            </div>
+
+            <div class="skin-analysis">
+
+                <h4>
+                    肌膚檢測紀錄
+                </h4>
+
+
+                @if(skinAnalysisLoading()){
+
+                    <p>
+                        正在載入肌膚檢測紀錄...
+                    </p>
+
+                }
+
+                @else if(skinAnalysisError()){
+
+                    <p>
+                        {{ skinAnalysisError() }}
+                    </p>
+
+                }
+
+                @else if(
+                    skinAnalysisRecords().length === 0
+                ){
+
+                    <p>
+                        此會員尚未進行肌膚檢測。
+                    </p>
+
+                }
+
+                @else{
+
+                    @for(
+                        record of skinAnalysisRecords();
+                        track record.id
+                    ){
+
+                        <div class="analysis-record">
+
+                            <div class="analysis-header">
+
+                                <strong>
+                                    {{ record.skin_type }}
+                                </strong>
+
+                                <span>
+                                    {{ record.created_at | date:'yyyy/MM/dd HH:mm' }}
+                                </span>
+
+                            </div>
+
+
+                            <p>
+                                年齡：
+                                {{ getAgeText(record.age) }}
+                            </p>
+
+
+                            <p>
+                                清潔後肌膚狀態：
+                                {{ getFeelText(record.feel) }}
+                            </p>
+
+
+                            <div>
+
+                                <p>
+                                    主要肌膚問題：
+                                </p>
+
+                                <ul>
+
+                                    @for(
+                                        problem of record.problem;
+                                        track problem
+                                    ){
+
+                                        <li>
+                                            {{ getProblemText(problem) }}
+                                        </li>
+
+                                    }
+
+                                </ul>
+
+                            </div>
+
+
+                            <div>
+
+                                <p>
+                                    保養習慣：
+                                </p>
+
+                                <ul>
+
+                                    @for(
+                                        routine of record.routine;
+                                        track routine
+                                    ){
+
+                                        <li>
+                                            {{ getRoutineText(routine) }}
+                                        </li>
+
+                                    }
+
+                                </ul>
+
+                            </div>
+
+                        </div>
+
+                    }
+
+                }
+
+            </div>
+
+            <button
+                (click)="closeDetail()">
+
+                關閉
+
+            </button>
 
         </div>
 

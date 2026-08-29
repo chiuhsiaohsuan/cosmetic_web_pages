@@ -13,6 +13,84 @@
         }
       </ol>
       <p class="result-note">此結果為日常保養參考，若肌膚持續不適，建議諮詢皮膚科醫師。</p>
+      @if (recommendedProducts().length > 0) {
+
+        <section
+          class="recommended-products"
+          aria-labelledby="recommended-title"
+        >
+
+          <div class="recommended-header">
+
+            <span class="eyebrow">
+              RECOMMENDED FOR YOU
+            </span>
+
+            <h2 id="recommended-title">
+              適合你的推薦商品
+            </h2>
+
+            <p>
+              根據你的肌膚類型，為你挑選適合日常保養的商品。
+            </p>
+
+          </div>
+
+
+          <div class="product-grid">
+
+            @for (
+              product of recommendedProducts();
+              track product.id
+            ) {
+
+              <article class="product-card">
+
+                <a
+                  [routerLink]="['/product', product.id]"
+                  class="product-image"
+                >
+
+                  <img
+                    [src]="productService.getImageUrl(product.image)"
+                    [alt]="product.name"
+                  >
+
+                </a>
+
+
+                <div class="product-info">
+
+                  <p class="product-category">
+                    {{ product.category }}
+                  </p>
+
+                  <h3>
+                    {{ product.name }}
+                  </h3>
+
+                  <p class="product-price">
+                    NT$ {{ product.price }}
+                  </p>
+
+                  <a
+                    [routerLink]="['/product', product.id]"
+                    class="view-product"
+                  >
+                    查看商品
+                  </a>
+
+                </div>
+
+              </article>
+
+            }
+
+          </div>
+
+        </section>
+
+      }
       <button type="button" class="restart-btn" (click)="restartTest()">重新測驗</button>
     </article>
   } @else {
@@ -58,3 +136,51 @@
     </div>
   }
 </section>
+@if (showLoginNotice()) {
+
+  <div class="modal-overlay">
+
+    <div class="login-notice">
+
+      <button
+        class="close-btn"
+        (click)="showLoginNotice.set(false)"
+      >
+        ×
+      </button>
+
+      <h3>尚未登入</h3>
+
+      <p>
+        您的肌膚分析已完成！
+      </p>
+
+      <p class="notice-text">
+        登入後即可儲存這次的肌膚分析結果，
+        方便之後查看。
+      </p>
+
+      <div class="notice-buttons">
+
+        <button
+          class="continue-btn"
+          (click)="showLoginNotice.set(false)"
+        >
+          先查看結果
+        </button>
+
+        <a
+          routerLink="/login"
+          class="login-btn"
+          (click)="showLoginNotice.set(false)"
+        >
+          前往登入
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}

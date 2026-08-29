@@ -14,11 +14,25 @@
     placeholder="分類"
   />
 
-  <input
-    type="text"
-    formControlName="skin_type"
-    placeholder="適用膚質"
-  />
+  <label>適用膚質</label>
+
+  <div class="skin-type-list">
+
+    @for (skin of skinTypes; track skin.id) {
+
+      <label>
+        <input
+          type="checkbox"
+          [value]="skin.id"
+          (change)="onSkinTypeChange($event, skin.id)"
+        />
+
+        {{ skin.name }}
+      </label>
+
+    }
+
+  </div>
 
   <label>價格</label>
   <input
@@ -90,7 +104,7 @@
 
 
   <textarea
-    formControlName="spec"
+    formControlName="specification"
     placeholder="產品規格"
   ></textarea>
 

@@ -16,6 +16,8 @@ const adminArticleRouter = require('./routes/adminArticle');
 const adminNewsRouter = require('./routes/adminNews');
 const transporter = require('./middleware/mailer');
 const forgotPassRouter = require('./routes/forgotPass');
+const skinAnalysisRouter = require('./routes/skinAnalysis');
+const adminSkinRouter = require('./routes/adminSkin');
 const verificationCodes = new Map();
 
 
@@ -43,6 +45,10 @@ app.use('/api', forgotPassRouter);
 app.use('/api/admin/articles', adminArticleRouter);
 app.use('/api/admin/news', adminNewsRouter);
 app.use(
+    '/api/skin-analysis',
+    skinAnalysisRouter
+);
+app.use(
     '/api/products',
     productDetailImage
 );
@@ -53,6 +59,10 @@ app.use(
 app.use(
     "/api/admin/products",
     adminProductsRouter
+);
+app.use(
+    "/api/admin/skin-analysis",
+    adminSkinRouter
 );
 app.use(
     '/api/admin/orders',
