@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+Disallow: /login
+Disallow: /forgot-password
+Disallow: /register
+Disallow: /cart
+Disallow: /member
+Disallow: /checkout
+Disallow: /payment/
+Disallow: /orders
+Disallow: /reset-password
+Disallow: /admin/
+
+Sitemap: https://chengyi-group.com.tw/sitemap.xml

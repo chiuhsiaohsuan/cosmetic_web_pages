@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    <!-- 首頁 -->
+    <url>
+        <loc>https://chengyi-group.com.tw/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    <!-- 關於承檍 -->
+    <url>
+        <loc>https://chengyi-group.com.tw/about</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <url>
+        <loc>https://chengyi-group.com.tw/about/team</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <url>
+        <loc>https://chengyi-group.com.tw/about/vision</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
+        <loc>https://chengyi-group.com.tw/about/location</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <!-- 最新消息 -->
+    <url>
+        <loc>https://chengyi-group.com.tw/news</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- 商品 -->
+    <url>
+        <loc>https://chengyi-group.com.tw/product</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <!-- 部落格 -->
+    <url>
+        <loc>https://chengyi-group.com.tw/blog</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- 肌膚檢測 -->
+    <url>
+        <loc>https://chengyi-group.com.tw/analysis</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+</urlset>

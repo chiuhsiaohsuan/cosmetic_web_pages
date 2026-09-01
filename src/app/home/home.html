@@ -1,5 +1,8 @@
 <section
     class="hero-carousel"
+    (pointerdown)="onCarouselPointerDown($event)"
+    (pointerup)="onCarouselPointerUp($event)"
+    (pointercancel)="onCarouselPointerCancel()"
     aria-label="首頁主視覺">
 
     <div
@@ -12,33 +15,8 @@
 
                 <img
                     [src]="slide.src"
-                    [alt]="slide.alt">
-
-                <!-- <div class="hero-overlay">
-
-                    <p class="hero-eyebrow">
-                        承檍 Chengyi
-                    </p>
-
-                    <h1>
-                        Elegance<br>
-                        Awaits You
-                    </h1>
-
-                    <p class="hero-description">
-                        Discover the beauty of simple,
-                        thoughtful skincare.
-                    </p>
-
-                    <a
-                        class="hero-button"
-                        routerLink="/product">
-
-                        Explore Collection
-
-                    </a>
-
-                </div> -->
+                    [alt]="slide.alt"
+                    draggable="false">
 
             </div>
 
@@ -93,9 +71,11 @@
 
         @for(product of hotProducts(); track product.id) {
 
-            <article
-                class="product-card"
-                [routerLink]="['/product', product.id]">
+        <article class="product-card">
+
+            <a
+                [routerLink]="['/product', product.id]"
+                [attr.aria-label]="'查看 ' + product.name">
 
                 <div class="product-image">
 
@@ -108,7 +88,6 @@
                     </span>
 
                 </div>
-
 
                 <div class="product-info">
 
@@ -126,7 +105,9 @@
 
                 </div>
 
-            </article>
+            </a>
+
+        </article>
 
         }
 

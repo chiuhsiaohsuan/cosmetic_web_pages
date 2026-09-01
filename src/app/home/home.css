@@ -26,6 +26,17 @@
     overflow: hidden;
 
     background: var(--cream);
+
+    cursor: grab;
+
+    touch-action: pan-y;
+
+    user-select: none;
+}
+
+.hero-carousel:active {
+
+    cursor: grabbing;
 }
 
 
@@ -68,22 +79,6 @@
     object-position: center;
 }
 
-.hero-overlay {
-
-    position: absolute;
-
-    top: 50%;
-    left: clamp(30px, 8vw, 120px);
-
-    width: min(520px, 45%);
-
-    color: #ffffff;
-
-    transform: translateY(-50%);
-
-    z-index: 2;
-}
-
 .carousel-slide::after {
 
     position: absolute;
@@ -101,90 +96,6 @@
     content: "";
 
     pointer-events: none;
-}
-
-
-.hero-eyebrow {
-
-    margin: 0 0 24px;
-
-    font-size: 13px;
-
-    font-weight: 400;
-
-    letter-spacing: 0.25em;
-}
-
-
-.hero-overlay h1 {
-
-    margin: 0;
-
-    font-family:
-        "Times New Roman",
-        "Noto Serif TC",
-        serif;
-
-    font-size: clamp(58px, 7vw, 100px);
-
-    font-weight: 300;
-
-    line-height: 0.98;
-
-    letter-spacing: -0.045em;
-}
-
-
-.hero-description {
-
-    max-width: 390px;
-
-    margin: 30px 0;
-
-    font-size: 15px;
-
-    font-weight: 300;
-
-    line-height: 1.8;
-
-    letter-spacing: 0.04em;
-}
-
-.hero-button {
-
-    display: inline-flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    padding: 13px 26px;
-
-    border: 1px solid rgba(255,255,255,.75);
-
-    border-radius: 999px;
-
-    color: #ffffff;
-
-    background: transparent;
-
-    font-size: 12px;
-
-    letter-spacing: 0.08em;
-
-    text-decoration: none;
-
-    transition:
-        background 200ms ease,
-        color 200ms ease;
-}
-
-
-.hero-button:hover {
-
-    background: #ffffff;
-
-    color: var(--green-dark);
 }
 
 .carousel-dots {
@@ -346,7 +257,10 @@
     transition:
         background 200ms ease;
 }
+.product-card a {
 
+    text-decoration: none;
+}
 
 .product-card:hover {
 
@@ -722,14 +636,6 @@
     }
 
 
-    .hero-overlay {
-
-        left: 35px;
-
-        width: 70%;
-    }
-
-
     .product-grid {
 
         grid-template-columns:
@@ -780,33 +686,6 @@
     .carousel-slide img {
 
         object-position: center;
-    }
-
-
-    .hero-overlay {
-
-        top: auto;
-        bottom: 80px;
-
-        left: 24px;
-
-        width: calc(100% - 48px);
-
-        transform: none;
-    }
-
-
-    .hero-overlay h1 {
-
-        font-size: 54px;
-    }
-
-
-    .hero-description {
-
-        margin: 22px 0;
-
-        font-size: 13px;
     }
 
 
@@ -927,12 +806,6 @@
     .hero-carousel {
 
         height: auto;
-    }
-
-
-    .hero-overlay h1 {
-
-        font-size: 46px;
     }
 
 
