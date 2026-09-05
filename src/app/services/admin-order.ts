@@ -55,20 +55,20 @@ export class AdminOrderService {
   updateStatus(
     orderId: number,
     orderStatus?: OrderStatus,
+    paymentStatus?: string,
     cancelReason?: string
   ) {
-
     return this.http.put(
       `${this.apiUrl}/${orderId}/status`,
       {
         order_status: orderStatus,
+        payment_status: paymentStatus,
         cancel_reason: cancelReason
       },
       {
         withCredentials: true
       }
     );
-
   }
 
 
