@@ -69,7 +69,9 @@ export class AdminOrders {
       return;
     }
 
-    this.orderService.updateStatus(order.id, status).subscribe({
+    this.orderService.updateStatus(order.id, {
+      order_status: status
+    }).subscribe({
       next: () => {
         this.orders.update((orders) =>
           orders.map((item) =>
@@ -87,11 +89,15 @@ export class AdminOrders {
       return;
     }
 
-    this.orderService.updateStatus(order.id, undefined, status).subscribe({
+    this.orderService.updateStatus(order.id, {
+      payment_status: status
+    }).subscribe({
       next: () => {
         this.orders.update((orders) =>
           orders.map((item) =>
-            item.id === order.id ? { ...item, payment_status: status } : item
+            item.id === order.id
+              ? { ...item, payment_status: status }
+              : item
           )
         );
       }
@@ -118,7 +124,6 @@ export class AdminOrders {
     this.cancelReasonError.set('');
   }
   confirmCancelOrder() {
-
     const order = this.selectedCancelOrder();
     const reason = this.cancelReason().trim();
 
@@ -127,36 +132,24 @@ export class AdminOrders {
     }
 
     if (!reason) {
-
-      this.cancelReasonError.set(
-        '請輸入取消原因'
-      );
-
+      this.cancelReasonError.set('請輸入取消原因');
       return;
     }
 
     this.orderService
-      .updateStatus(
-        order.id,
-        '已取消',
-        reason
-      )
+      .updateStatus(order.id, {
+        order_status: '已取消',
+        cancel_reason: reason
+      })
       .subscribe({
-
         next: () => {
-
           this.closeCancelModal();
-
           this.loadOrders();
-
         },
 
         error: (err) => {
-
           console.error('取消訂單失敗', err);
-
         }
-
       });
   }
   showOrderDetail(order: Order) {
