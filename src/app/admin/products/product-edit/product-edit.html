@@ -1,107 +1,208 @@
 <h2>修改商品</h2>
 
+@if (loading()) {
 
-@if(loading()){
+  <p>載入中...</p>
 
-<p>載入中...</p>
+} @else {
 
-}
+  <form [formGroup]="productForm" class="product-form">
 
-@else{
+    <div class="form-left">
 
+      <!-- 基本資訊 -->
+      <div class="form-section">
 
-<form [formGroup]="productForm">
+        <h3>基本資訊</h3>
 
+        <input formControlName="name" placeholder="商品名稱"/>
 
-  <input formControlName="name">
+        <input formControlName="category" placeholder="分類"/>
 
+        <label>適合膚質</label>
 
-  <input formControlName="category">
-  <label>適合膚質</label>
+        <div class="skin-type-options">
 
-  <div class="skin-type-options">
+          @for (skinType of skinTypes; track skinType.id) {
 
-    @for (skinType of skinTypes; track skinType.id) {
+            <label class="skin-type-option">
 
-      <label class="skin-type-option">
+              <input
+                type="checkbox"
+                [checked]="selectedSkinTypes().includes(skinType.id)"
+                (change)="toggleSkinType(skinType.id)"
+              >
+
+              <span>
+                {{ skinType.name }}
+              </span>
+
+            </label>
+
+          }
+
+        </div>
+
+        <label>價格</label>
+
+        <input type="number" formControlName="price" placeholder="價格">
+
+        <label>庫存</label>
+
+        <input type="number" formControlName="stock" placeholder="庫存">
+
+        <label class="hot-product">
+
+          <input type="checkbox" formControlName="isHot">
+
+          熱門商品
+
+        </label>
+
+      </div>
+
+      <div class="form-section">
+
+        <h3>商品主圖</h3>
 
         <input
-          type="checkbox"
-          [checked]="selectedSkinTypes().includes(skinType.id)"
-          (change)="toggleSkinType(skinType.id)"
+          type="file"
+          accept="image/*"
+          (change)="onMainImageSelected($event)"
         >
 
-        <span>
-          {{ skinType.name }}
-        </span>
+        @if (mainImagePreview()) {
 
-      </label>
+          <!-- 新圖片 -->
+          <div class="image-preview">
 
-    }
+            <p>新主圖預覽</p>
 
-  </div>
-  <label>價格</label>
-  <input type="number" formControlName="price">
+            <img
+              [src]="mainImagePreview()"
+              alt="新主圖預覽"
+            >
 
+          </div>
 
-  <label>商品主圖</label>
+        } @else if (existingMainImage) {
 
-  <input
-    type="file"
-    accept="image/*"
-    (change)="onMainImageSelected($event)"
-  >
+          <!-- 原本圖片 -->
+          <div class="image-preview">
 
+            <p>目前商品主圖</p>
 
-  @if (mainImagePreview()) {
+            <img
+              [src]="environment.imageUrl + '/uploads/' + existingMainImage"
+              alt="目前商品主圖"
+            >
 
-    <!-- 使用者選了新圖片 -->
-    <div class="image-preview">
+          </div>
 
-      <p>新主圖預覽</p>
+        }
 
-      <img
-        [src]="mainImagePreview()"
-        alt="新主圖預覽"
-      >
-    </div>
+      </div>
 
-  }
-  @else if (existingMainImage) {
+      <div class="form-section">
 
-    <!-- 沒選新圖片，顯示原本圖片 -->
-    <div class="image-preview">
+        <h3>產品特色圖片</h3>
 
-      <p>目前商品主圖</p>
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          (change)="onDetailImagesSelected($event)"
+        >
 
-      <img
-        [src]="environment.imageUrl + '/uploads/' +existingMainImage"
-        alt="目前商品主圖"
-      >
+        @if (detailImagePreviews().length > 0) {
 
-    </div>
+          <!-- 新增圖片 -->
+          <div class="detail-image-preview">
 
-  }
+            <p>新增圖片預覽</p>
 
-  <label>新增產品特色圖片</label>
-  <input type="file" multiple (change)="onDetailImagesSelected($event)">
-  @if (detailImagePreviews().length > 0) {
+            <div class="detail-image-list">
 
-    <div class="detail-image-preview">
+              @for (
+                image of detailImagePreviews();
+                track $index
+              ) {
 
-      <p>新增圖片預覽</p>
+                <div
+                  class="detail-image-item"
+                  draggable="true"
+                  (dragstart)="onDetailImageDragStart($index)"
+                  (dragover)="$event.preventDefault()"
+                  (drop)="onDetailImageDrop($event, $index)"
+                  (dragend)="onDetailImageDragEnd()"
+                >
 
-      <div class="detail-image-list">
+                  <img
+                    [src]="image"
+                    alt="新增特色圖片"
+                  >
 
-        @for (
-          image of detailImagePreviews();
-          track $index
-        ) {
+                  <button
+                    type="button"
+                    class="remove-detail-image"
+                    aria-label="刪除新增特色圖片"
+                    (click)="removeDetailImage($index)"
+                  >
+                    ×
+                  </button>
 
-          <img
-            [src]="image"
-            alt="新增特色圖片"
-          >
+                </div>
+
+              }
+
+            </div>
+
+          </div>
+
+        } @else if (existingDetailImages.length > 0) {
+
+          <!-- 原本圖片 -->
+          <div class="detail-image-preview">
+
+            <p>目前產品特色圖片</p>
+
+            <div class="detail-image-list">
+
+              @for (
+                image of existingDetailImages;
+                track $index
+              ) {
+
+                <div
+                  class="detail-image-item"
+                  draggable="true"
+                  (dragstart)="onExistingDetailImageDragStart($index)"
+                  (dragover)="$event.preventDefault()"
+                  (drop)="onExistingDetailImageDrop($event, $index)"
+                  (dragend)="onDetailImageDragEnd()"
+                >
+
+                  <img
+                    [src]="environment.imageUrl + '/uploads/' + image"
+                    alt="目前特色圖片"
+                  >
+
+                  <button
+                    type="button"
+                    class="remove-detail-image"
+                    aria-label="刪除目前特色圖片"
+                    (click)="removeExistingDetailImage($index)"
+                  >
+                    ×
+                  </button>
+
+                </div>
+
+              }
+
+            </div>
+
+          </div>
 
         }
 
@@ -109,55 +210,57 @@
 
     </div>
 
-  }
-  @else if (existingDetailImages.length > 0) {
+    <div class="form-right">
 
-    <div class="detail-image-preview">
+      <div class="form-section">
 
-      <p>目前產品特色圖片</p>
+        <h3>商品內容</h3>
 
-      <div class="detail-image-list">
+        <textarea
+          formControlName="specification"
+          placeholder="產品規格"
+        ></textarea>
 
-        @for (
-          image of existingDetailImages;
-          track $index
-        ) {
+        <textarea
+          formControlName="storage"
+          placeholder="保存方式"
+        ></textarea>
 
-          <img
-            [src]="environment.imageUrl + '/uploads/' + image"
-            alt="目前特色圖片"
-          >
+        <textarea
+          formControlName="usage"
+          placeholder="使用說明"
+        ></textarea>
 
-        }
+        <textarea
+          formControlName="notice"
+          placeholder="注意事項"
+        ></textarea>
+
+      </div>
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="back-btn"
+          (click)="goBack()"
+        >
+          回上一頁
+        </button>
+
+        <button
+          type="button"
+          class="submit-btn"
+          (click)="updateProduct()"
+          [disabled]="submitting()"
+        >
+          {{ submitting() ? '修改中...' : '儲存修改' }}
+        </button>
 
       </div>
 
     </div>
 
-  }
-  <textarea formControlName="specification" placeholder="產品規格"></textarea>
-  <textarea formControlName="storage" placeholder="保存方式"></textarea>
-  <textarea formControlName="usage" placeholder="使用說明"></textarea>
-  <textarea formControlName="notice" placeholder="注意事項"></textarea>
+  </form>
 
-  <label>庫存</label>
-  <input type="number" formControlName="stock">
-
-
-  <label>
-
-      <input type="checkbox" formControlName="isHot">
-
-      熱門
-
-  </label>
-
-
-  <button type="button" (click)="goBack()">
-    回上一頁
-  </button>
-  <button type="button" (click)="updateProduct()" [disabled]="submitting()">
-    {{submitting() ? '修改中...' : '儲存修改'}}
-  </button>
-</form>
 }

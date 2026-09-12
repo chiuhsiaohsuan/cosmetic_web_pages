@@ -1,152 +1,158 @@
 <h2>新增商品</h2>
 
-<form [formGroup]="productForm">
+<form [formGroup]="productForm" class="product-form">
 
-  <input
-    type="text"
-    formControlName="name"
-    placeholder="商品名稱"
-  />
+  <div class="form-left">
 
-  <input
-    type="text"
-    formControlName="category"
-    placeholder="分類"
-  />
+    <div class="form-section">
+      <h3>基本資訊</h3>
 
-  <label>適用膚質</label>
+      <input type="text" formControlName="name" placeholder="商品名稱"/>
 
-  <div class="skin-type-list">
+      <input type="text" formControlName="category" placeholder="分類"/>
 
-    @for (skin of skinTypes; track skin.id) {
+      <label>適用膚質</label>
 
-      <label>
-        <input
-          type="checkbox"
-          [value]="skin.id"
-          (change)="onSkinTypeChange($event, skin.id)"
-        />
+      <div class="skin-type-list">
 
-        {{ skin.name }}
-      </label>
+        @for (skin of skinTypes; track skin.id) {
 
-    }
-
-  </div>
-
-  <label>價格</label>
-  <input
-    type="number"
-    formControlName="price"
-    placeholder="價格"
-  />
-
-  <!-- 商品主圖 -->
-    <label>商品主圖</label>
-
-    <input
-    type="file"
-    accept="image/*"
-    (change)="onMainImageSelected($event)"
-    />
-
-    @if (mainImagePreview()) {
-
-    <div class="image-preview">
-
-        <p>主圖預覽</p>
-
-        <img
-        [src]="mainImagePreview()"
-        alt="商品主圖預覽"
-        />
-
-    </div>
-
-    }
-
-
-  <!-- 產品特色圖片 -->
-    <label>產品特色</label>
-
-    <input
-    type="file"
-    accept="image/*"
-    multiple
-    (change)="onDetailImagesSelected($event)"
-    />
-
-    @if (detailImagePreviews().length > 0) {
-
-    <div class="detail-image-preview">
-
-        <p>產品特色圖片預覽</p>
-
-        <div class="detail-image-list">
-
-        @for (
-            image of detailImagePreviews();
-            track $index
-        ) {
-
-            <img
-            [src]="image"
-            alt="產品特色圖片"
+          <label>
+            <input
+              type="checkbox"
+              [value]="skin.id"
+              (change)="onSkinTypeChange($event, skin.id)"
             />
+
+            {{ skin.name }}
+          </label>
 
         }
 
-        </div>
+      </div>
+
+      <label>價格</label>
+
+      <input type="number" formControlName="price" placeholder="價格"/>
+
+      <label>庫存</label>
+
+      <input type="number" formControlName="stock" placeholder="庫存"/>
+
+      <label class="hot-product">
+
+        <input type="checkbox" formControlName="isHot"/>
+
+        熱門商品
+
+      </label>
 
     </div>
 
-    }
+    <div class="form-section">
 
+      <h3>商品圖片</h3>
 
-  <textarea
-    formControlName="specification"
-    placeholder="產品規格"
-  ></textarea>
+      <label>商品主圖</label>
 
-  <textarea
-    formControlName="storage"
-    placeholder="保存方式"
-  ></textarea>
+      <input type="file" accept="image/*" (change)="onMainImageSelected($event)"/>
 
-  <textarea
-    formControlName="usage"
-    placeholder="使用說明"
-  ></textarea>
+      @if (mainImagePreview()) {
 
-  <textarea
-    formControlName="notice"
-    placeholder="注意事項"
-  ></textarea>
+        <div class="image-preview">
 
+          <p>主圖預覽</p>
 
-  <label>庫存</label>
-  <input
-    type="number"
-    formControlName="stock"
-    placeholder="庫存"
-  />
+          <img [src]="mainImagePreview()" alt="商品主圖預覽"/>
 
+        </div>
 
-  <label>
-    <input
-      type="checkbox"
-      formControlName="isHot"
-    />
-    熱門商品
-  </label>
+      }
 
+    </div>
 
-  <button
-    type="button"
-    (click)="addProduct()"
-    [disabled]="submitting()"
-  >
-    {{ submitting() ? '新增中...' : '新增商品' }}
-  </button>
+    <div class="form-section">
 
+      <label>產品特色</label>
+
+      <input type="file" accept="image/*" multiple (change)="onDetailImagesSelected($event)"/>
+
+      @if (detailImagePreviews().length > 0) {
+
+        <div class="detail-image-preview">
+
+          <p>產品特色圖片預覽</p>
+
+          <div class="detail-image-list">
+
+            @for (
+              image of detailImagePreviews();
+              track $index
+            ) {
+
+              <div
+                class="detail-image-item"
+                draggable="true"
+                (dragstart)="onDetailImageDragStart($index)"
+                (dragover)="$event.preventDefault()"
+                (drop)="onDetailImageDrop($event, $index)"
+                (dragend)="onDetailImageDragEnd()"
+              >
+
+                <img
+                  [src]="image"
+                  alt="產品特色圖片"
+                />
+
+                <button
+                  type="button"
+                  class="remove-detail-image"
+                  aria-label="刪除產品特色圖片"
+                  (click)="removeDetailImage($index)"
+                >
+                  ×
+                </button>
+
+              </div>
+
+            }
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
+  <div class="form-right">
+
+    <div class="form-section">
+
+      <h3>商品內容</h3>
+
+      <textarea formControlName="specification" placeholder="產品規格"></textarea>
+
+      <textarea formControlName="storage" placeholder="保存方式"></textarea>
+
+      <textarea formControlName="usage" placeholder="使用說明"></textarea>
+
+      <textarea formControlName="notice" placeholder="注意事項"></textarea>
+
+    </div>
+
+    <button
+      type="button"
+      class="submit-btn"
+      (click)="addProduct()"
+      [disabled]="submitting()"
+    >
+
+      {{ submitting() ? '新增中...' : '新增商品' }}
+
+    </button>
+
+  </div>
 </form>

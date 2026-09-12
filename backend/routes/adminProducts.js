@@ -78,19 +78,44 @@ router.get(
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
     const search = req.query.search || '';
+    const category = req.query.category || '';
+    const status = req.query.status || '';
 
     const offset = (page - 1) * limit;
 
-    // 搜尋商品名稱
-    const searchValue = `%${search}%`;
+    // 搜尋條件
+    let whereSql = `
+      FROM products
+      WHERE name LIKE ?
+    `;
 
+    const queryParams = [`%${search}%`];
+
+    // 商品分類
+    if (category) {
+
+      whereSql += ` AND category = ?`;
+
+      queryParams.push(category);
+
+    }
+
+    // 上架狀態
+    if (status) {
+
+      whereSql += ` AND status = ?`;
+
+      queryParams.push(status);
+
+    }
+
+    // 取得商品總數
     db.query(
       `
       SELECT COUNT(*) AS total
-      FROM products
-      WHERE name LIKE ?
+      ${whereSql}
       `,
-      [searchValue],
+      queryParams,
       (err, countResult) => {
 
         if (err) {
@@ -107,15 +132,15 @@ router.get(
 
         const totalPages = Math.ceil(total / limit);
 
+        // 取得商品資料
         db.query(
           `
           SELECT *
-          FROM products
-          WHERE name LIKE ?
+          ${whereSql}
           ORDER BY id DESC
           LIMIT ? OFFSET ?
           `,
-          [searchValue, limit, offset],
+          [...queryParams, limit, offset],
           (err, products) => {
 
             if (err) {
@@ -127,6 +152,7 @@ router.get(
               });
 
             }
+
             res.json({
 
               data: products,
@@ -143,44 +169,6 @@ router.get(
 
           }
         );
-
-      }
-    );
-
-  }
-);
-// 取得所有商品分類
-router.get(
-  "/categories",
-  verifyToken,
-  verifyAdmin,
-  (req, res) => {
-
-    db.query(
-      `
-      SELECT DISTINCT category
-      FROM products
-      WHERE category IS NOT NULL
-        AND category != ''
-      ORDER BY category
-      `,
-      (err, results) => {
-
-        if (err) {
-
-          console.error('取得商品分類失敗:', err);
-
-          return res.status(500).json({
-            message: '資料庫錯誤'
-          });
-
-        }
-
-        const categories = results.map(
-          item => item.category
-        );
-
-        res.json(categories);
 
       }
     );
@@ -347,10 +335,14 @@ router.post(
         const files = req.files;
 
 
+        const sortOrders = Array.isArray(req.body.sortOrders)
+            ? req.body.sortOrders
+            : [req.body.sortOrders];
+
         const values = files.map((file,index)=>[
             productId,
-            `/uploads/product-detail-images/${file.filename}`,
-            index + 1
+            `product-detail-images/${file.filename}`,
+            Number(sortOrders[index]) || index + 1
         ]);
 
 
@@ -1031,6 +1023,10 @@ router.put(
 
                         }
 
+                        const sortOrders = Array.isArray(req.body.sortOrders)
+                            ? req.body.sortOrders
+                            : [req.body.sortOrders];
+
                         const values =
                         files.map((file,index)=>{
 
@@ -1041,7 +1037,7 @@ router.put(
 
                                 `product-detail-images/${file.filename}`,
 
-                                index + 1
+                                Number(sortOrders[index]) || index + 1
 
                             ];
 
@@ -1102,6 +1098,73 @@ router.put(
     }
 );
 // 刪除商品
+router.put(
+    "/:productId/detail-images/order",
+    verifyToken,
+    verifyAdmin,
+    (req, res) => {
+        const productId = req.params.productId;
+        const images = req.body?.images;
+
+        if (!Array.isArray(images) || !images.every((image) => typeof image === "string")) {
+            return res.status(400).json({ message: "圖片排序資料格式錯誤" });
+        }
+
+        db.query(
+            "SELECT image FROM product_detail_images WHERE product_id = ?",
+            [productId],
+            (selectError, currentImages) => {
+                if (selectError) {
+                    return res.status(500).json({ message: "查詢特色圖片失敗", error: selectError });
+                }
+
+                const currentImagePaths = new Set(currentImages.map((item) => item.image));
+                if (new Set(images).size !== images.length || images.some((image) => !currentImagePaths.has(image))) {
+                    return res.status(400).json({ message: "圖片排序資料不正確" });
+                }
+
+                const removedImages = currentImages
+                    .map((item) => item.image)
+                    .filter((image) => !images.includes(image));
+
+                db.query(
+                    "DELETE FROM product_detail_images WHERE product_id = ?",
+                    [productId],
+                    (deleteError) => {
+                        if (deleteError) {
+                            return res.status(500).json({ message: "更新特色圖片失敗", error: deleteError });
+                        }
+
+                        const saveImages = () => {
+                            removedImages.forEach((image) => {
+                                fs.unlink(path.join(__dirname, "../uploads", image), () => {});
+                            });
+                            res.json({ message: "特色圖片排序更新成功" });
+                        };
+
+                        if (images.length === 0) {
+                            saveImages();
+                            return;
+                        }
+
+                        const values = images.map((image, index) => [productId, image, index + 1]);
+                        db.query(
+                            "INSERT INTO product_detail_images (product_id, image, sort_order) VALUES ?",
+                            [values],
+                            (insertError) => {
+                                if (insertError) {
+                                    return res.status(500).json({ message: "更新特色圖片失敗", error: insertError });
+                                }
+                                saveImages();
+                            },
+                        );
+                    },
+                );
+            },
+        );
+    },
+);
+
 router.delete(
     "/:id",
     verifyToken,

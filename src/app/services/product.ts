@@ -72,11 +72,12 @@ export class ProductService {
     page: number = 1,
     limit: number = 10,
     search: string = '',
-    category: string = ''
+    category: string = '',
+    status: string = ''
   ) {
 
     return this.http.get<any>(
-      `${this.adminApiUrl}?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}&category=${encodeURIComponent(category)}`,
+      `${this.adminApiUrl}?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}&category=${encodeURIComponent(category)}&status=${encodeURIComponent(status)}`,
       {
         withCredentials: true
       }
@@ -137,7 +138,7 @@ export class ProductService {
 
     const formData = new FormData();
 
-    images.forEach(img => {
+    images.forEach((img, index) => {
 
       console.log(
         '送出圖片:',
@@ -151,6 +152,9 @@ export class ProductService {
         img.name
       );
 
+      // 順序由預覽清單的索引決定，後端會以此寫入 sort_order。
+      formData.append('sortOrders', String(index + 1));
+
     });
 
     return this.http.put(
@@ -161,6 +165,14 @@ export class ProductService {
       }
     );
 
+  }
+
+  updateExistingDetailImages(productId: number, images: string[]) {
+    return this.http.put(
+      `${this.adminApiUrl}/${productId}/detail-images/order`,
+      { images },
+      { withCredentials: true },
+    );
   }
 
   updateProduct(

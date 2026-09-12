@@ -83,6 +83,7 @@ selectedSkinTypes: number[] = [];
 
   mainImagePreview = signal<string | null>(null);
   detailImagePreviews = signal<string[]>([]);
+  draggedDetailImageIndex: number | null = null;
 
 
   // 壓縮圖片
@@ -165,17 +166,8 @@ selectedSkinTypes: number[] = [];
     const files: File[] =
       Array.from(event.target.files);
 
-    // 先釋放之前的預覽 URL
-    const oldPreviews =
-      this.detailImagePreviews();
-
-    oldPreviews.forEach(url => {
-      URL.revokeObjectURL(url);
-    });
-
-    this.detailImages = [];
-
-    const previews: string[] = [];
+    // 保留既有圖片，將這次選取的圖片加到清單最後方
+    const previews = [...this.detailImagePreviews()];
 
     for (const file of files) {
 
@@ -199,10 +191,55 @@ selectedSkinTypes: number[] = [];
       previews
     );
 
+    // 清空欄位，讓使用者可再次選取同一張圖片。
+    event.target.value = '';
+
     console.log(
       '特色圖片數量',
       this.detailImages.length
     );
+  }
+
+  removeDetailImage(index: number): void {
+    const previews = [...this.detailImagePreviews()];
+    const [removedPreview] = previews.splice(index, 1);
+
+    if (removedPreview) {
+      URL.revokeObjectURL(removedPreview);
+    }
+
+    this.detailImages.splice(index, 1);
+    this.detailImagePreviews.set(previews);
+  }
+
+  onDetailImageDragStart(index: number): void {
+    this.draggedDetailImageIndex = index;
+  }
+
+  onDetailImageDrop(event: DragEvent, targetIndex: number): void {
+    event.preventDefault();
+
+    const sourceIndex = this.draggedDetailImageIndex;
+    this.draggedDetailImageIndex = null;
+
+    if (sourceIndex === null || sourceIndex === targetIndex) {
+      return;
+    }
+
+    const images = [...this.detailImages];
+    const previews = [...this.detailImagePreviews()];
+    const [image] = images.splice(sourceIndex, 1);
+    const [preview] = previews.splice(sourceIndex, 1);
+
+    images.splice(targetIndex, 0, image);
+    previews.splice(targetIndex, 0, preview);
+
+    this.detailImages = images;
+    this.detailImagePreviews.set(previews);
+  }
+
+  onDetailImageDragEnd(): void {
+    this.draggedDetailImageIndex = null;
   }
 
   addProduct(){

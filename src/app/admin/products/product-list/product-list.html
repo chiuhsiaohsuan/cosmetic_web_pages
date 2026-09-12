@@ -5,6 +5,7 @@
 </div>
 
 <div class="filter-box">
+
     <div class="search-box">
 
         <label for="product-search">搜尋商品</label>
@@ -18,6 +19,7 @@
         >
 
     </div>
+
     <div class="category-box">
 
         <label for="product-category">商品分類</label>
@@ -32,9 +34,30 @@
 
             @for (category of categories(); track category) {
 
-                <option [value]="category">{{ category }}</option>
+                <option [value]="category">
+                    {{ category }}
+                </option>
 
             }
+
+        </select>
+
+    </div>
+
+    <div class="status-box">
+
+        <label for="product-status">上架狀態</label>
+
+        <select
+            id="product-status"
+            [value]="selectedStatus()"
+            (change)="onStatusChange($event)"
+        >
+
+            <option value="">全部狀態</option>
+            <option value="active">上架中</option>
+            <option value="inactive">已下架</option>
+
         </select>
 
     </div>

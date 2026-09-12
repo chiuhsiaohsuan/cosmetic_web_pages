@@ -61,6 +61,8 @@ export class ProductEdit implements OnInit, OnDestroy {
   readonly submitting = signal(false);
   readonly mainImagePreview = signal<string | null>(null);
   readonly detailImagePreviews = signal<string[]>([]);
+  draggedDetailImageIndex: number | null = null;
+  draggedExistingDetailImageIndex: number | null = null;
 
   readonly productForm = this.fb.nonNullable.group({
     name: '',
@@ -119,11 +121,68 @@ export class ProductEdit implements OnInit, OnDestroy {
 
   async onDetailImagesSelected(event: Event): Promise<void> {
     const files = this.getSelectedFiles(event);
-    this.revokePreviews(this.detailImagePreviews());
-    this.detailImages = await Promise.all(
+    const images = await Promise.all(
       files.map((file) => this.compressImage(file, DETAIL_IMAGE_OPTIONS)),
     );
-    this.detailImagePreviews.set(this.detailImages.map((image) => URL.createObjectURL(image)));
+    this.detailImages = [...this.detailImages, ...images];
+    this.detailImagePreviews.update((previews) => [
+      ...previews,
+      ...images.map((image) => URL.createObjectURL(image)),
+    ]);
+    (event.target as HTMLInputElement).value = '';
+  }
+
+  removeDetailImage(index: number): void {
+    const previews = [...this.detailImagePreviews()];
+    const [preview] = previews.splice(index, 1);
+    if (preview) URL.revokeObjectURL(preview);
+    this.detailImages.splice(index, 1);
+    this.detailImagePreviews.set(previews);
+  }
+
+  onDetailImageDragStart(index: number): void {
+    this.draggedDetailImageIndex = index;
+  }
+
+  onDetailImageDrop(event: DragEvent, targetIndex: number): void {
+    event.preventDefault();
+    const sourceIndex = this.draggedDetailImageIndex;
+    this.draggedDetailImageIndex = null;
+    if (sourceIndex === null || sourceIndex === targetIndex) return;
+
+    const images = [...this.detailImages];
+    const previews = [...this.detailImagePreviews()];
+    const [image] = images.splice(sourceIndex, 1);
+    const [preview] = previews.splice(sourceIndex, 1);
+    images.splice(targetIndex, 0, image);
+    previews.splice(targetIndex, 0, preview);
+    this.detailImages = images;
+    this.detailImagePreviews.set(previews);
+  }
+
+  onExistingDetailImageDragStart(index: number): void {
+    this.draggedExistingDetailImageIndex = index;
+  }
+
+  onExistingDetailImageDrop(event: DragEvent, targetIndex: number): void {
+    event.preventDefault();
+    const sourceIndex = this.draggedExistingDetailImageIndex;
+    this.draggedExistingDetailImageIndex = null;
+    if (sourceIndex === null || sourceIndex === targetIndex) return;
+
+    const images = [...this.existingDetailImages];
+    const [image] = images.splice(sourceIndex, 1);
+    images.splice(targetIndex, 0, image);
+    this.existingDetailImages = images;
+  }
+
+  removeExistingDetailImage(index: number): void {
+    this.existingDetailImages = this.existingDetailImages.filter((_, imageIndex) => imageIndex !== index);
+  }
+
+  onDetailImageDragEnd(): void {
+    this.draggedDetailImageIndex = null;
+    this.draggedExistingDetailImageIndex = null;
   }
 
   goBack(): void {
@@ -178,8 +237,6 @@ export class ProductEdit implements OnInit, OnDestroy {
 
         this.selectedSkinTypes.set(ids);
 
-        console.log('Signal:', this.selectedSkinTypes());
-
       },
 
       error: (error) => {
@@ -224,11 +281,11 @@ export class ProductEdit implements OnInit, OnDestroy {
   }
 
   private uploadDetailImages(): void {
-    if (this.detailImages.length === 0) {
-      this.completeUpdate();
-      return;
-    }
-    this.productService.uploadDetailImages(this.id, this.detailImages).subscribe({
+    const request = this.detailImages.length > 0
+      ? this.productService.uploadDetailImages(this.id, this.detailImages)
+      : this.productService.updateExistingDetailImages(this.id, this.existingDetailImages);
+
+    request.subscribe({
       next: () => this.completeUpdate(),
       error: () => {
         this.submitting.set(false);

@@ -15,6 +15,7 @@ export class ProductList {
   categories = signal<string[]>([]);
   searchKeyword = signal('');
   selectedCategory = signal('');
+  selectedStatus = signal('');
   currentPage = signal(1);
   totalPages = signal(1);
   total = signal(0);
@@ -51,7 +52,8 @@ export class ProductList {
       this.currentPage(),
       this.limit,
       this.searchKeyword(),
-      this.selectedCategory()
+      this.selectedCategory(),
+      this.selectedStatus() 
     )
     .subscribe({
 
@@ -81,6 +83,18 @@ export class ProductList {
     this.searchKeyword.set(input.value);
 
     // 搜尋後回第一頁
+    this.currentPage.set(1);
+
+    this.loadProducts();
+
+  }
+  onStatusChange(event: Event): void {
+
+    const select = event.target as HTMLSelectElement;
+
+    this.selectedStatus.set(select.value);
+
+    // 狀態改變後回第一頁
     this.currentPage.set(1);
 
     this.loadProducts();

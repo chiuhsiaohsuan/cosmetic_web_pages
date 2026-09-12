@@ -31,7 +31,8 @@
 }
 
 .search-box,
-.category-box {
+.category-box,
+.status-box {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -39,7 +40,8 @@
 }
 
 .search-box label,
-.category-box label {
+.category-box label,
+.status-box label {
   font-size: 15px;
   font-weight: 600;
   color: #333;
@@ -66,7 +68,7 @@
   color: #aaa;
 }
 
-.category-box select {
+.category-box select, .status-box select {
   width: 100%;
   height: 42px;
   padding: 0 12px;
@@ -81,12 +83,12 @@
   transition: 0.3s;
 }
 
-.category-box select:focus {
+.category-box select:focus, .status-box select:focus {
   border-color: #555;
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
 }
 
-.category-box select:hover {
+.category-box select:hover, .status-box select:hover {
   border-color: #999;
 }
 
