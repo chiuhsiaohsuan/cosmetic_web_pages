@@ -27,6 +27,7 @@ export const routes: Routes = [
       { path: 'orders', loadComponent: () => import('./orders/orders').then((m) => m.Orders) },
       { path: 'reset-password', loadComponent: () => import('./reset-password/reset-password').then((m) => m.ResetPasswordComponent) },
       { path: 'analysis', loadComponent: () => import('./analysis/analysis').then((m) => m.Analysis) },
+      { path: 'privacy-policy', loadComponent: () => import('./privacy-policy/privacy-policy').then((m) => m.PrivacyPolicy) },
     ]
   },
   {

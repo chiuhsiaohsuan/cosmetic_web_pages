@@ -1,0 +1,45 @@
+.privacy-page {
+  padding: 64px 24px 88px;
+  background: #f8f8f5;
+}
+
+.privacy-policy {
+  box-sizing: border-box;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 48px 56px;
+  color: #343a36;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgb(39 55 43 / 8%);
+  font-size: 16px;
+  line-height: 1.9;
+}
+
+.policy-header {
+  padding-bottom: 24px;
+  margin-bottom: 32px;
+  border-bottom: 2px solid #5f7161;
+}
+
+h1, h2, h3 { color: #405144; }
+h1 { margin: 0 0 8px; font-size: 32px; }
+h2 { margin: 42px 0 16px; font-size: 24px; line-height: 1.45; }
+h3 { margin: 24px 0 8px; font-size: 18px; }
+p { margin: 0 0 16px; }
+ol { padding-left: 26px; margin: 0 0 16px; }
+li { padding-left: 4px; margin-bottom: 8px; }
+a { color: #476c55; overflow-wrap: anywhere; }
+
+.contact-list { margin: 0 0 16px; }
+.contact-list div { display: flex; margin-bottom: 6px; }
+.contact-list dt { min-width: 84px; font-weight: 700; }
+.contact-list dd { margin: 0; }
+
+@media (max-width: 640px) {
+  .privacy-page { padding: 32px 16px 48px; }
+  .privacy-policy { padding: 32px 24px; font-size: 15px; }
+  h1 { font-size: 28px; }
+  h2 { margin-top: 32px; font-size: 21px; }
+  .contact-list div { display: block; }
+}

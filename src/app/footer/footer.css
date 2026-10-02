@@ -66,3 +66,14 @@ hr{
     }
 
 }
+
+.privacy-link {
+    margin: 0 0 10px;
+    text-align: center;
+}
+
+.privacy-link a {
+    color: #F5F5F3;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
